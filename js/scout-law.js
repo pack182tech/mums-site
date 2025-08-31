@@ -1,3 +1,6 @@
+// Scout Oath for background
+const SCOUT_OATH = `On my honor I will do my best to do my duty to God and my country and to obey the Scout Law; to help other people at all times; to keep myself physically strong, mentally awake, and morally straight.`;
+
 // Scout Law Principles
 const SCOUT_LAW = [
     {
@@ -56,17 +59,45 @@ function getRandomScoutLaw() {
     return SCOUT_LAW[index];
 }
 
-// Display Scout Law as background texture
+// Display Scout Oath as background texture
 function displayScoutLaw() {
     const scoutLawBackground = document.getElementById('scout-law-background');
     if (!scoutLawBackground) return;
     
-    const law = getRandomScoutLaw();
-    
     scoutLawBackground.innerHTML = `
-        <div class="scout-law-text">
-            <div class="scout-law-main">A Scout is ${law.principle}</div>
-            <div class="scout-law-sub">${law.description}</div>
+        <div class="scout-oath-text">
+            ${SCOUT_OATH}
         </div>
     `;
+}
+
+// Create Scout Law ticker/crawl
+function createScoutLawTicker() {
+    const ticker = document.createElement('div');
+    ticker.className = 'scout-law-ticker';
+    ticker.id = 'scout-law-ticker';
+    
+    // Create the scrolling content with all principles
+    const tickerContent = SCOUT_LAW.map(law => 
+        `<span class="ticker-item">
+            <strong>A Scout is ${law.principle}:</strong> ${law.description}
+        </span>`
+    ).join(' • ');
+    
+    ticker.innerHTML = `
+        <div class="ticker-content">
+            ${tickerContent} • ${tickerContent}
+        </div>
+    `;
+    
+    document.body.appendChild(ticker);
+}
+
+// Update loading text with random principle
+function updateLoadingText() {
+    const loadingText = document.querySelector('#loading-overlay p');
+    if (loadingText) {
+        const law = getRandomScoutLaw();
+        loadingText.textContent = `A Scout is ${law.principle}...`;
+    }
 }

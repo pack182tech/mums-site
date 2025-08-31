@@ -1,24 +1,6 @@
 ID,Title,Price,Image URL,Available,Description
-MUM001,9" Pot - Yellow,10,https://placehold.co/400x400/FFD700/000000?text=Yellow+Mum,TRUE,Beautiful yellow chrysanthemum in 9-inch pot
-MUM002,9" Pot - Orange,10,https://placehold.co/400x400/FF8C00/FFFFFF?text=Orange+Mum,TRUE,Vibrant orange chrysanthemum in 9-inch pot
-MUM003,9" Pot - Red,10,https://placehold.co/400x400/DC143C/FFFFFF?text=Red+Mum,TRUE,Stunning red chrysanthemum in 9-inch pot
-MUM004,9" Pot - Purple,10,https://placehold.co/400x400/9370DB/FFFFFF?text=Purple+Mum,TRUE,Rich purple chrysanthemum in 9-inch pot
-MUM005,9" Pot - White,10,https://placehold.co/400x400/F5F5F5/000000?text=White+Mum,TRUE,Elegant white chrysanthemum in 9-inch pot
-HANG001,10" Hanging Basket - Yellow,15,https://placehold.co/400x400/FFD700/000000?text=Yellow+Basket,TRUE,Yellow mums in 10-inch hanging basket
-HANG002,10" Hanging Basket - Orange,15,https://placehold.co/400x400/FF8C00/FFFFFF?text=Orange+Basket,TRUE,Orange mums in 10-inch hanging basket
-HANG003,10" Hanging Basket - Red,15,https://placehold.co/400x400/DC143C/FFFFFF?text=Red+Basket,TRUE,Red mums in 10-inch hanging basket
-HANG004,10" Hanging Basket - Purple,15,https://placehold.co/400x400/9370DB/FFFFFF?text=Purple+Basket,TRUE,Purple mums in 10-inch hanging basket
-HANG005,10" Hanging Basket - White,15,https://placehold.co/400x400/F5F5F5/000000?text=White+Basket,TRUE,White mums in 10-inch hanging basket
-DECK001,10" Deck Planter - Yellow,15,https://placehold.co/400x400/FFD700/000000?text=Yellow+Deck,TRUE,Yellow mums in 10-inch deck planter
-DECK002,10" Deck Planter - Orange,15,https://placehold.co/400x400/FF8C00/FFFFFF?text=Orange+Deck,TRUE,Orange mums in 10-inch deck planter
-DECK003,10" Deck Planter - Red,15,https://placehold.co/400x400/DC143C/FFFFFF?text=Red+Deck,TRUE,Red mums in 10-inch deck planter
-DECK004,10" Deck Planter - Purple,15,https://placehold.co/400x400/9370DB/FFFFFF?text=Purple+Deck,TRUE,Purple mums in 10-inch deck planter
-DECK005,10" Deck Planter - White,15,https://placehold.co/400x400/F5F5F5/000000?text=White+Deck,TRUE,White mums in 10-inch deck planter
-LARGE001,14" Deck Planter - Yellow,25,https://placehold.co/400x400/FFD700/000000?text=14+Yellow,TRUE,Large yellow mums in 14-inch deck planter
-LARGE002,14" Deck Planter - Orange,25,https://placehold.co/400x400/FF8C00/FFFFFF?text=14+Orange,TRUE,Large orange mums in 14-inch deck planter
-LARGE003,14" Deck Planter - Red,25,https://placehold.co/400x400/DC143C/FFFFFF?text=14+Red,TRUE,Large red mums in 14-inch deck planter
-LARGE004,14" Deck Planter - Purple,25,https://placehold.co/400x400/9370DB/FFFFFF?text=14+Purple,TRUE,Large purple mums in 14-inch deck planter
-LARGE005,14" Deck Planter - White,25,https://placehold.co/400x400/F5F5F5/000000?text=14+White,TRUE,Large white mums in 14-inch deck planter
-APPLE001,Apple Basket Bushel - Yellow,35,https://placehold.co/400x400/FFD700/000000?text=Apple+Yellow,TRUE,Abundant yellow mums in apple basket bushel
-APPLE002,Apple Basket Bushel - Orange,35,https://placehold.co/400x400/FF8C00/FFFFFF?text=Apple+Orange,TRUE,Abundant orange mums in apple basket bushel
-APPLE003,Apple Basket Bushel - Red,35,https://placehold.co/400x400/DC143C/FFFFFF?text=Apple+Red,TRUE,Abundant red mums in apple basket bushel
+POT9,9" Pot Mum Bundle,10,https://m.media-amazon.com/images/I/81ld1FqBvXL.jpg,TRUE,Beautiful 9-inch potted chrysanthemum - Choose your color: Yellow/Orange/Red/Purple/White
+HANG10,10" Hanging Basket Bundle,15,https://m.media-amazon.com/images/I/91R3OihpQaL.jpg,TRUE,Gorgeous hanging basket with cascading mums - Choose your color: Yellow/Orange/Red/Purple/White
+DECK10,10" Deck Planter Bundle,15,https://m.media-amazon.com/images/I/81RddXu3gQL.jpg,TRUE,Decorative deck planter filled with mums - Choose your color: Yellow/Orange/Red/Purple/White
+DECK14,14" Deck Planter Bundle,25,https://m.media-amazon.com/images/I/91lK4wPZ6LL.jpg,TRUE,Large deck planter overflowing with mums - Choose your color: Yellow/Orange/Red/Purple/White
+APPLE,Apple Basket Bushel Bundle,35,https://m.media-amazon.com/images/I/91mEfJmVdTL.jpg,TRUE,Abundant apple basket filled with mums - Choose your color: Yellow/Orange/Red only

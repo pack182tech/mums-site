@@ -92,6 +92,18 @@ function createProductCard(product) {
     
     const quantity = getCartQuantity(product.id);
     
+    // Determine available colors based on product type
+    let colorOptions = ['Yellow', 'Orange', 'Red', 'Purple', 'White'];
+    if (product.id === 'APPLE') {
+        colorOptions = ['Yellow', 'Orange', 'Red']; // Apple basket only has 3 colors
+    }
+    
+    const colorButtons = colorOptions.map(color => 
+        `<button class="color-btn" data-color="${color}" onclick="selectColor('${product.id}', '${color}', this)">
+            ${color}
+        </button>`
+    ).join('');
+    
     card.innerHTML = `
         <div class="product-image">
             <img src="${product.image_url || 'https://via.placeholder.com/300'}" 
@@ -102,6 +114,14 @@ function createProductCard(product) {
             <h3 class="product-title">${product.title}</h3>
             <p class="product-description">${product.description || ''}</p>
             <p class="product-price">$${parseFloat(product.price).toFixed(2)}</p>
+            
+            <div class="color-selection">
+                <label>Select Color:</label>
+                <div class="color-buttons" id="colors-${product.id}">
+                    ${colorButtons}
+                </div>
+            </div>
+            
             <div class="quantity-controls">
                 <button onclick="updateQuantity('${product.id}', -1)" class="btn-quantity">-</button>
                 <input type="number" id="qty-${product.id}" value="${quantity}" min="0" max="99" 
@@ -125,23 +145,53 @@ function updateQuantity(productId, delta) {
     setQuantity(productId, newQty);
 }
 
+// Track selected colors
+let selectedColors = {};
+
+// Color selection function
+function selectColor(productId, color, button) {
+    // Remove active class from siblings
+    const container = button.parentElement;
+    container.querySelectorAll('.color-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Add active class to selected
+    button.classList.add('active');
+    
+    // Store the selection
+    selectedColors[productId] = color;
+    
+    debugLog(`Selected ${color} for product ${productId}`);
+}
+
 function setQuantity(productId, quantity) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
     quantity = parseInt(quantity) || 0;
     
+    // Check if color is selected
+    if (quantity > 0 && !selectedColors[productId]) {
+        alert('Please select a color first');
+        document.getElementById(`qty-${productId}`).value = 0;
+        return;
+    }
+    
     if (quantity <= 0) {
         // Remove from cart
         cart = cart.filter(item => item.id !== productId);
+        delete selectedColors[productId];
     } else {
         // Update or add to cart
         const existingItem = cart.find(item => item.id === productId);
         if (existingItem) {
             existingItem.quantity = quantity;
+            existingItem.color = selectedColors[productId];
         } else {
             cart.push({
                 id: productId,
+                color: selectedColors[productId],
                 title: product.title,
                 price: parseFloat(product.price),
                 quantity: quantity
@@ -180,7 +230,7 @@ function updateCartSummary() {
         total += subtotal;
         html += `
             <div class="cart-item">
-                <span>${item.title}</span>
+                <span>${item.title} - ${item.color}</span>
                 <span>${item.quantity} × $${item.price.toFixed(2)} = $${subtotal.toFixed(2)}</span>
             </div>
         `;
@@ -451,6 +501,9 @@ function hideAllScreens() {
 // UI helpers
 function showLoading(show) {
     document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+    if (show && typeof updateLoadingText === 'function') {
+        updateLoadingText();
+    }
 }
 
 function showError(message) {

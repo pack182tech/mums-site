@@ -44,16 +44,18 @@ Get your Cub Scouts Mums Ordering System running in 15 minutes!
 
 ## Step 2: Set Up GitHub Pages (5 minutes)
 
-1. **Fork Repository**
+1. **Fork Repository** (Skip if you own this repo)
    ```
-   1. Go to github.com/[original-repo]
+   1. Go to github.com/pack182tech/mums-site
    2. Click Fork button
    3. Wait for fork to complete
    ```
+   
+   **Note**: If you already own this repository, skip to step 2.
 
 2. **Update Configuration**
    ```
-   1. Go to your fork
+   1. Go to your repository
    2. Open js/config.js
    3. Click edit (pencil icon)
    4. Replace YOUR_DEPLOYMENT_ID with your Web App URL
@@ -68,7 +70,7 @@ Get your Cub Scouts Mums Ordering System running in 15 minutes!
    4. Folder: / (root)
    5. Save
    6. Wait 2-3 minutes
-   7. Site ready at: https://[your-username].github.io/mums-site
+   7. Site ready at: https://pack182tech.github.io/mums-site
    ```
 
 ## Step 3: Configure Venmo (3 minutes)
@@ -117,8 +119,8 @@ Get your Cub Scouts Mums Ordering System running in 15 minutes!
 Your site is now live and ready for orders!
 
 ### Important URLs to Save:
-- **Your Site**: https://[username].github.io/mums-site
-- **Admin Panel**: https://[username].github.io/mums-site/admin.html
+- **Your Site**: https://pack182tech.github.io/mums-site
+- **Admin Panel**: https://pack182tech.github.io/mums-site/admin.html
 - **Google Sheet**: [Your sheet URL]
 - **Apps Script**: [Your script URL]
 

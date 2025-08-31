@@ -5,6 +5,13 @@
 const SPREADSHEET_ID = '1ifHz-wXFuHbJnIIRPyDuhg8L17cUzKgMXRgJqrL6ZCk'; // Replace with actual ID
 const ADMIN_EMAILS = ['pack182tech@gmail.com']; // Replace with actual admin emails
 
+// Handle OPTIONS requests for CORS
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 // Main entry point for GET requests
 function doGet(e) {
   const path = e.parameter.path || 'home';

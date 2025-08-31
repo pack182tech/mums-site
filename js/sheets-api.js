@@ -21,14 +21,13 @@ class SheetsAPI {
 
         const url = `${this.apiUrl}?path=${path}`;
         const options = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            mode: 'cors'
+            method: method
         };
 
         if (data && method === 'POST') {
+            options.headers = {
+                'Content-Type': 'application/json'
+            };
             options.body = JSON.stringify(data);
         }
 

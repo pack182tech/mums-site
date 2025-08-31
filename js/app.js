@@ -568,9 +568,15 @@ function updateCartIcon() {
 }
 
 function scrollToCart() {
-    const cartSummary = document.querySelector('.cart-summary');
-    if (cartSummary) {
-        cartSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Navigate to the order form page to show the order summary
+    if (cart.length > 0) {
+        showOrderForm();
+    } else {
+        // If cart is empty, just scroll to the cart summary on the current page
+        const cartSummary = document.querySelector('.cart-summary');
+        if (cartSummary) {
+            cartSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 }
 

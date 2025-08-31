@@ -98,11 +98,12 @@ function createProductCard(product) {
         colorOptions = ['Yellow', 'Orange', 'Red']; // Apple basket only has 3 colors
     }
     
-    const colorButtons = colorOptions.map(color => 
-        `<button class="color-btn" data-color="${color}" onclick="selectColor('${product.id}', '${color}', this)">
+    const colorButtons = colorOptions.map(color => {
+        const isSelected = selectedColors[product.id] === color;
+        return `<button class="color-btn${isSelected ? ' active' : ''}" data-color="${color}" onclick="selectColor('${product.id}', '${color}', this)">
             ${color}
-        </button>`
-    ).join('');
+        </button>`;
+    }).join('');
     
     card.innerHTML = `
         <div class="product-image">
@@ -138,6 +139,20 @@ function createProductCard(product) {
 function updateQuantity(productId, delta) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
+    
+    // If incrementing and no color selected yet, prompt for color
+    if (delta > 0 && !selectedColors[productId] && getCartQuantity(productId) === 0) {
+        alert('Please select a color first');
+        return;
+    }
+    
+    // If there are existing items in cart for this product, use the first one's color
+    if (!selectedColors[productId]) {
+        const existingItem = cart.find(item => item.id === productId);
+        if (existingItem) {
+            selectedColors[productId] = existingItem.color;
+        }
+    }
     
     const currentQty = getCartQuantity(productId);
     const newQty = Math.max(0, Math.min(99, currentQty + delta));
@@ -274,6 +289,12 @@ function loadCart() {
     if (saved) {
         try {
             cart = JSON.parse(saved);
+            // Restore selected colors from cart items
+            cart.forEach(item => {
+                if (item.color && item.id) {
+                    selectedColors[item.id] = item.color;
+                }
+            });
             debugLog('Cart loaded:', cart);
             updateCartSummary();
         } catch (error) {

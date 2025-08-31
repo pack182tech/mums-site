@@ -38,7 +38,18 @@ async function loadSettings() {
         // Update welcome screen
         document.getElementById('welcome-title').textContent = settings.welcome_title || 'Cub Scouts Mum Sale';
         document.getElementById('welcome-message').textContent = settings.welcome_message || '';
-        document.getElementById('instructions').innerHTML = (settings.instructions || '').replace(/\n/g, '<br>');
+        
+        // Format instructions as a numbered list
+        const instructionsText = settings.instructions || '';
+        const instructionsList = instructionsText.split(/\d+\.\s+/).filter(item => item.trim());
+        if (instructionsList.length > 0) {
+            const formattedInstructions = '<ol>' + 
+                instructionsList.map(item => `<li>${item.trim()}</li>`).join('') + 
+                '</ol>';
+            document.getElementById('instructions').innerHTML = formattedInstructions;
+        } else {
+            document.getElementById('instructions').innerHTML = instructionsText.replace(/\n/g, '<br>');
+        }
         
         debugLog('Settings loaded:', settings);
     } catch (error) {

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/print.css" media="print">
 </head>
 <body>
+    <!-- Scout Law Background -->
+    <div id="scout-law-background" class="scout-law-background"></div>
     <!-- Welcome Screen -->
     <section id="welcome-screen" class="welcome-container">
         <div class="container">
@@ -15,21 +17,9 @@
                 <img src="images/logo.png" alt="Cub Scouts Logo" class="logo" onerror="this.style.display='none'">
             </div>
             
-            <!-- Scout Law Display -->
-            <div id="scout-law-display"></div>
-            
             <h1 id="welcome-title">Loading...</h1>
             <div id="welcome-message" class="welcome-message"></div>
             <div id="instructions" class="instructions"></div>
-            
-            <!-- QR Code Section -->
-            <div class="qr-code-section">
-                <h3>Quick Access - Scan to Visit</h3>
-                <div class="qr-code-container">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://pack182tech.github.io/mums-site" alt="QR Code for Pack 182 Mums Site">
-                </div>
-                <p>https://pack182tech.github.io/mums-site</p>
-            </div>
             
             <button onclick="showCatalog()" class="btn btn-primary btn-large">View Mums Catalog</button>
         </div>

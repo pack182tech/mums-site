@@ -505,10 +505,41 @@ async function loadSettings() {
                 input.value = settings[key];
             }
         });
+        
+        // Update instructions preview
+        updateInstructionsPreview();
     } catch (error) {
         console.error('Failed to load settings:', error);
     }
 }
+
+// Update instructions preview
+function updateInstructionsPreview() {
+    const instructionsInput = document.getElementById('instructions');
+    const preview = document.getElementById('instructions-preview');
+    
+    if (!instructionsInput || !preview) return;
+    
+    const text = instructionsInput.value;
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    if (lines.length > 0) {
+        const html = '<ol>' + 
+            lines.map(line => `<li>${line.trim()}</li>`).join('') + 
+            '</ol>';
+        preview.innerHTML = html;
+    } else {
+        preview.innerHTML = '<em>No instructions entered yet</em>';
+    }
+}
+
+// Add event listener for instructions input
+document.addEventListener('DOMContentLoaded', function() {
+    const instructionsInput = document.getElementById('instructions');
+    if (instructionsInput) {
+        instructionsInput.addEventListener('input', updateInstructionsPreview);
+    }
+});
 
 // Save settings
 async function handleSettingsSave(e) {

@@ -56,20 +56,17 @@ function getRandomScoutLaw() {
     return SCOUT_LAW[index];
 }
 
-// Display Scout Law on page load
+// Display Scout Law as background texture
 function displayScoutLaw() {
-    const scoutLawContainer = document.getElementById('scout-law-display');
-    if (!scoutLawContainer) return;
+    const scoutLawBackground = document.getElementById('scout-law-background');
+    if (!scoutLawBackground) return;
     
     const law = getRandomScoutLaw();
     
-    scoutLawContainer.innerHTML = `
-        <div class="scout-law-banner">
-            <h2 class="scout-law-title">
-                <span class="scout-word">A Scout</span> is 
-                <span class="principle-word">${law.principle}</span>
-            </h2>
-            <p class="scout-law-description">${law.description}</p>
+    scoutLawBackground.innerHTML = `
+        <div class="scout-law-text">
+            <div class="scout-law-main">A Scout is ${law.principle}</div>
+            <div class="scout-law-sub">${law.description}</div>
         </div>
     `;
 }

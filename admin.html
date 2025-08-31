@@ -155,7 +155,17 @@
                         
                         <div class="form-group">
                             <label for="instructions">Order Instructions</label>
-                            <textarea id="instructions" name="instructions" rows="5"></textarea>
+                            <div class="instructions-editor">
+                                <div class="editor-help">
+                                    <small>Enter each instruction on a new line. They will be automatically numbered.</small>
+                                </div>
+                                <textarea id="instructions" name="instructions" rows="7" 
+                                    placeholder="Select your mums from our catalog&#10;Choose your pot size and style&#10;Fill out the order form&#10;Submit your order&#10;Pay via Venmo&#10;Pick up your mums on the scheduled date"></textarea>
+                                <div class="preview-section">
+                                    <h4>Preview:</h4>
+                                    <div id="instructions-preview" class="instructions-preview"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     

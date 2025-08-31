@@ -1,8 +1,8 @@
 /* Main stylesheet for Cub Scouts Mums Ordering System */
 
 :root {
-    --primary-color: #2196F3;
-    --secondary-color: #FFC107;
+    --primary-color: #003F87; /* Scout Blue */
+    --secondary-color: #FDB515; /* Scout Gold */
     --success-color: #4CAF50;
     --danger-color: #f44336;
     --warning-color: #FF9800;
@@ -556,5 +556,107 @@ h3 { font-size: 1.5rem; }
     
     .payment-options {
         flex-direction: column;
+    }
+}
+
+/* Scout Law Display */
+.scout-law-banner {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0066CC 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.scout-law-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 5 L61 39 L95 39 L68 61 L79 95 L50 73 L21 95 L32 61 L5 39 L39 39 Z" fill="rgba(253,181,21,0.1)"/></svg>') no-repeat center;
+    background-size: contain;
+    transform: rotate(15deg);
+}
+
+.scout-law-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.scout-word {
+    color: var(--secondary-color);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.principle-word {
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 3rem;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(253,181,21,0.5); }
+    to { text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 30px rgba(253,181,21,0.8); }
+}
+
+.scout-law-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* QR Code Display */
+.qr-code-section {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    margin: 2rem 0;
+}
+
+.qr-code-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.qr-code-container {
+    display: inline-block;
+    padding: 1rem;
+    background: white;
+    border: 3px solid var(--secondary-color);
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .scout-law-title {
+        font-size: 1.8rem;
+    }
+    
+    .principle-word {
+        font-size: 2.2rem;
+    }
+    
+    .scout-law-description {
+        font-size: 1.1rem;
     }
 }

@@ -225,13 +225,17 @@ function updateCartSummary() {
     let total = 0;
     let html = '';
     
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         const subtotal = item.price * item.quantity;
         total += subtotal;
+        const colorText = item.color ? ` - ${item.color}` : '';
         html += `
             <div class="cart-item">
-                <span>${item.title} - ${item.color}</span>
-                <span>${item.quantity} × $${item.price.toFixed(2)} = $${subtotal.toFixed(2)}</span>
+                <span>${item.title}${colorText}</span>
+                <span>
+                    ${item.quantity} × $${item.price.toFixed(2)} = $${subtotal.toFixed(2)}
+                    <button onclick="removeFromCart(${index})" class="btn-remove" title="Remove item">×</button>
+                </span>
             </div>
         `;
     });
@@ -239,6 +243,9 @@ function updateCartSummary() {
     cartItems.innerHTML = html;
     cartTotal.textContent = `$${total.toFixed(2)}`;
     proceedBtn.disabled = false;
+    
+    // Update cart icon count
+    updateCartIcon();
 }
 
 // Local storage functions
@@ -403,6 +410,15 @@ function showWelcome() {
 function showCatalog() {
     hideAllScreens();
     document.getElementById('catalog-screen').style.display = 'block';
+    
+    // Update catalog title from settings
+    const catalogTitle = document.querySelector('#catalog-screen h2');
+    if (catalogTitle && settings.catalog_title) {
+        catalogTitle.textContent = settings.catalog_title;
+    }
+    
+    // Show cart icon
+    updateCartIcon();
     updateCartSummary();
 }
 
@@ -496,6 +512,31 @@ function hideAllScreens() {
     document.querySelectorAll('section').forEach(section => {
         section.style.display = 'none';
     });
+}
+
+// Cart UI functions
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    saveCart();
+    updateCartSummary();
+    renderProducts(); // Update product quantities
+}
+
+function updateCartIcon() {
+    const cartIcon = document.getElementById('cart-icon');
+    const cartCount = document.getElementById('cart-count');
+    if (cartIcon && cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+        cartIcon.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+}
+
+function scrollToCart() {
+    const cartSummary = document.querySelector('.cart-summary');
+    if (cartSummary) {
+        cartSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 // UI helpers

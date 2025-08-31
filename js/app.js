@@ -179,19 +179,23 @@ function setQuantity(productId, quantity) {
     }
     
     if (quantity <= 0) {
-        // Remove from cart
-        cart = cart.filter(item => item.id !== productId);
+        // Remove items with this product ID and color from cart
+        const color = selectedColors[productId];
+        cart = cart.filter(item => !(item.id === productId && item.color === color));
         delete selectedColors[productId];
     } else {
-        // Update or add to cart
-        const existingItem = cart.find(item => item.id === productId);
+        // Find existing item with same product ID AND color
+        const color = selectedColors[productId];
+        const existingItem = cart.find(item => item.id === productId && item.color === color);
+        
         if (existingItem) {
+            // Update quantity for existing color variant
             existingItem.quantity = quantity;
-            existingItem.color = selectedColors[productId];
         } else {
+            // Add new color variant as separate line item
             cart.push({
                 id: productId,
-                color: selectedColors[productId],
+                color: color,
                 title: product.title,
                 price: parseFloat(product.price),
                 quantity: quantity
@@ -199,15 +203,20 @@ function setQuantity(productId, quantity) {
         }
     }
     
-    // Update UI
-    document.getElementById(`qty-${productId}`).value = quantity;
+    // Update UI - show total quantity for this product (all colors)
+    const totalQty = cart
+        .filter(item => item.id === productId)
+        .reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById(`qty-${productId}`).value = totalQty;
+    
     updateCartSummary();
     saveCart();
 }
 
 function getCartQuantity(productId) {
-    const item = cart.find(item => item.id === productId);
-    return item ? item.quantity : 0;
+    // Get total quantity across all color variants for this product
+    const items = cart.filter(item => item.id === productId);
+    return items.reduce((sum, item) => sum + item.quantity, 0);
 }
 
 function updateCartSummary() {
@@ -229,12 +238,18 @@ function updateCartSummary() {
         const subtotal = item.price * item.quantity;
         total += subtotal;
         const colorText = item.color ? ` - ${item.color}` : '';
+        
+        // Show minus sign for qty > 1, X for qty = 1
+        const removeBtn = item.quantity > 1 
+            ? `<button onclick="decrementCartItem(${index})" class="btn-remove" title="Remove one">−</button>`
+            : `<button onclick="removeFromCart(${index})" class="btn-remove" title="Remove item">×</button>`;
+        
         html += `
             <div class="cart-item">
                 <span>${item.title}${colorText}</span>
                 <span>
                     ${item.quantity} × $${item.price.toFixed(2)} = $${subtotal.toFixed(2)}
-                    <button onclick="removeFromCart(${index})" class="btn-remove" title="Remove item">×</button>
+                    ${removeBtn}
                 </span>
             </div>
         `;
@@ -417,7 +432,7 @@ function showCatalog() {
         catalogTitle.textContent = settings.catalog_title;
     }
     
-    // Show cart icon
+    // Show cart icon (always visible on catalog screen)
     updateCartIcon();
     updateCartSummary();
 }
@@ -512,6 +527,12 @@ function hideAllScreens() {
     document.querySelectorAll('section').forEach(section => {
         section.style.display = 'none';
     });
+    
+    // Hide cart icon when leaving catalog screen
+    const cartIcon = document.getElementById('cart-icon');
+    if (cartIcon) {
+        cartIcon.style.display = 'none';
+    }
 }
 
 // Cart UI functions
@@ -522,13 +543,27 @@ function removeFromCart(index) {
     renderProducts(); // Update product quantities
 }
 
+function decrementCartItem(index) {
+    if (cart[index] && cart[index].quantity > 1) {
+        cart[index].quantity--;
+        saveCart();
+        updateCartSummary();
+        renderProducts(); // Update product quantities
+    }
+}
+
 function updateCartIcon() {
     const cartIcon = document.getElementById('cart-icon');
     const cartCount = document.getElementById('cart-count');
+    const catalogScreen = document.getElementById('catalog-screen');
+    
     if (cartIcon && cartCount) {
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCount.textContent = totalItems;
-        cartIcon.style.display = totalItems > 0 ? 'flex' : 'none';
+        
+        // Only show cart icon on catalog screen, and always show it (even with 0 items)
+        const isOnCatalogScreen = catalogScreen && catalogScreen.style.display !== 'none';
+        cartIcon.style.display = isOnCatalogScreen ? 'flex' : 'none';
     }
 }
 

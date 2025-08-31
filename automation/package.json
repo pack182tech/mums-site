@@ -1,21 +1,21 @@
 {
   "name": "mums-automation",
   "version": "1.0.0",
-  "description": "Automation scripts for Pack 182 Mums ordering system",
-  "main": "update-sheets-api.js",
+  "description": "Browser automation scripts for Pack 182 Mums ordering system",
+  "main": "update-sheets.js",
   "scripts": {
-    "setup": "node setup-auth.js",
-    "update-products": "node update-sheets-api.js products",
-    "update-settings": "node update-sheets-api.js settings",
-    "update-all": "node update-sheets-api.js all",
-    "test": "node test-connection.js"
+    "setup": "node setup.js",
+    "update-products": "node update-sheets.js products",
+    "update-settings": "node update-sheets.js settings",
+    "update-all": "node update-sheets.js all",
+    "test": "node test-browser.js"
   },
   "dependencies": {
-    "googleapis": "^126.0.0",
+    "puppeteer": "^24.9.0",
     "dotenv": "^16.3.1",
     "csv-parse": "^5.5.2"
   },
-  "keywords": ["google-sheets", "automation", "cub-scouts"],
+  "keywords": ["google-sheets", "automation", "puppeteer", "cub-scouts"],
   "author": "Pack 182",
   "license": "MIT"
 }

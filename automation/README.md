@@ -1,6 +1,6 @@
-# Pack 182 Mums - Automation Scripts
+# Pack 182 Mums - Browser Automation Scripts
 
-This folder contains automation scripts to update Google Sheets with product and settings data.
+This folder contains Puppeteer browser automation scripts to update Google Sheets with product and settings data.
 
 ## Quick Start
 
@@ -10,35 +10,32 @@ cd automation
 npm install
 ```
 
-### 2. Set Up Google API Credentials
+### 2. Set Up Your Credentials
 
-Follow Option 1 from PLAYWRIGHT_SETUP.md:
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project named "Pack182-Mums"
-3. Enable Google Sheets API
-4. Create OAuth 2.0 credentials (Desktop app type)
-5. Download the JSON file
-6. Save it as `automation/credentials.json`
-
-### 3. Authorize the Application
+Copy the template and add your Google credentials:
 ```bash
-npm run setup
+cp .env.template .env
 ```
 
-This will:
-- Open a browser window for authorization
-- Ask you to grant permissions
-- Save the token for future use
+Edit `.env` and add:
+- Your Google email (pack182tech@gmail.com)
+- Your Google password or App Password (if using 2FA)
 
-### 4. Test the Connection
+⚠️ **Security Note**: If you have 2-Factor Authentication enabled:
+1. Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
+2. Generate an app-specific password
+3. Use that password instead of your regular password
+
+### 3. Test the Browser Setup
 ```bash
 npm test
 ```
 
-### 5. Update Google Sheets
+This will verify that Puppeteer can launch and navigate properly.
 
-Update everything:
+### 4. Update Google Sheets
+
+Update everything (products, settings, and create Orders sheet):
 ```bash
 npm run update-all
 ```
@@ -69,39 +66,51 @@ npm run update-settings
 - Created automatically if it doesn't exist
 - Used by the web app to save orders
 
+## How It Works
+
+The automation uses Puppeteer to:
+1. Launch a Chrome browser (visible or headless)
+2. Log into your Google account
+3. Navigate to your Google Sheets
+4. Select each sheet (Products, Settings, Orders)
+5. Clear existing data
+6. Paste new data from CSV files
+
 ## Files in This Directory
 
 - `package.json` - Node.js dependencies and scripts
-- `setup-auth.js` - Initial OAuth2 setup script
-- `update-sheets-api.js` - Main update script
-- `test-connection.js` - Connection test script
+- `update-sheets.js` - Main browser automation script
+- `test-browser.js` - Browser test script
+- `.env.template` - Template for credentials
+- `.env` - Your actual credentials (DO NOT COMMIT)
 - `.gitignore` - Prevents credentials from being committed
 
 ## Security Notes
 
 ⚠️ **NEVER commit these files:**
-- `credentials.json` - Your OAuth2 client credentials
-- `token.json` - Your access token
-- `service-account.json` - Service account key (if using)
+- `.env` - Contains your Google password
+- `error-screenshot.png` - May contain sensitive data
 
 These files are automatically ignored by Git.
 
 ## Troubleshooting
 
-### "credentials.json not found"
-- Make sure you've downloaded the OAuth2 credentials from Google Cloud Console
-- Save the file as `credentials.json` in this folder
+### "Missing credentials" error
+- Make sure you've created `.env` file from `.env.template`
+- Add your Google email and password
 
-### "token.json not found"
-- Run `npm run setup` to authorize the application
+### "Login failed" error
+- Check your email and password in `.env`
+- If using 2FA, create an App Password
+- Try setting `HEADLESS=false` to see what's happening
 
-### "Permission denied" or "404 Not Found"
-- Check that the spreadsheet ID is correct in `update-sheets-api.js`
-- Make sure the spreadsheet is accessible by your Google account
+### "Cannot find sheet" error
+- Make sure the Google Sheet has the correct tabs: Products, Settings
+- The script will create Orders tab if it doesn't exist
 
-### "Invalid grant" error
-- Your token has expired
-- Run `npm run setup` again to get a new token
+### Browser doesn't close
+- Press Ctrl+C to stop the script
+- The browser should close automatically
 
 ## Manual Update (If Automation Fails)
 

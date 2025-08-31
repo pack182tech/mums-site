@@ -70,8 +70,16 @@ function getProducts() {
     if (row[0]) { // Check if ID exists
       const product = {};
       headers.forEach((header, index) => {
-        product[header.toLowerCase().replace(/\s+/g, '_')] = row[index];
+        const key = header.toLowerCase().replace(/\s+/g, '_');
+        product[key] = row[index];
       });
+      // Ensure we have an id field (might be 'id' or could be missing)
+      if (!product.id && product.ID) {
+        product.id = product.ID;
+      }
+      if (!product.id && row[0]) {
+        product.id = row[0]; // Use first column as ID if no id field found
+      }
       products.push(product);
     }
   }

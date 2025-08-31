@@ -2,7 +2,7 @@ Key,Value
 welcome_title,Pack 182 Fall Mums Fundraiser
 welcome_message,Support our Cub Scouts Pack 182 by purchasing beautiful fall mums! All proceeds go directly to pack activities camping trips and scout programs.
 catalog_title,Select Your Mums
-instructions,1. Select your mums from our catalog (5 colors available) 2. Choose your pot size and style 3. Fill out the order form 4. Submit your order 5. Pay via Venmo using the QR code 6. Pick up your mums on the scheduled date
+instructions,1. Place an order from our selection of 5 colors 2. Choose your pot size and style 3. Fill out the order form 4. Submit your order 5. Pay via Venmo using the QR code 6. Pick up your mums on the scheduled date
 admin_email,pack182tech@gmail.com
 venmo_handle,@Pack182Tech
 venmo_qr_url,https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=venmo://paycharge?txn=pay&recipients=Pack182Tech

@@ -1,0 +1,19 @@
+{
+  "name": "mums-sheets-automation",
+  "version": "1.0.0",
+  "description": "Automate Google Sheets updates for Mums ordering system",
+  "main": "update-sheets.js",
+  "scripts": {
+    "update-products": "node update-sheets-api.js products",
+    "update-settings": "node update-sheets-api.js settings",
+    "update-all": "node update-sheets-api.js all",
+    "setup": "node update-sheets-api.js setup",
+    "puppeteer-update": "node update-sheets.js all"
+  },
+  "dependencies": {
+    "googleapis": "^128.0.0",
+    "puppeteer": "^21.0.0",
+    "csv-parse": "^5.5.0",
+    "dotenv": "^16.3.1"
+  }
+}

@@ -77,15 +77,25 @@ function createScoutLawTicker() {
     ticker.className = 'scout-law-ticker';
     ticker.id = 'scout-law-ticker';
     
+    // Randomize starting position
+    const randomStart = Math.floor(Math.random() * SCOUT_LAW.length);
+    const reorderedLaws = [
+        ...SCOUT_LAW.slice(randomStart),
+        ...SCOUT_LAW.slice(0, randomStart)
+    ];
+    
     // Create the scrolling content with all principles
-    const tickerContent = SCOUT_LAW.map(law => 
+    const tickerContent = reorderedLaws.map(law => 
         `<span class="ticker-item">
             <strong>A Scout is ${law.principle}:</strong> ${law.description}
         </span>`
     ).join(' • ');
     
+    // Calculate random starting offset (0-50% of width)
+    const randomOffset = Math.random() * 50;
+    
     ticker.innerHTML = `
-        <div class="ticker-content">
+        <div class="ticker-content" style="transform: translateX(-${randomOffset}%);">
             ${tickerContent} • ${tickerContent}
         </div>
     `;

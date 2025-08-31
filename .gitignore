@@ -19,3 +19,9 @@ Thumbs.db
 # Temporary
 *.tmp
 *.temp
+
+# Google Sheets Automation - SENSITIVE
+automation/.env
+automation/credentials.json
+automation/token.json
+automation/node_modules/

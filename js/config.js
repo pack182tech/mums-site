@@ -3,14 +3,7 @@
 
 const CONFIG = {
     // Google Apps Script Web App URL
-    // To get this URL:
-    // 1. Open your Google Apps Script project
-    // 2. Click "Deploy" > "New Deployment"
-    // 3. Choose "Web app" as the type
-    // 4. Set "Execute as" to "Me"
-    // 5. Set "Who has access" to "Anyone"
-    // 6. Copy the Web App URL here
-    API_URL: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
+    API_URL: 'https://script.google.com/macros/s/AKfycbxbrEIYpV66wGYGI9bn0X6GpZDJLlr7YOHscwa8m7OlkNIAue-PgrkFJjP2YNcGzHC2LQ/exec',
     
     // Local storage keys
     STORAGE_KEYS: {

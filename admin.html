@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Cub Scouts Mums Sale</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <section id="login-screen" class="login-container">
+        <div class="container">
+            <h1>Admin Dashboard</h1>
+            <p>Please sign in with your Google account to access the admin dashboard.</p>
+            
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+            
+            <!-- Demo mode for testing -->
+            <div class="demo-mode">
+                <p>For testing purposes:</p>
+                <button onclick="loginAsDemo()" class="btn btn-secondary">Login as Demo Admin</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Dashboard -->
+    <section id="admin-dashboard" style="display: none;">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div class="admin-nav">
+                <button onclick="showTab('orders')" class="tab-btn active" data-tab="orders">Orders</button>
+                <button onclick="showTab('products')" class="tab-btn" data-tab="products">Products</button>
+                <button onclick="showTab('settings')" class="tab-btn" data-tab="settings">Settings</button>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders-tab" class="tab-content active">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Orders</h2>
+                    <div class="actions">
+                        <button onclick="refreshOrders()" class="btn btn-secondary">Refresh</button>
+                        <button onclick="exportOrders()" class="btn btn-primary">Export to CSV</button>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="order-search" placeholder="Search by name or order ID..." 
+                           onkeyup="filterOrders()">
+                    <select id="payment-filter" onchange="filterOrders()">
+                        <option value="">All Payment Status</option>
+                        <option value="PENDING">Payment Pending</option>
+                        <option value="RECEIVED">Payment Received</option>
+                        <option value="CONFIRMED">Payment Confirmed</option>
+                    </select>
+                    <select id="status-filter" onchange="filterOrders()">
+                        <option value="">All Order Status</option>
+                        <option value="NEW">New</option>
+                        <option value="PROCESSED">Processed</option>
+                        <option value="COMPLETED">Completed</option>
+                    </select>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <h3>Total Orders</h3>
+                        <p id="total-orders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Revenue</h3>
+                        <p id="total-revenue">$0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Payments</h3>
+                        <p id="pending-payments">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>New Orders</h3>
+                        <p id="new-orders">0</p>
+                    </div>
+                </div>
+
+                <div class="orders-table-container">
+                    <table id="orders-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Contact</th>
+                                <th>Products</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content" style="display: none;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Products</h2>
+                    <button onclick="showAddProduct()" class="btn btn-primary">Add Product</button>
+                </div>
+
+                <div class="products-grid" id="admin-products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content" style="display: none;">
+            <div class="container">
+                <h2>Site Settings</h2>
+                
+                <form id="settings-form">
+                    <div class="form-section">
+                        <h3>Welcome Screen</h3>
+                        
+                        <div class="form-group">
+                            <label for="welcome_title">Welcome Title</label>
+                            <input type="text" id="welcome_title" name="welcome_title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="welcome_message">Welcome Message</label>
+                            <textarea id="welcome_message" name="welcome_message" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="instructions">Order Instructions</label>
+                            <textarea id="instructions" name="instructions" rows="5"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Payment Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="venmo_handle">Venmo Handle</label>
+                            <input type="text" id="venmo_handle" name="venmo_handle" placeholder="@username">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="venmo_qr_url">Venmo QR Code URL</label>
+                            <input type="url" id="venmo_qr_url" name="venmo_qr_url" 
+                                   placeholder="https://example.com/qr-code.png">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="payment_instructions">Payment Instructions</label>
+                            <textarea id="payment_instructions" name="payment_instructions" rows="2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Pickup Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="pickup_location">Pickup Location</label>
+                            <input type="text" id="pickup_location" name="pickup_location">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pickup_date">Pickup Date & Time</label>
+                            <input type="text" id="pickup_date" name="pickup_date">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Notifications</h3>
+                        
+                        <div class="form-group">
+                            <label for="admin_email">Admin Email</label>
+                            <input type="email" id="admin_email" name="admin_email">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Details Modal -->
+    <div id="order-modal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button onclick="closeOrderModal()" class="close-btn">&times;</button>
+            </div>
+            <div id="order-details" class="modal-body">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="printOrder()" class="btn btn-secondary">Print</button>
+                <button onclick="closeOrderModal()" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Edit Modal -->
+    <div id="product-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Edit Product</h3>
+                <button onclick="closeProductModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="product-id" name="id">
+                    
+                    <div class="form-group">
+                        <label for="product-title">Product Title *</label>
+                        <input type="text" id="product-title" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-price">Price *</label>
+                        <input type="number" id="product-price" name="price" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-image">Image URL</label>
+                        <input type="url" id="product-image" name="image_url">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-description">Description</label>
+                        <textarea id="product-description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="product-available" name="available">
+                            Product is available for purchase
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeProductModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/sheets-api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

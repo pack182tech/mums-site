@@ -1,0 +1,168 @@
+// Google Sheets API wrapper for the Mums Ordering System
+
+class SheetsAPI {
+    constructor() {
+        this.apiUrl = CONFIG.API_URL;
+        this.cache = new Map();
+    }
+
+    // Generic API call method with retry logic
+    async apiCall(path, method = 'GET', data = null, retries = CONFIG.MAX_RETRIES) {
+        const cacheKey = `${method}-${path}-${JSON.stringify(data)}`;
+        
+        // Check cache for GET requests
+        if (method === 'GET' && this.cache.has(cacheKey)) {
+            const cached = this.cache.get(cacheKey);
+            if (Date.now() - cached.timestamp < CONFIG.CACHE_DURATION) {
+                debugLog('Using cached data for:', path);
+                return cached.data;
+            }
+        }
+
+        const url = `${this.apiUrl}?path=${path}`;
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors'
+        };
+
+        if (data && method === 'POST') {
+            options.body = JSON.stringify(data);
+        }
+
+        try {
+            debugLog(`API Call: ${method} ${path}`, data);
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            // Cache successful GET requests
+            if (method === 'GET') {
+                this.cache.set(cacheKey, {
+                    data: result,
+                    timestamp: Date.now()
+                });
+            }
+
+            debugLog('API Response:', result);
+            return result;
+
+        } catch (error) {
+            debugLog('API Error:', error);
+            
+            if (retries > 0) {
+                debugLog(`Retrying... (${retries} attempts remaining)`);
+                await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY));
+                return this.apiCall(path, method, data, retries - 1);
+            }
+            
+            throw error;
+        }
+    }
+
+    // Get all products
+    async getProducts() {
+        try {
+            const response = await this.apiCall('products');
+            return response.products || [];
+        } catch (error) {
+            console.error('Failed to fetch products:', error);
+            return [];
+        }
+    }
+
+    // Get site settings
+    async getSettings() {
+        try {
+            const response = await this.apiCall('settings');
+            return response.settings || {};
+        } catch (error) {
+            console.error('Failed to fetch settings:', error);
+            return this.getDefaultSettings();
+        }
+    }
+
+    // Submit an order
+    async submitOrder(orderData) {
+        try {
+            const response = await this.apiCall('order', 'POST', orderData);
+            return response;
+        } catch (error) {
+            console.error('Failed to submit order:', error);
+            throw new Error('Failed to submit order. Please try again.');
+        }
+    }
+
+    // Get orders (admin only)
+    async getOrders(adminToken) {
+        try {
+            const response = await this.apiCall('orders&admin=true');
+            return response.orders || [];
+        } catch (error) {
+            console.error('Failed to fetch orders:', error);
+            return [];
+        }
+    }
+
+    // Update product (admin only)
+    async updateProduct(productData, adminToken) {
+        try {
+            const response = await this.apiCall('updateProduct&admin=true', 'POST', productData);
+            return response;
+        } catch (error) {
+            console.error('Failed to update product:', error);
+            throw new Error('Failed to update product.');
+        }
+    }
+
+    // Update settings (admin only)
+    async updateSettings(settingsData, adminToken) {
+        try {
+            const response = await this.apiCall('updateSettings&admin=true', 'POST', settingsData);
+            return response;
+        } catch (error) {
+            console.error('Failed to update settings:', error);
+            throw new Error('Failed to update settings.');
+        }
+    }
+
+    // Update order status (admin only)
+    async updateOrderStatus(orderData, adminToken) {
+        try {
+            const response = await this.apiCall('updateOrderStatus&admin=true', 'POST', orderData);
+            return response;
+        } catch (error) {
+            console.error('Failed to update order status:', error);
+            throw new Error('Failed to update order status.');
+        }
+    }
+
+    // Get default settings (fallback)
+    getDefaultSettings() {
+        return {
+            welcome_title: 'Cub Scouts Mum Sale',
+            welcome_message: 'Support our pack by purchasing beautiful fall mums!',
+            instructions: 'Select your mums, complete the order form, and submit your order.',
+            venmo_handle: '@CubScouts',
+            venmo_qr_url: '',
+            payment_instructions: 'Please include your Order ID in the payment description.',
+            pickup_location: 'School Parking Lot',
+            pickup_date: 'Saturday, 9am-2pm'
+        };
+    }
+
+    // Clear cache
+    clearCache() {
+        this.cache.clear();
+        debugLog('Cache cleared');
+    }
+}
+
+// Create global instance
+const sheetsAPI = new SheetsAPI();

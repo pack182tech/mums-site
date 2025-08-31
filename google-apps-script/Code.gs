@@ -2,8 +2,8 @@
 // Deploy this as a Web App with anonymous access
 
 // Configuration
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // Replace with actual ID
-const ADMIN_EMAILS = ['admin@cubscouts.org']; // Replace with actual admin emails
+const SPREADSHEET_ID = '1ifHz-wXFuHbJnIIRPyDuhg8L17cUzKgMXRgJqrL6ZCk'; // Replace with actual ID
+const ADMIN_EMAILS = ['pack182tech@gmail.com']; // Replace with actual admin emails
 
 // Main entry point for GET requests
 function doGet(e) {
@@ -295,6 +295,5 @@ function isAdminRequest(e) {
 function createJsonResponse(data, status = 200) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*');
+    .setMimeType(ContentService.MimeType.JSON);
 }

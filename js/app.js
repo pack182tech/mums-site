@@ -108,8 +108,9 @@ function createProductCard(product) {
     card.innerHTML = `
         <div class="product-image">
             <img src="${product.image_url || 'https://via.placeholder.com/300'}" 
-                 alt="${product.title}" 
-                 onerror="this.src='https://via.placeholder.com/300'">
+                 alt="${product.title}"
+                 loading="lazy"
+                 crossorigin="anonymous">
         </div>
         <div class="product-info">
             <h3 class="product-title">${product.title}</h3>

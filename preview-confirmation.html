@@ -20,6 +20,8 @@
             font-weight: bold;
         }
     </style>
+    <script src="js/config.js"></script>
+    <script src="js/sheets-api.js"></script>
 </head>
 <body>
     <div class="preview-notice">
@@ -59,7 +61,7 @@
             
             <div class="pickup-info">
                 <h3>Pickup Information</h3>
-                <p id="pickup-details">School Parking Lot<br>Saturday, 9am-2pm</p>
+                <p id="pickup-details">Loading pickup information...</p>
             </div>
             
             <div class="confirmation-actions">
@@ -70,17 +72,63 @@
     </section>
 
     <script>
-        // Generate QR code with sample data
-        document.addEventListener('DOMContentLoaded', function() {
+        // Load actual settings and generate QR code
+        document.addEventListener('DOMContentLoaded', async function() {
             const orderId = 'ORD-2024-1182';
-            const zelleEmail = 'pack182tech@gmail.com';
-            const memo = `Order: ${orderId}`;
-            const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
             
-            const zelleQR = document.getElementById('zelle-qr');
-            if (zelleQR) {
-                zelleQR.src = qrUrl;
+            try {
+                // Load actual settings from API
+                const settings = await sheetsAPI.getSettings();
+                
+                // Update Zelle email from settings
+                const zelleEmailElement = document.getElementById('zelle-email');
+                const zelleEmail = settings.zelle_email || 'pack182tech@gmail.com';
+                if (zelleEmailElement) {
+                    zelleEmailElement.textContent = zelleEmail;
+                }
+                
+                // Generate QR code with memo
+                const memo = `Order: ${orderId}`;
+                const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
+                
+                // Use custom QR URL from settings or generate with memo
+                const qrUrl = settings.zelle_qr_url && !settings.zelle_qr_url.includes('${orderId}') 
+                    ? settings.zelle_qr_url  // Use static QR if configured
+                    : `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
+                
+                const zelleQR = document.getElementById('zelle-qr');
+                if (zelleQR) {
+                    zelleQR.src = qrUrl;
+                }
+                
+                // Set pickup details from settings
+                const pickupInfo = `${settings.pickup_location || 'Location TBD'}<br>${settings.pickup_date || 'Date TBD'}`;
+                document.getElementById('pickup-details').innerHTML = pickupInfo;
+                
+                // Update payment instructions if available
+                if (settings.payment_instructions) {
+                    const paymentNote = document.querySelector('.payment-note');
+                    if (paymentNote && !settings.payment_instructions.toLowerCase().includes('order id')) {
+                        // Only update if the settings don't already mention order ID
+                        paymentNote.innerHTML = `⚠️ ${settings.payment_instructions}<br>Include your order ID (<span id="payment-order-id">${orderId}</span>) in the memo`;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+                // Use defaults if settings fail to load
+                const zelleEmail = 'pack182tech@gmail.com';
+                const memo = `Order: ${orderId}`;
+                const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
+                
+                const zelleQR = document.getElementById('zelle-qr');
+                if (zelleQR) {
+                    zelleQR.src = qrUrl;
+                }
+                
+                // Use default pickup info
+                document.getElementById('pickup-details').innerHTML = 'TBD - Will be announced via email<br>Saturday Date TBD 9am-2pm';
             }
         });
     </script>

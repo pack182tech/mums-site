@@ -210,6 +210,11 @@
         </div>
     </div>
 
+    <!-- Version Footer -->
+    <footer id="version-footer" style="position: fixed; bottom: 5px; right: 5px; padding: 2px 8px; background: rgba(255,255,255,0.8); font-size: 11px; color: #888; z-index: 1000; border-radius: 3px; font-family: monospace;">
+        v1.2.0
+    </footer>
+
     <script src="js/config.js"></script>
     <script src="js/sheets-api.js"></script>
     <script src="js/scout-law.js"></script>
@@ -217,6 +222,10 @@
     <script>
         // Initialize Scout elements on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Display version
+            document.getElementById('version-footer').textContent = 'v' + CONFIG.VERSION;
+            console.log('Pack 182 Mums Site - Version ' + CONFIG.VERSION);
+            
             displayScoutLaw();  // Display Scout Oath in background
             createScoutLawTicker();  // Create the ticker at bottom
         });

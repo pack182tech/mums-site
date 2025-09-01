@@ -177,6 +177,12 @@ function selectColor(productId, color, button) {
     // Store the selection
     selectedColors[productId] = color;
     
+    // Update the quantity display for this product
+    const qtyInput = document.getElementById(`qty-${productId}`);
+    if (qtyInput) {
+        qtyInput.value = getCartQuantity(productId);
+    }
+    
     debugLog(`Selected ${color} for product ${productId}`);
 }
 
@@ -229,9 +235,15 @@ function setQuantity(productId, quantity) {
 }
 
 function getCartQuantity(productId) {
-    // Get total quantity across all color variants for this product
-    const items = cart.filter(item => item.id === productId);
-    return items.reduce((sum, item) => sum + item.quantity, 0);
+    // Get quantity for the currently selected color variant
+    const color = selectedColors[productId];
+    if (!color) {
+        // If no color selected, return 0
+        return 0;
+    }
+    
+    const item = cart.find(item => item.id === productId && item.color === color);
+    return item ? item.quantity : 0;
 }
 
 function updateCartSummary() {

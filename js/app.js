@@ -396,7 +396,7 @@ async function handleOrderSubmit(e) {
     
     // Get selected payment method
     const paymentMethodInput = form.querySelector('input[name="paymentMethod"]:checked');
-    const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Cash';
+    const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Zelle';
     
     // Prepare order data
     const orderData = {
@@ -521,19 +521,13 @@ function showConfirmation(orderId, total, paymentMethod) {
     document.getElementById('confirmation-order-id').textContent = orderId;
     document.getElementById('confirmation-total').textContent = `$${total.toFixed(2)}`;
     
-    // Show payment instructions based on method
-    if (paymentMethod === 'Zelle') {
-        document.getElementById('zelle-section').style.display = 'block';
-        document.getElementById('cash-section').style.display = 'none';
-        
-        // Update order ID in the note
-        const noteElement = document.querySelector('#zelle-section .payment-note');
-        if (noteElement) {
-            noteElement.textContent = `Please include Order ID: ${orderId} in the Zelle memo`;
-        }
-    } else if (paymentMethod === 'Cash') {
-        document.getElementById('zelle-section').style.display = 'none';
-        document.getElementById('cash-section').style.display = 'block';
+    // Show Zelle payment instructions (only payment method now)
+    document.getElementById('zelle-section').style.display = 'block';
+    
+    // Update order ID in the note
+    const noteElement = document.querySelector('#zelle-section .payment-note');
+    if (noteElement) {
+        noteElement.textContent = `Please include Order ID: ${orderId} in the Zelle memo`;
     }
     
     // Set pickup details

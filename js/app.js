@@ -100,8 +100,11 @@ function createProductCard(product) {
     
     const colorButtons = colorOptions.map(color => {
         const isSelected = selectedColors[product.id] === color;
+        // Get quantity for this specific color
+        const colorQty = cart.filter(item => item.id === product.id && item.color === color)
+                             .reduce((sum, item) => sum + item.quantity, 0);
         return `<button class="color-btn${isSelected ? ' active' : ''}" data-color="${color}" onclick="selectColor('${product.id}', '${color}', this)">
-            ${color}
+            ${color} ${colorQty > 0 ? `(${colorQty})` : ''}
         </button>`;
     }).join('');
     
@@ -323,7 +326,7 @@ function saveCustomerInfo() {
         lastName: form.lastName.value,
         email: form.email.value,
         phone: form.phone.value,
-        address: form.address.value
+        address: `${form.street.value}\n${form.city.value}, ${form.state.value} ${form.zip.value}`
     };
     localStorage.setItem(CONFIG.STORAGE_KEYS.CUSTOMER_INFO, JSON.stringify(data));
     debugLog('Customer info saved');
@@ -340,7 +343,19 @@ function loadCustomerInfo() {
                 form.lastName.value = data.lastName || '';
                 form.email.value = data.email || '';
                 form.phone.value = data.phone || '';
-                form.address.value = data.address || '';
+                // Parse address back into fields if it exists
+                if (data.address) {
+                    const addressLines = data.address.split('\n');
+                    if (addressLines[0]) form.street.value = addressLines[0];
+                    if (addressLines[1]) {
+                        const cityStateZip = addressLines[1].match(/(.+),\s*([A-Z]{2})\s*(\d{5})/);
+                        if (cityStateZip) {
+                            form.city.value = cityStateZip[1] || '';
+                            form.state.value = cityStateZip[2] || '';
+                            form.zip.value = cityStateZip[3] || '';
+                        }
+                    }
+                }
                 debugLog('Customer info loaded');
             }
         } catch (error) {
@@ -409,7 +424,7 @@ async function handleOrderSubmit(e) {
         lastName: form.lastName.value,
         email: form.email.value,
         phone: form.phone.value,
-        address: form.address.value,
+        address: `${form.street.value}\n${form.city.value}, ${form.state.value} ${form.zip.value}`,
         products: cart,
         totalPrice: total,
         comments: form.comments.value,
@@ -516,34 +531,18 @@ function showConfirmation(orderId, total, paymentMethod) {
     document.getElementById('confirmation-total').textContent = `$${total.toFixed(2)}`;
     
     // Show payment instructions based on method
-    if (paymentMethod === 'Venmo') {
-        document.getElementById('venmo-section').style.display = 'block';
-        document.getElementById('other-payment-section').style.display = 'none';
+    if (paymentMethod === 'Zelle') {
+        document.getElementById('zelle-section').style.display = 'block';
+        document.getElementById('cash-section').style.display = 'none';
         
-        // Set Venmo details
-        document.getElementById('venmo-handle').textContent = settings.venmo_handle || '@CubScouts';
-        document.getElementById('payment-note').textContent = 
-            `Please include Order ID: ${orderId} in your payment note`;
-        
-        // Set QR code if available
-        const qrImg = document.getElementById('venmo-qr');
-        if (settings.venmo_qr_url) {
-            qrImg.src = settings.venmo_qr_url;
-            qrImg.style.display = 'block';
-        } else {
-            qrImg.style.display = 'none';
+        // Update order ID in the note
+        const noteElement = document.querySelector('#zelle-section .payment-note');
+        if (noteElement) {
+            noteElement.textContent = `Please include Order ID: ${orderId} in the Zelle memo`;
         }
-    } else {
-        document.getElementById('venmo-section').style.display = 'none';
-        document.getElementById('other-payment-section').style.display = 'block';
-        
-        let instructions = '';
-        if (paymentMethod === 'Cash') {
-            instructions = `Please bring cash payment when picking up your order. Order ID: ${orderId}`;
-        } else if (paymentMethod === 'Check') {
-            instructions = `Please make check payable to "Cub Scouts Pack" and bring when picking up. Order ID: ${orderId}`;
-        }
-        document.getElementById('other-payment-instructions').textContent = instructions;
+    } else if (paymentMethod === 'Cash') {
+        document.getElementById('zelle-section').style.display = 'none';
+        document.getElementById('cash-section').style.display = 'block';
     }
     
     // Set pickup details

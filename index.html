@@ -97,9 +97,27 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="address">Delivery Address *</label>
-                        <textarea id="address" name="address" rows="3" required 
-                                  placeholder="Street Address&#10;City, State ZIP"></textarea>
+                        <label for="street">Street Address *</label>
+                        <input type="text" id="street" name="street" required 
+                               placeholder="123 Main Street" autocomplete="street-address">
+                    </div>
+                    
+                    <div class="form-group address-row" style="display: flex; gap: 10px;">
+                        <div style="flex: 2;">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required 
+                                   placeholder="City" autocomplete="address-level2">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="state">State *</label>
+                            <input type="text" id="state" name="state" required 
+                                   placeholder="NJ" autocomplete="address-level1" maxlength="2">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="zip">ZIP Code *</label>
+                            <input type="text" id="zip" name="zip" required 
+                                   placeholder="12345" autocomplete="postal-code" pattern="[0-9]{5}">
+                        </div>
                     </div>
                 </div>
                 
@@ -113,7 +131,7 @@
                     <div class="form-group">
                         <label for="comments">Special Instructions (Optional)</label>
                         <textarea id="comments" name="comments" rows="3" 
-                                  placeholder="Any special delivery instructions or notes..."></textarea>
+                                  placeholder="Any special instructions or notes..."></textarea>
                     </div>
                 </div>
                 
@@ -121,16 +139,12 @@
                     <h3>Payment Method</h3>
                     <div class="payment-options">
                         <label class="radio-label">
-                            <input type="radio" name="paymentMethod" value="Venmo" checked>
-                            <span>Venmo</span>
+                            <input type="radio" name="paymentMethod" value="Zelle" checked>
+                            <span>Zelle</span>
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="paymentMethod" value="Cash">
                             <span>Cash</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="paymentMethod" value="Check">
-                            <span>Check</span>
                         </label>
                     </div>
                 </div>
@@ -155,18 +169,17 @@
             
             <div id="payment-instructions" class="payment-section">
                 <h3>Payment Instructions</h3>
-                <div id="venmo-section" class="venmo-section">
-                    <p>Please send payment via Venmo to:</p>
-                    <div class="venmo-info">
-                        <img id="venmo-qr" src="" alt="Venmo QR Code" class="qr-code">
-                        <div class="venmo-handle">
-                            <strong id="venmo-handle"></strong>
-                            <p id="payment-note" class="payment-note"></p>
-                        </div>
+                <div id="zelle-section" class="zelle-section">
+                    <p><strong>For Zelle payments:</strong></p>
+                    <div class="zelle-info">
+                        <p>Send payment to email: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
+                        <p>Recipient Name: <strong>Pack 182 Mums Sale</strong></p>
+                        <p class="payment-note">Please include your order name in the memo</p>
                     </div>
                 </div>
-                <div id="other-payment-section" class="other-payment" style="display: none;">
-                    <p id="other-payment-instructions"></p>
+                <div id="cash-section" class="cash-section" style="display: none;">
+                    <p><strong>For Cash payments:</strong></p>
+                    <p>Please bring exact cash when picking up your mums order.</p>
                 </div>
             </div>
             

@@ -11,11 +11,19 @@
     "test": "node test-browser.js"
   },
   "dependencies": {
-    "puppeteer": "^24.9.0",
+    "csv-parse": "^5.5.2",
     "dotenv": "^16.3.1",
-    "csv-parse": "^5.5.2"
+    "playwright": "^1.55.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer": "^24.9.0",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
-  "keywords": ["google-sheets", "automation", "puppeteer", "cub-scouts"],
+  "keywords": [
+    "google-sheets",
+    "automation",
+    "puppeteer",
+    "cub-scouts"
+  ],
   "author": "Pack 182",
   "license": "MIT"
 }

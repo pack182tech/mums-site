@@ -21,12 +21,14 @@ class SheetsAPI {
 
         const url = `${this.apiUrl}?path=${path}`;
         const options = {
-            method: method
+            method: method,
+            mode: 'cors',
+            credentials: 'omit'
         };
 
         if (data && method === 'POST') {
             options.headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'text/plain'  // Google Apps Script prefers text/plain for CORS
             };
             options.body = JSON.stringify(data);
         }
@@ -90,11 +92,28 @@ class SheetsAPI {
     // Submit an order
     async submitOrder(orderData) {
         try {
+            debugLog('Submitting order with data:', orderData);
             const response = await this.apiCall('order', 'POST', orderData);
+            debugLog('Order submission response:', response);
+            
+            // Check if response has the expected structure
+            if (!response || typeof response !== 'object') {
+                throw new Error('Invalid response from server');
+            }
+            
             return response;
         } catch (error) {
-            console.error('Failed to submit order:', error);
-            throw new Error('Failed to submit order. Please try again.');
+            console.error('Failed to submit order - Full error:', error);
+            console.error('Order data was:', orderData);
+            
+            // Provide more specific error message
+            if (error.message.includes('fetch')) {
+                throw new Error('Network error: Unable to connect to order system. Please check your connection and try again.');
+            } else if (error.message.includes('status: 4')) {
+                throw new Error('Server error: The order system is not responding correctly. Please try again in a few moments.');
+            } else {
+                throw new Error(`Failed to submit order: ${error.message}`);
+            }
         }
     }
 

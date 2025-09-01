@@ -167,6 +167,8 @@ function setColorQuantity(productId, color, quantity) {
     if (quantity <= 0) {
         // Remove items with this product ID and color from cart
         cart = cart.filter(item => !(item.id === productId && item.color === color));
+        // Set quantity to 0 explicitly for display
+        quantity = 0;
     } else {
         // Find existing item with same product ID AND color
         const existingItem = cart.find(item => item.id === productId && item.color === color);
@@ -188,7 +190,7 @@ function setColorQuantity(productId, color, quantity) {
     
     // Update the input field for this specific color
     const input = document.getElementById(`qty-${productId}-${color}`);
-    if (input && input.value !== quantity.toString()) {
+    if (input) {
         input.value = quantity;
     }
     

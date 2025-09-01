@@ -195,6 +195,7 @@ function setColorQuantity(productId, color, quantity) {
     }
     
     updateCartSummary();
+    updateCartIcon();
     saveCart();
     debugLog(`Cart updated: ${productId} (${color}) = ${quantity}`);
 }

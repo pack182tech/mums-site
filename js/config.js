@@ -3,7 +3,7 @@
 
 const CONFIG = {
     // Version
-    VERSION: '1.3.6',
+    VERSION: '1.3.7',
     
     // Google Apps Script Web App URL
     API_URL: 'https://script.google.com/macros/s/AKfycbwFihgdlUthlTMhKp8Ea0P1QUi198WibKsgCC-4XLDOyr42qObexjLyRMQfEHWTJE-vqg/exec',

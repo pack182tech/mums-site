@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack 182 Mums - Inventory Summary</title>
+    <link rel="icon" type="image/png" href="pack182logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header img {
+            height: 50px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #4c51bf;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #434190;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+        }
+        
+        .summary-date {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        
+        .inventory-table thead {
+            background: #f7fafc;
+        }
+        
+        .inventory-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .inventory-table td {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        
+        .inventory-table tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        .product-header {
+            background: #edf2f7 !important;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .color-row {
+            padding-left: 30px !important;
+        }
+        
+        .quantity-cell {
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .total-row {
+            background: #e6fffa !important;
+            font-weight: bold;
+        }
+        
+        .grand-total-row {
+            background: #bee3f8 !important;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+        
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background: #c6f6d5;
+            color: #276749;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4c51bf;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-top: 5px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+                max-width: 100%;
+            }
+            
+            .header-buttons {
+                display: none;
+            }
+            
+            .btn {
+                display: none;
+            }
+            
+            .header {
+                border-bottom: 2px solid black;
+                margin-bottom: 20px;
+            }
+            
+            .inventory-table {
+                font-size: 12px;
+            }
+            
+            .inventory-table th,
+            .inventory-table td {
+                padding: 8px;
+                border: 1px solid #333;
+            }
+            
+            .inventory-table thead {
+                background: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .product-header {
+                background: #e0e0e0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .total-row {
+                background: #d0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .grand-total-row {
+                background: #c0d0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .stats-grid {
+                page-break-after: avoid;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .inventory-table {
+                font-size: 12px;
+            }
+            
+            .inventory-table th,
+            .inventory-table td {
+                padding: 8px;
+            }
+        }
+        
+        #version-footer {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.8);
+            font-size: 11px;
+            color: #888;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        @media print {
+            #version-footer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <img src="pack182logo.png" alt="Pack 182 Logo">
+                <h1>Inventory Summary</h1>
+            </div>
+            <div class="header-buttons">
+                <button class="btn btn-secondary" onclick="location.href='admin-orders.html'">Orders Dashboard</button>
+                <button class="btn btn-secondary" onclick="location.href='index.html'">Main Site</button>
+                <button class="btn btn-success" onclick="window.print()">Print Summary</button>
+                <button class="btn btn-primary" onclick="refreshInventory()">Refresh</button>
+            </div>
+        </div>
+        
+        <div class="summary-date" id="summary-date"></div>
+        
+        <div id="message-area"></div>
+        
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value" id="total-orders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Mums</div>
+                <div class="stat-value" id="total-mums">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value" id="total-revenue">$0</div>
+            </div>
+        </div>
+        
+        <div id="inventory-container">
+            <div class="loading">Loading inventory data...</div>
+        </div>
+    </div>
+    
+    <div id="version-footer">v1.3.5</div>
+    
+    <script src="js/config.js"></script>
+    <script>
+        let allOrders = [];
+        let inventoryData = {};
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInventory();
+            document.getElementById('version-footer').textContent = 'v' + CONFIG.VERSION;
+            updateDateTime();
+        });
+        
+        function updateDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const timeStr = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('summary-date').textContent = `Generated on ${dateStr} at ${timeStr}`;
+        }
+        
+        async function loadInventory() {
+            try {
+                // Fetch orders
+                const response = await fetch(`${CONFIG.API_URL}?path=orders&admin=true`);
+                const data = await response.json();
+                
+                if (data.orders) {
+                    allOrders = data.orders;
+                    processInventory();
+                    displayInventory();
+                    updateStats();
+                } else {
+                    showMessage('No orders found', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                showMessage('Failed to load inventory data. Please try again.', 'error');
+                document.getElementById('inventory-container').innerHTML = 
+                    '<div class="error">Unable to load inventory data</div>';
+            }
+        }
+        
+        function processInventory() {
+            inventoryData = {};
+            
+            allOrders.forEach(order => {
+                // Parse products if they're a string
+                let products = order.products;
+                if (typeof products === 'string') {
+                    try {
+                        products = JSON.parse(products);
+                    } catch (e) {
+                        console.error('Failed to parse products for order:', order.order_id);
+                        return;
+                    }
+                }
+                
+                // Process each product in the order
+                products.forEach(product => {
+                    const productName = product.title || product.name || 'Unknown Product';
+                    const color = product.color || 'No Color';
+                    const quantity = parseInt(product.quantity) || 0;
+                    
+                    // Initialize product in inventory if not exists
+                    if (!inventoryData[productName]) {
+                        inventoryData[productName] = {
+                            colors: {},
+                            total: 0,
+                            price: parseFloat(product.price) || 0
+                        };
+                    }
+                    
+                    // Add to color count
+                    if (!inventoryData[productName].colors[color]) {
+                        inventoryData[productName].colors[color] = 0;
+                    }
+                    inventoryData[productName].colors[color] += quantity;
+                    inventoryData[productName].total += quantity;
+                });
+            });
+        }
+        
+        function displayInventory() {
+            const container = document.getElementById('inventory-container');
+            
+            if (Object.keys(inventoryData).length === 0) {
+                container.innerHTML = '<div class="error">No inventory data to display</div>';
+                return;
+            }
+            
+            // Get all unique colors
+            const allColors = new Set();
+            Object.values(inventoryData).forEach(product => {
+                Object.keys(product.colors).forEach(color => allColors.add(color));
+            });
+            const colorList = Array.from(allColors).sort();
+            
+            // Build table HTML
+            let html = `
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Product</th>
+                            ${colorList.map(color => `<th style="text-align: center;">${color}</th>`).join('')}
+                            <th style="text-align: center; background: #e6fffa;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let grandTotalByColor = {};
+            colorList.forEach(color => grandTotalByColor[color] = 0);
+            let grandTotal = 0;
+            
+            // Add rows for each product
+            Object.keys(inventoryData).sort().forEach(productName => {
+                const product = inventoryData[productName];
+                
+                html += `<tr class="product-row">`;
+                html += `<td class="product-header">${productName}</td>`;
+                
+                // Add quantity for each color
+                colorList.forEach(color => {
+                    const qty = product.colors[color] || 0;
+                    grandTotalByColor[color] += qty;
+                    html += `<td class="quantity-cell">${qty > 0 ? qty : '-'}</td>`;
+                });
+                
+                // Add product total
+                html += `<td class="quantity-cell total-row">${product.total}</td>`;
+                html += `</tr>`;
+                
+                grandTotal += product.total;
+            });
+            
+            // Add grand total row
+            html += `<tr class="grand-total-row">`;
+            html += `<td><strong>GRAND TOTAL</strong></td>`;
+            colorList.forEach(color => {
+                html += `<td class="quantity-cell">${grandTotalByColor[color]}</td>`;
+            });
+            html += `<td class="quantity-cell">${grandTotal}</td>`;
+            html += `</tr>`;
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        function updateStats() {
+            // Calculate statistics
+            const totalOrders = allOrders.length;
+            let totalMums = 0;
+            let totalRevenue = 0;
+            
+            Object.values(inventoryData).forEach(product => {
+                totalMums += product.total;
+                totalRevenue += product.total * product.price;
+            });
+            
+            // Update display
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('total-mums').textContent = totalMums;
+            document.getElementById('total-revenue').textContent = '$' + totalRevenue.toFixed(2);
+        }
+        
+        function refreshInventory() {
+            showMessage('Refreshing inventory...', 'success');
+            updateDateTime();
+            loadInventory();
+        }
+        
+        function showMessage(message, type = 'info') {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

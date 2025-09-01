@@ -90,22 +90,37 @@ function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
     
-    const quantity = getCartQuantity(product.id);
-    
     // Determine available colors based on product type
     let colorOptions = ['Yellow', 'Orange', 'Red', 'Purple', 'White'];
     if (product.id === 'APPLE') {
         colorOptions = ['Yellow', 'Orange', 'Red']; // Apple basket only has 3 colors
     }
     
-    const colorButtons = colorOptions.map(color => {
-        const isSelected = selectedColors[product.id] === color;
+    // Create color rows with individual quantity selectors
+    const colorRows = colorOptions.map(color => {
         // Get quantity for this specific color
         const colorQty = cart.filter(item => item.id === product.id && item.color === color)
                              .reduce((sum, item) => sum + item.quantity, 0);
-        return `<button class="color-btn${isSelected ? ' active' : ''}" data-color="${color}" onclick="selectColor('${product.id}', '${color}', this)">
-            ${color} ${colorQty > 0 ? `(${colorQty})` : ''}
-        </button>`;
+        
+        return `
+            <div class="color-quantity-row" style="display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #eee;">
+                <span class="color-name" style="flex: 1; font-weight: 500;">${color}</span>
+                <div class="quantity-controls" style="display: flex; align-items: center; gap: 5px;">
+                    <button onclick="updateColorQuantity('${product.id}', '${color}', -1)" 
+                            class="btn-quantity" style="width: 25px; height: 25px; padding: 0; font-size: 16px;">-</button>
+                    <input type="number" 
+                           id="qty-${product.id}-${color}" 
+                           value="${colorQty}" 
+                           min="0" 
+                           max="99" 
+                           onchange="setColorQuantity('${product.id}', '${color}', this.value)" 
+                           class="quantity-input" 
+                           style="width: 40px; text-align: center; padding: 2px;">
+                    <button onclick="updateColorQuantity('${product.id}', '${color}', 1)" 
+                            class="btn-quantity" style="width: 25px; height: 25px; padding: 0; font-size: 16px;">+</button>
+                </div>
+            </div>
+        `;
     }).join('');
     
     card.innerHTML = `
@@ -120,18 +135,8 @@ function createProductCard(product) {
             <p class="product-description">${product.description || ''}</p>
             <p class="product-price">$${parseFloat(product.price).toFixed(2)}</p>
             
-            <div class="color-selection">
-                <label>Select Color:</label>
-                <div class="color-buttons" id="colors-${product.id}">
-                    ${colorButtons}
-                </div>
-            </div>
-            
-            <div class="quantity-controls">
-                <button onclick="updateQuantity('${product.id}', -1)" class="btn-quantity">-</button>
-                <input type="number" id="qty-${product.id}" value="${quantity}" min="0" max="99" 
-                       onchange="setQuantity('${product.id}', this.value)" class="quantity-input">
-                <button onclick="updateQuantity('${product.id}', 1)" class="btn-quantity">+</button>
+            <div class="color-quantities" style="margin-top: 15px;">
+                ${colorRows}
             </div>
         </div>
     `;
@@ -139,78 +144,31 @@ function createProductCard(product) {
     return card;
 }
 
-// Cart management functions
-function updateQuantity(productId, delta) {
+// New color-specific cart management functions
+function updateColorQuantity(productId, color, delta) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
-    // If incrementing and no color selected yet, prompt for color
-    if (delta > 0 && !selectedColors[productId] && getCartQuantity(productId) === 0) {
-        alert('Please select a color first');
-        return;
-    }
-    
-    // If there are existing items in cart for this product, use the first one's color
-    if (!selectedColors[productId]) {
-        const existingItem = cart.find(item => item.id === productId);
-        if (existingItem) {
-            selectedColors[productId] = existingItem.color;
-        }
-    }
-    
-    const currentQty = getCartQuantity(productId);
+    // Get current quantity for this product-color combination
+    const existingItem = cart.find(item => item.id === productId && item.color === color);
+    const currentQty = existingItem ? existingItem.quantity : 0;
     const newQty = Math.max(0, Math.min(99, currentQty + delta));
     
-    setQuantity(productId, newQty);
+    setColorQuantity(productId, color, newQty);
 }
 
-// Track selected colors
-let selectedColors = {};
-
-// Color selection function
-function selectColor(productId, color, button) {
-    // Remove active class from siblings
-    const container = button.parentElement;
-    container.querySelectorAll('.color-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Add active class to selected
-    button.classList.add('active');
-    
-    // Store the selection
-    selectedColors[productId] = color;
-    
-    // Update the quantity display for this product
-    const qtyInput = document.getElementById(`qty-${productId}`);
-    if (qtyInput) {
-        qtyInput.value = getCartQuantity(productId);
-    }
-    
-    debugLog(`Selected ${color} for product ${productId}`);
-}
-
-function setQuantity(productId, quantity) {
+function setColorQuantity(productId, color, quantity) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
     quantity = parseInt(quantity) || 0;
-    
-    // Check if color is selected
-    if (quantity > 0 && !selectedColors[productId]) {
-        alert('Please select a color first');
-        document.getElementById(`qty-${productId}`).value = 0;
-        return;
-    }
+    quantity = Math.max(0, Math.min(99, quantity));
     
     if (quantity <= 0) {
         // Remove items with this product ID and color from cart
-        const color = selectedColors[productId];
         cart = cart.filter(item => !(item.id === productId && item.color === color));
-        delete selectedColors[productId];
     } else {
         // Find existing item with same product ID AND color
-        const color = selectedColors[productId];
         const existingItem = cart.find(item => item.id === productId && item.color === color);
         
         if (existingItem) {
@@ -228,26 +186,33 @@ function setQuantity(productId, quantity) {
         }
     }
     
-    // Update UI - show total quantity for this product (all colors)
-    const totalQty = cart
-        .filter(item => item.id === productId)
-        .reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById(`qty-${productId}`).value = totalQty;
+    // Update the input field for this specific color
+    const input = document.getElementById(`qty-${productId}-${color}`);
+    if (input && input.value !== quantity.toString()) {
+        input.value = quantity;
+    }
     
     updateCartSummary();
     saveCart();
+    debugLog(`Cart updated: ${productId} (${color}) = ${quantity}`);
+}
+
+// Keep these for backward compatibility if needed
+function updateQuantity(productId, delta) {
+    // This is now deprecated - use updateColorQuantity instead
+    console.warn('updateQuantity is deprecated, use updateColorQuantity');
+}
+
+function setQuantity(productId, quantity) {
+    // This is now deprecated - use setColorQuantity instead
+    console.warn('setQuantity is deprecated, use setColorQuantity');
 }
 
 function getCartQuantity(productId) {
-    // Get quantity for the currently selected color variant
-    const color = selectedColors[productId];
-    if (!color) {
-        // If no color selected, return 0
-        return 0;
-    }
-    
-    const item = cart.find(item => item.id === productId && item.color === color);
-    return item ? item.quantity : 0;
+    // Get total quantity for all colors of this product
+    return cart
+        .filter(item => item.id === productId)
+        .reduce((sum, item) => sum + item.quantity, 0);
 }
 
 function updateCartSummary() {

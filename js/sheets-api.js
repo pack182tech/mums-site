@@ -167,6 +167,8 @@ class SheetsAPI {
             welcome_title: 'Cub Scouts Mum Sale',
             welcome_message: 'Support our pack by purchasing beautiful fall mums!',
             instructions: 'Select your mums, complete the order form, and submit your order.',
+            zelle_email: 'pack182tech@gmail.com',
+            zelle_qr_url: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ZELLE:pack182tech@gmail.com',
             venmo_handle: '@CubScouts',
             venmo_qr_url: '',
             payment_instructions: 'Please include your Order ID in the payment description.',

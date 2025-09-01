@@ -532,11 +532,18 @@ function showConfirmation(orderId, total, paymentMethod) {
     
     // Set Zelle QR code
     const zelleQR = document.getElementById('zelle-qr');
-    if (zelleQR && settings.zelle_qr_url) {
-        zelleQR.src = settings.zelle_qr_url;
+    if (zelleQR) {
+        // Use settings QR URL or generate default one
+        const zelleEmail = settings.zelle_email || 'pack182tech@gmail.com';
+        const qrUrl = settings.zelle_qr_url || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ZELLE:${encodeURIComponent(zelleEmail)}`;
+        zelleQR.src = qrUrl;
         zelleQR.style.display = 'block';
-    } else if (zelleQR) {
-        zelleQR.style.display = 'none';
+        
+        // Show the QR container
+        const qrContainer = zelleQR.closest('.qr-code-container');
+        if (qrContainer) {
+            qrContainer.style.display = 'block';
+        }
     }
     
     // Update Zelle email from settings

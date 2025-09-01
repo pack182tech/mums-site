@@ -458,9 +458,18 @@ function showCatalog() {
     document.getElementById('catalog-screen').style.display = 'block';
     
     // Update catalog title from settings
-    const catalogTitle = document.querySelector('#catalog-screen h2');
+    const catalogTitle = document.getElementById('catalog-title');
     if (catalogTitle && settings.catalog_title) {
         catalogTitle.textContent = settings.catalog_title;
+    }
+    
+    // Update catalog subtitle from settings
+    const catalogSubtitle = document.getElementById('catalog-subtitle');
+    if (catalogSubtitle && settings.catalog_subtitle) {
+        catalogSubtitle.textContent = settings.catalog_subtitle;
+        catalogSubtitle.style.display = 'block';
+    } else if (catalogSubtitle) {
+        catalogSubtitle.style.display = 'none';
     }
     
     // Show cart icon (always visible on catalog screen)

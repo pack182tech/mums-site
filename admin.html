@@ -559,6 +559,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('orders')">Orders</button>
             <button class="nav-tab" onclick="switchTab('inventory')">Inventory Summary</button>
+            <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
         </div>
         
         <!-- Orders Tab -->
@@ -642,6 +643,64 @@
                 <div class="loading">Loading inventory data...</div>
             </div>
         </div>
+        
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <h2>Site Settings</h2>
+            <p style="color: #718096; margin-bottom: 30px;">Configure your mums sale site settings. Changes are saved automatically.</p>
+            
+            <div style="max-width: 800px;">
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Welcome Title</label>
+                    <input type="text" id="setting-welcome_title" style="width: 100%;" onchange="saveSetting('welcome_title', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Welcome Message</label>
+                    <textarea id="setting-welcome_message" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('welcome_message', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Catalog Title</label>
+                    <input type="text" id="setting-catalog_title" style="width: 100%;" onchange="saveSetting('catalog_title', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Catalog Subtitle</label>
+                    <textarea id="setting-catalog_subtitle" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('catalog_subtitle', this.value)" placeholder="Optional subtitle shown below the catalog title"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Instructions</label>
+                    <textarea id="setting-instructions" rows="4" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('instructions', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Venmo Handle</label>
+                    <input type="text" id="setting-venmo_handle" style="width: 100%;" onchange="saveSetting('venmo_handle', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Payment Instructions</label>
+                    <textarea id="setting-payment_instructions" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('payment_instructions', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Pickup Location</label>
+                    <input type="text" id="setting-pickup_location" style="width: 100%;" onchange="saveSetting('pickup_location', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Pickup Date</label>
+                    <input type="text" id="setting-pickup_date" style="width: 100%;" onchange="saveSetting('pickup_date', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Admin Email</label>
+                    <input type="email" id="setting-admin_email" style="width: 100%;" onchange="saveSetting('admin_email', this.value)">
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Order Details Modal -->
@@ -655,7 +714,7 @@
         </div>
     </div>
     
-    <div id="version-footer">v1.3.7</div>
+    <div id="version-footer">v1.3.8</div>
     
     <script src="js/config.js"></script>
     <script>
@@ -725,6 +784,9 @@
                 document.getElementById('inventory-tab').classList.add('active');
                 updateDateTime();
                 loadInventory();
+            } else if (tab === 'settings') {
+                document.getElementById('settings-tab').classList.add('active');
+                loadSettings();
             }
         }
         
@@ -736,6 +798,9 @@
                 showMessage('Refreshing inventory...', 'success');
                 updateDateTime();
                 loadInventory();
+            } else if (currentTab === 'settings') {
+                showMessage('Refreshing settings...', 'success');
+                loadSettings();
             }
         }
         
@@ -1148,6 +1213,56 @@
             const modal = document.getElementById('order-modal');
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        }
+        
+        // Settings functionality
+        let currentSettings = {};
+        
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?path=settings`);
+                const data = await response.json();
+                
+                if (data.settings) {
+                    currentSettings = data.settings;
+                    
+                    // Populate all setting fields
+                    Object.keys(currentSettings).forEach(key => {
+                        const element = document.getElementById(`setting-${key}`);
+                        if (element) {
+                            element.value = currentSettings[key] || '';
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showMessage('Failed to load settings. Please try again.', 'error');
+            }
+        }
+        
+        async function saveSetting(key, value) {
+            try {
+                currentSettings[key] = value;
+                
+                const response = await fetch(`${CONFIG.API_URL}?path=updateSettings&admin=true`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify({ [key]: value })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`${key.replace(/_/g, ' ')} updated successfully`, 'success');
+                } else {
+                    showMessage('Failed to save setting', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving setting:', error);
+                showMessage('Failed to save setting. Please try again.', 'error');
             }
         }
     </script>

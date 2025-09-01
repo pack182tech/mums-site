@@ -270,12 +270,7 @@ function loadCart() {
     if (saved) {
         try {
             cart = JSON.parse(saved);
-            // Restore selected colors from cart items
-            cart.forEach(item => {
-                if (item.color && item.id) {
-                    selectedColors[item.id] = item.color;
-                }
-            });
+            // No longer need to restore selectedColors as we're using per-color quantities now
             debugLog('Cart loaded:', cart);
             updateCartSummary();
         } catch (error) {

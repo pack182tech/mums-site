@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - Order Confirmation</title>
+    <link rel="icon" type="image/png" href="pack182logo.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .preview-notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-notice">
+        🔒 SECRET PREVIEW MODE - This is for testing only
+    </div>
+
+    <!-- Confirmation Screen -->
+    <section id="confirmation-screen" class="confirmation-container">
+        <div class="container">
+            <div class="success-icon">✓</div>
+            <h2>Order Submitted Successfully!</h2>
+            
+            <div class="order-details">
+                <p class="order-id">Order ID: <strong id="confirmation-order-id">ORD-2024-1182</strong></p>
+                <p>Total Amount: <strong id="confirmation-total">$45.00</strong></p>
+            </div>
+            
+            <div id="payment-instructions" class="payment-section">
+                <h3>Payment Instructions</h3>
+                <div id="zelle-section" class="zelle-section">
+                    <div class="zelle-content">
+                        <div class="zelle-info">
+                            <p class="payment-method-label">Pay with Zelle:</p>
+                            <div class="payment-details">
+                                <p>Send to: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
+                                <p>Recipient: <strong>Pack 182 Mums Sale</strong></p>
+                                <p class="payment-note">⚠️ Include your order ID (<span id="payment-order-id">ORD-2024-1182</span>) in the memo</p>
+                            </div>
+                        </div>
+                        <div class="qr-code-section">
+                            <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code">
+                            <p class="qr-label">Scan with Zelle app</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pickup-info">
+                <h3>Pickup Information</h3>
+                <p id="pickup-details">School Parking Lot<br>Saturday, 9am-2pm</p>
+            </div>
+            
+            <div class="confirmation-actions">
+                <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
+                <button onclick="window.location.href='index.html'" class="btn btn-primary">Back to Main Site</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Generate QR code with sample data
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderId = 'ORD-2024-1182';
+            const zelleEmail = 'pack182tech@gmail.com';
+            const memo = `Order: ${orderId}`;
+            const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
+            
+            const zelleQR = document.getElementById('zelle-qr');
+            if (zelleQR) {
+                zelleQR.src = qrUrl;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -388,12 +388,50 @@ h3 { font-size: 1.5rem; }
     box-shadow: var(--shadow);
 }
 
-.venmo-info {
+.zelle-section {
+    margin-top: 15px;
+}
+
+.zelle-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.zelle-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.payment-method-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.payment-details {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.payment-details p {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.payment-note {
+    color: #d73502;
+    font-weight: 500;
+    margin-top: 12px !important;
+}
+
+.qr-code-section {
+    text-align: center;
 }
 
 .qr-code {
@@ -401,6 +439,44 @@ h3 { font-size: 1.5rem; }
     height: 200px;
     border: 2px solid var(--border-color);
     border-radius: 10px;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.qr-label {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive adjustments for payment section */
+@media (max-width: 768px) {
+    .zelle-content {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .zelle-info {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .payment-details {
+        text-align: left;
+    }
+    
+    .qr-code-section {
+        width: 100%;
+    }
+}
+
+.venmo-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
 }
 
 .venmo-handle {

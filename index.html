@@ -171,16 +171,18 @@
             <div id="payment-instructions" class="payment-section">
                 <h3>Payment Instructions</h3>
                 <div id="zelle-section" class="zelle-section">
-                    <p><strong>For Zelle payments:</strong></p>
-                    <div style="display: flex; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
+                    <div class="zelle-content">
                         <div class="zelle-info">
-                            <p>Send payment to email: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
-                            <p>Recipient Name: <strong>Pack 182 Mums Sale</strong></p>
-                            <p class="payment-note">Please include your order name in the memo</p>
+                            <p class="payment-method-label">Pay with Zelle:</p>
+                            <div class="payment-details">
+                                <p>Send to: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
+                                <p>Recipient: <strong>Pack 182 Mums Sale</strong></p>
+                                <p class="payment-note">⚠️ Include your order ID (<span id="payment-order-id"></span>) in the memo</p>
+                            </div>
                         </div>
-                        <div class="qr-code-container" style="text-align: center; display: block;">
-                            <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code" style="width: 200px; height: 200px; border: 2px solid #ddd; border-radius: 8px; padding: 10px; background: white; display: block; margin: 0 auto;">
-                            <p style="margin-top: 10px; font-size: 14px; color: #666;">Scan with Zelle app</p>
+                        <div class="qr-code-section">
+                            <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code">
+                            <p class="qr-label">Scan with Zelle app</p>
                         </div>
                     </div>
                 </div>

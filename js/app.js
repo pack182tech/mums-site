@@ -524,32 +524,33 @@ function showConfirmation(orderId, total, paymentMethod) {
     // Show Zelle payment instructions (only payment method now)
     document.getElementById('zelle-section').style.display = 'block';
     
-    // Update order ID in the note
-    const noteElement = document.querySelector('#zelle-section .payment-note');
-    if (noteElement) {
-        noteElement.textContent = `Please include Order ID: ${orderId} in the Zelle memo`;
+    // Update order ID in payment instructions
+    const paymentOrderId = document.getElementById('payment-order-id');
+    if (paymentOrderId) {
+        paymentOrderId.textContent = orderId;
     }
     
-    // Set Zelle QR code
+    // Set Zelle QR code with memo included
     const zelleQR = document.getElementById('zelle-qr');
     if (zelleQR) {
-        // Use settings QR URL or generate default one
         const zelleEmail = settings.zelle_email || 'pack182tech@gmail.com';
-        const qrUrl = settings.zelle_qr_url || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ZELLE:${encodeURIComponent(zelleEmail)}`;
+        // Create QR data with email and memo
+        const memo = `Order: ${orderId}`;
+        const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
+        
+        // Use custom QR URL from settings or generate with memo
+        const qrUrl = settings.zelle_qr_url && !settings.zelle_qr_url.includes('${orderId}') 
+            ? settings.zelle_qr_url  // Use static QR if configured
+            : `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
+        
         zelleQR.src = qrUrl;
         zelleQR.style.display = 'block';
-        
-        // Show the QR container
-        const qrContainer = zelleQR.closest('.qr-code-container');
-        if (qrContainer) {
-            qrContainer.style.display = 'block';
-        }
     }
     
     // Update Zelle email from settings
-    const zelleEmail = document.getElementById('zelle-email');
-    if (zelleEmail && settings.zelle_email) {
-        zelleEmail.textContent = settings.zelle_email;
+    const zelleEmailElement = document.getElementById('zelle-email');
+    if (zelleEmailElement && settings.zelle_email) {
+        zelleEmailElement.textContent = settings.zelle_email;
     }
     
     // Set pickup details

@@ -676,8 +676,13 @@
                 </div>
                 
                 <div class="filter-group" style="margin-bottom: 20px;">
-                    <label>Venmo Handle</label>
-                    <input type="text" id="setting-venmo_handle" style="width: 100%;" onchange="saveSetting('venmo_handle', this.value)">
+                    <label>Zelle Email</label>
+                    <input type="email" id="setting-zelle_email" style="width: 100%;" onchange="saveSetting('zelle_email', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle QR Code URL</label>
+                    <input type="url" id="setting-zelle_qr_url" style="width: 100%;" onchange="saveSetting('zelle_qr_url', this.value)" placeholder="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=...">
                 </div>
                 
                 <div class="filter-group" style="margin-bottom: 20px;">
@@ -714,7 +719,7 @@
         </div>
     </div>
     
-    <div id="version-footer">v1.3.9</div>
+    <div id="version-footer">v1.4.0</div>
     
     <script src="js/config.js"></script>
     <script>

@@ -172,10 +172,16 @@
                 <h3>Payment Instructions</h3>
                 <div id="zelle-section" class="zelle-section">
                     <p><strong>For Zelle payments:</strong></p>
-                    <div class="zelle-info">
-                        <p>Send payment to email: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
-                        <p>Recipient Name: <strong>Pack 182 Mums Sale</strong></p>
-                        <p class="payment-note">Please include your order name in the memo</p>
+                    <div style="display: flex; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
+                        <div class="zelle-info">
+                            <p>Send payment to email: <strong id="zelle-email">pack182tech@gmail.com</strong></p>
+                            <p>Recipient Name: <strong>Pack 182 Mums Sale</strong></p>
+                            <p class="payment-note">Please include your order name in the memo</p>
+                        </div>
+                        <div class="qr-code-container" style="text-align: center;">
+                            <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code" style="width: 200px; height: 200px; border: 2px solid #ddd; border-radius: 8px; padding: 10px; background: white;">
+                            <p style="margin-top: 10px; font-size: 14px; color: #666;">Scan with Zelle app</p>
+                        </div>
                     </div>
                 </div>
             </div>

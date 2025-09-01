@@ -5,6 +5,8 @@ catalog_title,Select Your Mums
 catalog_subtitle,These pictures are from the actual product site, but delivered products may differ slightly from the ones shown.
 instructions,1. Place an order from our selection of 5 colors 2. Choose your pot size and style 3. Fill out the order form 4. Submit your order 5. Pay via Venmo using the QR code 6. Pick up your mums on the scheduled date
 admin_email,pack182tech@gmail.com
+zelle_email,pack182tech@gmail.com
+zelle_qr_url,https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ZELLE:pack182tech@gmail.com
 venmo_handle,@Pack182Tech
 venmo_qr_url,https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=venmo://paycharge?txn=pay&recipients=Pack182Tech
 payment_instructions,Please include your Order ID and Scout Name in the Venmo payment description

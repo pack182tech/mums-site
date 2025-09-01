@@ -530,6 +530,21 @@ function showConfirmation(orderId, total, paymentMethod) {
         noteElement.textContent = `Please include Order ID: ${orderId} in the Zelle memo`;
     }
     
+    // Set Zelle QR code
+    const zelleQR = document.getElementById('zelle-qr');
+    if (zelleQR && settings.zelle_qr_url) {
+        zelleQR.src = settings.zelle_qr_url;
+        zelleQR.style.display = 'block';
+    } else if (zelleQR) {
+        zelleQR.style.display = 'none';
+    }
+    
+    // Update Zelle email from settings
+    const zelleEmail = document.getElementById('zelle-email');
+    if (zelleEmail && settings.zelle_email) {
+        zelleEmail.textContent = settings.zelle_email;
+    }
+    
     // Set pickup details
     const pickupInfo = `${settings.pickup_location || 'Location TBD'}<br>${settings.pickup_date || 'Date TBD'}`;
     document.getElementById('pickup-details').innerHTML = pickupInfo;

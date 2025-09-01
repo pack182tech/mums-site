@@ -374,6 +374,19 @@ async function handleOrderSubmit(e) {
         return;
     }
     
+    // Check if new address fields exist, handle gracefully
+    let address;
+    if (form.street && form.city && form.state && form.zip) {
+        // New format with separate fields
+        address = `${form.street.value}\n${form.city.value}, ${form.state.value} ${form.zip.value}`;
+    } else if (form.address) {
+        // Old format with single field (fallback)
+        address = form.address.value;
+    } else {
+        showError('Address fields are missing. Please refresh the page.');
+        return;
+    }
+    
     // Validate phone format
     if (!CONFIG.VALIDATION.PHONE.test(form.phone.value)) {
         showError('Please enter phone number in format: 123-456-7890');
@@ -383,18 +396,24 @@ async function handleOrderSubmit(e) {
     // Calculate total
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
+    // Get selected payment method
+    const paymentMethodInput = form.querySelector('input[name="paymentMethod"]:checked');
+    const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Cash';
+    
     // Prepare order data
     const orderData = {
         firstName: form.firstName.value,
         lastName: form.lastName.value,
         email: form.email.value,
         phone: form.phone.value,
-        address: `${form.street.value}\n${form.city.value}, ${form.state.value} ${form.zip.value}`,
+        address: address,
         products: cart,
         totalPrice: total,
         comments: form.comments.value,
-        paymentMethod: form.paymentMethod.value
+        paymentMethod: paymentMethod
     };
+    
+    debugLog('Order data being submitted:', orderData);
     
     // Save customer info for next time
     saveCustomerInfo();
@@ -406,7 +425,7 @@ async function handleOrderSubmit(e) {
         
         if (response.success) {
             currentOrderId = response.orderId;
-            showConfirmation(response.orderId, total, form.paymentMethod.value);
+            showConfirmation(response.orderId, total, paymentMethod);
             
             // Clear cart
             cart = [];

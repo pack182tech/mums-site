@@ -149,9 +149,9 @@ function updateColorQuantity(productId, color, delta) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
-    // Get current quantity for this product-color combination
-    const existingItem = cart.find(item => item.id === productId && item.color === color);
-    const currentQty = existingItem ? existingItem.quantity : 0;
+    // Get current quantity from the input field directly to ensure consistency
+    const input = document.getElementById(`qty-${productId}-${color}`);
+    const currentQty = input ? parseInt(input.value) || 0 : 0;
     const newQty = Math.max(0, Math.min(99, currentQty + delta));
     
     setColorQuantity(productId, color, newQty);

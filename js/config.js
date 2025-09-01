@@ -3,10 +3,10 @@
 
 const CONFIG = {
     // Version
-    VERSION: '1.3.4',
+    VERSION: '1.3.5',
     
     // Google Apps Script Web App URL
-    API_URL: 'https://script.google.com/macros/s/AKfycbypeSDKhPrEKOZw3_PJJ-w1Ck8lbLq1IEYqAMe3gm8AYVd_-d6o4uXyA_uhcFc73dC3/exec',
+    API_URL: 'https://script.google.com/macros/s/AKfycbwFihgdlUthlTMhKp8Ea0P1QUi198WibKsgCC-4XLDOyr42qObexjLyRMQfEHWTJE-vqg/exec',
     
     // Local storage keys
     STORAGE_KEYS: {

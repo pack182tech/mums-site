@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout QR Codes - Pack 182</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #003F87 0%, #005299 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #003F87;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .qr-card {
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            background: white;
+        }
+        
+        .scout-name-label {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #003F87;
+            background: #FFD700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid #003F87;
+        }
+        
+        .qr-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            border: 3px solid #003F87;
+        }
+        
+        .qr-wrapper img {
+            display: block;
+            width: 250px;
+            height: 250px;
+        }
+        
+        .url-display {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            color: #666;
+        }
+        
+        .features {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .features h4 {
+            color: #003F87;
+            margin-bottom: 10px;
+        }
+        
+        .features ul {
+            margin-left: 20px;
+            color: #333;
+        }
+        
+        .download-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #003F87;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-btn:hover {
+            background: #005299;
+        }
+        
+        .instructions {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+        }
+        
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .test-links {
+            margin-top: 30px;
+            padding: 20px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+        }
+        
+        .test-links h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .test-link {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        
+        .test-link:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Scout QR Codes - Clean & Scannable</h1>
+        <p class="subtitle">QR codes that work with all phone cameras - no overlays blocking the scan!</p>
+        
+        <div class="qr-grid">
+            <!-- Generic Scout QR -->
+            <div class="qr-card">
+                <div class="scout-name-label">SCOUT</div>
+                <div class="qr-wrapper">
+                    <img id="scout-qr" alt="Scout QR Code">
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/
+                </div>
+                <div class="features">
+                    <h4>Use this for:</h4>
+                    <ul>
+                        <li>General pack promotions</li>
+                        <li>Newsletter announcements</li>
+                        <li>Social media posts</li>
+                    </ul>
+                </div>
+                <a id="scout-download" class="download-btn" download="scout-qr.png">Download QR Code</a>
+            </div>
+
+            <!-- Dylan's QR -->
+            <div class="qr-card">
+                <div class="scout-name-label" style="background: #FFD700;">DYLAN</div>
+                <div class="qr-wrapper">
+                    <img id="dylan-qr" alt="Dylan QR Code">
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/?scout=Dylan
+                </div>
+                <div class="features">
+                    <h4>Special Features:</h4>
+                    <ul>
+                        <li>✅ Auto-fills "Dylan" in Scout Name field</li>
+                        <li>✅ Tracks sales to Dylan</li>
+                        <li>✅ Shows on leaderboard</li>
+                    </ul>
+                </div>
+                <a id="dylan-download" class="download-btn" download="dylan-qr.png">Download QR Code</a>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 How to Create More Scout QR Codes:</h3>
+            <p>To create a QR code for another scout (replace SCOUTNAME with the scout's name):</p>
+            <ol>
+                <li>Copy this URL template:<br>
+                    <code style="background: white; padding: 5px; display: block; margin: 10px 0;">
+                        https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://pack182tech.github.io/mums-site/scoutname/?scout=SCOUTNAME
+                    </code>
+                </li>
+                <li>Replace SCOUTNAME with the scout's first name (e.g., "Michael", "Sarah")</li>
+                <li>Open the URL in your browser to see the QR code</li>
+                <li>Right-click and save the image</li>
+                <li>Print on flyers, stickers, or share digitally</li>
+            </ol>
+        </div>
+
+        <div class="test-links">
+            <h3>🔗 Test These Links:</h3>
+            <p>Click to test that the URLs work correctly:</p>
+            <a href="https://pack182tech.github.io/mums-site/scoutname/" target="_blank" class="test-link">Basic Form</a>
+            <a href="https://pack182tech.github.io/mums-site/scoutname/?scout=Dylan" target="_blank" class="test-link">Dylan's Form</a>
+            <a href="https://pack182tech.github.io/mums-site/scoutname/?scout=TestScout" target="_blank" class="test-link">Test Scout Form</a>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
+            <h3 style="color: #333;">🎨 Customization Tips:</h3>
+            <ul style="color: #555; line-height: 1.8;">
+                <li><strong>Color:</strong> Use <code>&color=003F87</code> for Scout Blue QR codes</li>
+                <li><strong>Size:</strong> Use <code>&size=500x500</code> for high quality prints</li>
+                <li><strong>Margin:</strong> Use <code>&margin=2</code> for better scanning</li>
+                <li><strong>Format:</strong> Add <code>&format=png</code> for best quality</li>
+            </ul>
+            <p style="margin-top: 15px; padding: 10px; background: white; border-radius: 5px;">
+                <strong>Full example with all options:</strong><br>
+                <code style="font-size: 11px;">
+                    https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=https://pack182tech.github.io/mums-site/scoutname/?scout=YourScoutName
+                </code>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Generate QR codes
+        const baseUrl = 'https://pack182tech.github.io/mums-site/scoutname/';
+        
+        // Scout QR - Basic URL
+        const scoutQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(baseUrl)}`;
+        document.getElementById('scout-qr').src = scoutQrUrl;
+        document.getElementById('scout-download').href = scoutQrUrl;
+        
+        // Dylan QR - With scout parameter
+        const dylanUrl = baseUrl + '?scout=Dylan';
+        const dylanQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(dylanUrl)}`;
+        document.getElementById('dylan-qr').src = dylanQrUrl;
+        document.getElementById('dylan-download').href = dylanQrUrl;
+        
+        console.log('Scout QR URL:', scoutQrUrl);
+        console.log('Dylan QR URL:', dylanQrUrl);
+    </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+order_id,timestamp,scout_name,first_name,last_name,email,phone,address,products,total_price,payment_method,payment_status,order_status,comments
+ORD-2024-0001,2024-09-07T10:00:00Z,Johnny Smith,Jane,Doe,jane@example.com,555-1234,123 Main St,"""[{""name"":""Yellow Mum"",""quantity"":2}]""",30.00,Zelle,PENDING,NEW,Please leave at front door

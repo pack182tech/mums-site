@@ -1,0 +1,56 @@
+/* Scout Name Version Specific Styles */
+
+.scout-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.scout-section h3 {
+    color: white;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.scout-section h3::before {
+    content: "🏆";
+    font-size: 1.5em;
+}
+
+.scout-section label {
+    color: white;
+    font-weight: 600;
+}
+
+.scout-section input {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    font-size: 16px;
+}
+
+.scout-section input:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.field-help {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+}
+
+/* Make the scout section stand out */
+@media (max-width: 768px) {
+    .scout-section {
+        margin: -20px -20px 20px -20px;
+        border-radius: 0 0 10px 10px;
+    }
+}

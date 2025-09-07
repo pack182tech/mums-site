@@ -1,0 +1,113 @@
+// Scout Oath for background
+const SCOUT_OATH = `On my honor I will do my best to do my duty to God and my country and to obey the Scout Law; to help other people at all times; to keep myself physically strong, mentally awake, and morally straight.`;
+
+// Scout Law Principles
+const SCOUT_LAW = [
+    {
+        principle: "Trustworthy",
+        description: "A Scout tells the truth and keeps promises. People can depend on them."
+    },
+    {
+        principle: "Loyal",
+        description: "A Scout is true to family, friends, Scout leaders, school, and nation."
+    },
+    {
+        principle: "Helpful",
+        description: "A Scout cares about other people and willingly volunteers to help without expecting payment or reward."
+    },
+    {
+        principle: "Friendly",
+        description: "A Scout is a friend to all and a brother to every other Scout."
+    },
+    {
+        principle: "Courteous",
+        description: "A Scout is polite to everyone regardless of age or position."
+    },
+    {
+        principle: "Kind",
+        description: "A Scout knows there is strength in being gentle and treats others as they want to be treated."
+    },
+    {
+        principle: "Obedient",
+        description: "A Scout follows the rules of family, school, and troop and obeys the laws of the community and country."
+    },
+    {
+        principle: "Cheerful",
+        description: "A Scout looks for the bright side of life and cheerfully does tasks that come their way."
+    },
+    {
+        principle: "Thrifty",
+        description: "A Scout works to pay their own way and helps others. They save for the future."
+    },
+    {
+        principle: "Brave",
+        description: "A Scout can face danger although they are afraid and stand up for what is right."
+    },
+    {
+        principle: "Clean",
+        description: "A Scout keeps their body and mind fit and clean and chooses friends who live by high standards."
+    },
+    {
+        principle: "Reverent",
+        description: "A Scout is reverent toward God, faithful in religious duties, and respects the beliefs of others."
+    }
+];
+
+// Get a random Scout Law principle
+function getRandomScoutLaw() {
+    const index = Math.floor(Math.random() * SCOUT_LAW.length);
+    return SCOUT_LAW[index];
+}
+
+// Display Scout Oath as background texture
+function displayScoutLaw() {
+    const scoutLawBackground = document.getElementById('scout-law-background');
+    if (!scoutLawBackground) return;
+    
+    scoutLawBackground.innerHTML = `
+        <div class="scout-oath-text">
+            ${SCOUT_OATH}
+        </div>
+    `;
+}
+
+// Create Scout Law ticker/crawl
+function createScoutLawTicker() {
+    const ticker = document.createElement('div');
+    ticker.className = 'scout-law-ticker';
+    ticker.id = 'scout-law-ticker';
+    
+    // Randomize starting position
+    const randomStart = Math.floor(Math.random() * SCOUT_LAW.length);
+    const reorderedLaws = [
+        ...SCOUT_LAW.slice(randomStart),
+        ...SCOUT_LAW.slice(0, randomStart)
+    ];
+    
+    // Create the scrolling content with all principles
+    const tickerContent = reorderedLaws.map(law => 
+        `<span class="ticker-item">
+            <strong>A Scout is ${law.principle}:</strong> ${law.description}
+        </span>`
+    ).join(' • ');
+    
+    // Calculate random starting offset (0-50% of width)
+    const randomOffset = Math.random() * 50;
+    
+    ticker.innerHTML = `
+        <div class="ticker-content" style="transform: translateX(-${randomOffset}%);">
+            ${tickerContent} • ${tickerContent}
+        </div>
+    `;
+    
+    document.body.appendChild(ticker);
+}
+
+// Update loading text with random principle
+function updateLoadingText() {
+    const loadingText = document.querySelector('#loading-overlay p');
+    if (loadingText) {
+        const law = getRandomScoutLaw();
+        loadingText.textContent = `A Scout is ${law.principle}...`;
+    }
+}

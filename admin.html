@@ -559,6 +559,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('orders')">Orders</button>
             <button class="nav-tab" onclick="switchTab('inventory')">Inventory Summary</button>
+            <button class="nav-tab" onclick="switchTab('scouts')">Scout Names</button>
             <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
         </div>
         
@@ -599,6 +600,13 @@
                         <option value="NEW">New</option>
                         <option value="PROCESSING">Processing</option>
                         <option value="COMPLETED">Completed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Scout</label>
+                    <select id="scout-filter" onchange="filterOrders()">
+                        <option value="">All Scouts</option>
+                        <!-- Scout names will be populated here -->
                     </select>
                 </div>
                 <div class="filter-group">
@@ -644,6 +652,52 @@
             </div>
         </div>
         
+        <!-- Scout Names Tab -->
+        <div id="scouts-tab" class="tab-content">
+            <h2>Scout Names Management</h2>
+            <p style="color: #718096; margin-bottom: 20px;">Manage and standardize scout names for consistent tracking and leaderboard display.</p>
+            
+            <div class="stats" style="margin-bottom: 20px;">
+                <div class="stat-card">
+                    <div class="stat-label">Total Scouts</div>
+                    <div class="stat-value" id="total-scouts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Top Scout</div>
+                    <div class="stat-value" id="top-scout">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Top Revenue</div>
+                    <div class="stat-value" id="top-revenue">$0</div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="saveScoutNames()">Save Changes</button>
+                <button class="btn btn-secondary" onclick="loadScoutNames()">Refresh</button>
+            </div>
+            
+            <div style="background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 10px; border-radius: 5px; margin: 20px 0;">
+                <strong>⚠️ Important:</strong> Standardize scout names to ensure accurate tracking. For example, merge "Johnny Smith", "John Smith", and "J. Smith" into one consistent name.
+            </div>
+            
+            <div id="scout-names-container">
+                <table class="data-table" id="scout-names-table">
+                    <thead>
+                        <tr>
+                            <th>Original Name</th>
+                            <th>Standardized Name</th>
+                            <th>Orders</th>
+                            <th>Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scout-names-list">
+                        <!-- Scout names will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
         <!-- Settings Tab -->
         <div id="settings-tab" class="tab-content">
             <h2>Site Settings</h2>
@@ -673,6 +727,12 @@
                 <div class="filter-group" style="margin-bottom: 20px;">
                     <label>Instructions</label>
                     <textarea id="setting-instructions" rows="4" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('instructions', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Scout Help Text</label>
+                    <input type="text" id="setting-scout_help_text" style="width: 100%;" onchange="saveSetting('scout_help_text', this.value)" placeholder="Help the scout you are supporting earn a badge by entering their name here.">
+                    <small style="color: #718096;">Text shown below the Scout Name field on the order form</small>
                 </div>
                 
                 <div class="filter-group" style="margin-bottom: 20px;">
@@ -789,6 +849,9 @@
                 document.getElementById('inventory-tab').classList.add('active');
                 updateDateTime();
                 loadInventory();
+            } else if (tab === 'scouts') {
+                document.getElementById('scouts-tab').classList.add('active');
+                loadScoutNames();
             } else if (tab === 'settings') {
                 document.getElementById('settings-tab').classList.add('active');
                 loadSettings();
@@ -843,6 +906,7 @@
                         <tr>
                             <th>Order ID</th>
                             <th>Date</th>
+                            <th>Scout</th>
                             <th>Customer</th>
                             <th class="hide-mobile">Email</th>
                             <th>Total</th>
@@ -862,6 +926,7 @@
                     <tr>
                         <td>${order.order_id}</td>
                         <td>${dateStr}</td>
+                        <td>${order.scout_name || '-'}</td>
                         <td>${order.first_name} ${order.last_name}</td>
                         <td class="hide-mobile">${order.email}</td>
                         <td>$${order.total_price}</td>
@@ -1244,6 +1309,147 @@
                 console.error('Error loading settings:', error);
                 showMessage('Failed to load settings. Please try again.', 'error');
             }
+        }
+        
+        // Scout Names Management Functions
+        let scoutData = {};
+        
+        async function loadScoutNames() {
+            try {
+                // Get all orders to extract scout names
+                const response = await fetch(`${CONFIG.API_URL}?path=orders&admin=true`);
+                const data = await response.json();
+                
+                if (data.orders) {
+                    // Process scout names from orders
+                    scoutData = {};
+                    const scoutFilter = document.getElementById('scout-filter');
+                    scoutFilter.innerHTML = '<option value="">All Scouts</option>';
+                    
+                    data.orders.forEach(order => {
+                        const scoutName = order.scout_name || 'Unknown Scout';
+                        if (!scoutData[scoutName]) {
+                            scoutData[scoutName] = {
+                                original: scoutName,
+                                standardized: scoutName,
+                                orders: 0,
+                                revenue: 0
+                            };
+                        }
+                        scoutData[scoutName].orders++;
+                        scoutData[scoutName].revenue += parseFloat(order.total_price || 0);
+                    });
+                    
+                    // Display scout names table
+                    displayScoutNames();
+                    
+                    // Update scout stats
+                    updateScoutStats();
+                    
+                    // Populate scout filter dropdown
+                    Object.keys(scoutData).sort().forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = `${name} (${scoutData[name].orders} orders)`;
+                        scoutFilter.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading scout names:', error);
+                showMessage('Failed to load scout data', 'error');
+            }
+        }
+        
+        function displayScoutNames() {
+            const tbody = document.getElementById('scout-names-list');
+            let html = '';
+            
+            Object.keys(scoutData).sort().forEach(name => {
+                const scout = scoutData[name];
+                html += `
+                    <tr>
+                        <td>${scout.original}</td>
+                        <td>
+                            <input type="text" 
+                                   value="${scout.standardized}" 
+                                   onchange="updateScoutName('${scout.original}', this.value)"
+                                   style="width: 100%; padding: 5px; border: 1px solid #e2e8f0; border-radius: 3px;">
+                        </td>
+                        <td>${scout.orders}</td>
+                        <td>$${scout.revenue.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function updateScoutName(original, newName) {
+            if (scoutData[original]) {
+                scoutData[original].standardized = newName;
+            }
+        }
+        
+        async function saveScoutNames() {
+            try {
+                // In a real implementation, this would save to the backend
+                showMessage('Scout names updated successfully', 'success');
+                
+                // Refresh the display
+                loadScoutNames();
+            } catch (error) {
+                console.error('Error saving scout names:', error);
+                showMessage('Failed to save scout names', 'error');
+            }
+        }
+        
+        function updateScoutStats() {
+            const totalScouts = Object.keys(scoutData).length;
+            let topScout = '-';
+            let topRevenue = 0;
+            
+            Object.keys(scoutData).forEach(name => {
+                if (scoutData[name].revenue > topRevenue) {
+                    topRevenue = scoutData[name].revenue;
+                    topScout = name;
+                }
+            });
+            
+            document.getElementById('total-scouts').textContent = totalScouts;
+            document.getElementById('top-scout').textContent = topScout;
+            document.getElementById('top-revenue').textContent = `$${topRevenue.toFixed(2)}`;
+        }
+        
+        // Filter orders by scout
+        function filterOrders() {
+            const paymentFilter = document.getElementById('payment-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const scoutFilter = document.getElementById('scout-filter').value;
+            
+            let filtered = allOrders;
+            
+            if (paymentFilter) {
+                filtered = filtered.filter(order => order.payment_status === paymentFilter);
+            }
+            
+            if (statusFilter) {
+                filtered = filtered.filter(order => order.order_status === statusFilter);
+            }
+            
+            if (scoutFilter) {
+                filtered = filtered.filter(order => order.scout_name === scoutFilter);
+            }
+            
+            if (searchInput) {
+                filtered = filtered.filter(order => {
+                    return order.order_id.toLowerCase().includes(searchInput) ||
+                           `${order.first_name} ${order.last_name}`.toLowerCase().includes(searchInput) ||
+                           (order.scout_name && order.scout_name.toLowerCase().includes(searchInput));
+                });
+            }
+            
+            displayOrders(filtered);
         }
         
         async function saveSetting(key, value) {

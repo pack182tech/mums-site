@@ -12,3 +12,4 @@ venmo_qr_url,https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=venmo
 payment_instructions,Please include your Order ID and Scout Name in the Venmo payment description
 pickup_location,TBD - Will be announced via email
 pickup_date,Saturday Date TBD 9am-2pm
+scout_help_text,Help the scout you are supporting earn a badge by entering their name here.

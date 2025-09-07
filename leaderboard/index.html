@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack 182 Mums Sale Leaderboard 🏆</title>
+    <link rel="icon" type="image/png" href="../pack182logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .logo {
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 3rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #ffd700;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .stat-card:nth-child(2) { animation-delay: 0.5s; }
+        .stat-card:nth-child(3) { animation-delay: 1s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .leaderboard {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .leaderboard-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .scout-entry {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(90deg, #f0f0f0 0%, white 100%);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scout-entry:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .rank {
+            font-size: 2rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .rank-1 { 
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            font-size: 2.5rem;
+        }
+        
+        .rank-2 { 
+            color: #c0c0c0;
+            text-shadow: 0 0 8px #c0c0c0;
+            font-size: 2.3rem;
+        }
+        
+        .rank-3 { 
+            color: #cd7f32;
+            text-shadow: 0 0 6px #cd7f32;
+            font-size: 2.1rem;
+        }
+        
+        .scout-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+        
+        .scout-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .scout-stats {
+            display: flex;
+            gap: 20px;
+            color: #666;
+        }
+        
+        .scout-revenue {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-right: 20px;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        
+        .trophy {
+            font-size: 3rem;
+            margin-right: 10px;
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .rank-1 .trophy { animation-duration: 2s; }
+        .rank-2 .trophy { animation-duration: 3s; }
+        .rank-3 .trophy { animation-duration: 4s; }
+        
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+        
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 50px;
+        }
+        
+        .refresh-timer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .subtitle { font-size: 1.2rem; }
+            .scout-name { font-size: 1.2rem; }
+            .scout-revenue { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="fireworks" id="fireworks"></div>
+    
+    <div class="container">
+        <div class="header">
+            <img src="../pack182logo.png" alt="Pack 182 Logo" class="logo">
+            <h1>🏆 Mums Sale Champions 🏆</h1>
+            <div class="subtitle">Who Will Be Our Top Seller?</div>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Scouts</div>
+                <div class="stat-value" id="total-scouts">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-value" id="total-sales">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value" id="total-orders">0</div>
+            </div>
+        </div>
+        
+        <div class="leaderboard">
+            <div class="leaderboard-header">
+                <div class="leaderboard-title">🌟 Top Sellers 🌟</div>
+            </div>
+            <div id="leaderboard-content">
+                <div class="loading">Loading awesome scouts...</div>
+            </div>
+        </div>
+        
+        <div class="refresh-timer">
+            Auto-refreshes every 30 seconds ⏱️
+        </div>
+    </div>
+    
+    <script src="../js/config.js"></script>
+    <script src="../js/sheets-api.js"></script>
+    <script>
+        let scoutData = {};
+        let maxRevenue = 0;
+        
+        async function loadLeaderboard() {
+            try {
+                const response = await sheetsAPI.getOrders();
+                
+                if (response && response.length > 0) {
+                    processScoutData(response);
+                    displayLeaderboard();
+                    createFireworks();
+                } else {
+                    document.getElementById('leaderboard-content').innerHTML = 
+                        '<div class="loading">No sales yet. Be the first!</div>';
+                }
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                document.getElementById('leaderboard-content').innerHTML = 
+                    '<div class="loading">Loading leaderboard...</div>';
+            }
+        }
+        
+        function processScoutData(orders) {
+            scoutData = {};
+            let totalSales = 0;
+            let totalOrders = 0;
+            
+            orders.forEach(order => {
+                const scoutName = order.scout_name || 'Unknown Scout';
+                const revenue = parseFloat(order.total_price || 0);
+                
+                if (!scoutData[scoutName]) {
+                    scoutData[scoutName] = {
+                        name: scoutName,
+                        orders: 0,
+                        revenue: 0,
+                        items: 0
+                    };
+                }
+                
+                scoutData[scoutName].orders++;
+                scoutData[scoutName].revenue += revenue;
+                
+                // Count items
+                if (order.products && Array.isArray(order.products)) {
+                    order.products.forEach(product => {
+                        scoutData[scoutName].items += product.quantity || 0;
+                    });
+                }
+                
+                totalSales += revenue;
+                totalOrders++;
+            });
+            
+            // Find max revenue for progress bars
+            maxRevenue = Math.max(...Object.values(scoutData).map(s => s.revenue));
+            
+            // Update stats
+            document.getElementById('total-scouts').textContent = Object.keys(scoutData).length;
+            document.getElementById('total-sales').textContent = `$${totalSales.toFixed(2)}`;
+            document.getElementById('total-orders').textContent = totalOrders;
+        }
+        
+        function displayLeaderboard() {
+            const sorted = Object.values(scoutData).sort((a, b) => b.revenue - a.revenue);
+            let html = '';
+            
+            sorted.forEach((scout, index) => {
+                const rank = index + 1;
+                const trophy = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '🌟';
+                const progressWidth = (scout.revenue / maxRevenue) * 100;
+                
+                html += `
+                    <div class="scout-entry">
+                        <div class="rank rank-${rank}">${rank}</div>
+                        <div class="trophy">${trophy}</div>
+                        <div class="scout-info">
+                            <div class="scout-name">${scout.name}</div>
+                            <div class="scout-stats">
+                                <span>📦 ${scout.orders} orders</span>
+                                <span>🌻 ${scout.items} mums</span>
+                            </div>
+                        </div>
+                        <div class="scout-revenue">$${scout.revenue.toFixed(2)}</div>
+                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('leaderboard-content').innerHTML = html;
+        }
+        
+        function createFireworks() {
+            const container = document.getElementById('fireworks');
+            container.innerHTML = '';
+            
+            // Create random fireworks
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    
+                    for (let j = 0; j < 10; j++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'firework';
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                        particle.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
+                        particle.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
+                        particle.style.background = ['#ffd700', '#ff69b4', '#00ff00', '#00bfff'][Math.floor(Math.random() * 4)];
+                        container.appendChild(particle);
+                        
+                        setTimeout(() => particle.remove(), 1000);
+                    }
+                }, i * 200);
+            }
+        }
+        
+        // Initial load
+        loadLeaderboard();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadLeaderboard, 30000);
+        
+        // Add some fun animations periodically
+        setInterval(createFireworks, 10000);
+    </script>
+</body>
+</html>

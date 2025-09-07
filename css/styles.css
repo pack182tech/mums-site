@@ -7,7 +7,7 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 .header-content {
@@ -26,16 +26,16 @@
 }
 
 .header-logo {
-    height: 50px;
+    height: 30px;
     width: auto;
 }
 
 .scout-name-display {
-    margin-top: 5px;
+    margin-top: 2px;
     font-weight: bold;
     color: var(--primary-color);
-    font-size: 0.9rem;
-    min-height: 20px;
+    font-size: 0.7rem;
+    min-height: 15px;
 }
 
 .header-nav {
@@ -46,10 +46,11 @@
 .nav-link {
     color: var(--primary-color);
     text-decoration: none;
-    padding: 8px 15px;
+    padding: 5px 10px;
     border-radius: 5px;
     transition: background-color 0.3s;
     font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .nav-link:hover {

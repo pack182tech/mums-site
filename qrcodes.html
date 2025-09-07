@@ -271,12 +271,6 @@
                 <img src="pack182logo.png" alt="Pack 182 Logo" class="header-logo">
                 <div class="scout-name-display" id="header-scout-name"></div>
             </div>
-            <nav class="header-nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="leaderboard/" class="nav-link">Leaderboard</a>
-                <a href="qrcodes.html" class="nav-link active">QR Codes</a>
-                <a href="admin.html" class="nav-link">Admin</a>
-            </nav>
         </div>
     </header>
     
@@ -305,10 +299,11 @@
                 <div id="success-message" class="success-message"></div>
                 <div class="input-group">
                     <input type="text" id="scout-name-input" placeholder="Enter scout's name (e.g., John, Sarah)" maxlength="50">
-                    <button onclick="generateQRCode()" id="generate-btn">Generate QR Code</button>
+                    <button onclick="generateQRCode()" id="generate-btn">Generate Scout QR Code</button>
+                    <button onclick="generateGenericQRCode()" class="btn" style="background: #28a745;">Generate Generic QR Code</button>
                 </div>
                 <p style="color: #666; font-size: 14px;">
-                    ℹ️ Enter the scout's first name or full name. This will create a personalized QR code that auto-fills their name on the order form.
+                    ℹ️ Enter the scout's first name for a personalized QR code, or use "Generic QR Code" for a general form without pre-filled name.
                 </p>
             </div>
             
@@ -375,6 +370,48 @@
             } catch (error) {
                 console.error('Failed to save to Sheets:', error);
             }
+        }
+        
+        // Generate a generic QR code without name
+        async function generateGenericQRCode() {
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            // Hide messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            // Check if "Scout" already exists
+            const exists = scoutNames.some(s => s === 'Scout (Generic)');
+            if (exists) {
+                errorDiv.textContent = 'A generic Scout QR code already exists';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Add to list
+            scoutNames.push('Scout (Generic)');
+            scoutNames.sort((a, b) => a.localeCompare(b));
+            
+            // Save to storage
+            await saveScoutNames();
+            
+            // Show success message
+            successDiv.textContent = 'Generic Scout QR code created!';
+            successDiv.style.display = 'block';
+            
+            // Update display
+            updateStats();
+            displayAllQRCodes();
+            
+            // Scroll to the new QR code
+            setTimeout(() => {
+                const element = document.getElementById('qr-Scout-(Generic)');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.style.animation = 'pulse 1s';
+                }
+            }, 100);
         }
         
         // Generate a new QR code
@@ -458,18 +495,23 @@
             
             let html = '';
             scouts.forEach(name => {
-                const url = `https://pack182tech.github.io/mums-site/scoutname/?scout=${encodeURIComponent(name)}`;
+                // For generic Scout QR, don't include the scout parameter
+                const isGeneric = name === 'Scout (Generic)';
+                const url = isGeneric 
+                    ? 'https://pack182tech.github.io/mums-site/scoutname/'
+                    : `https://pack182tech.github.io/mums-site/scoutname/?scout=${encodeURIComponent(name)}`;
                 const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&color=003F87&format=png&data=${encodeURIComponent(url)}`;
-                const safeId = name.replace(/\s+/g, '-');
+                const safeId = name.replace(/[\s()]+/g, '-');
+                const displayName = isGeneric ? 'SCOUT' : name;
                 
                 html += `
                     <div class="qr-item" id="qr-${safeId}">
-                        <div class="qr-name">${name}</div>
+                        <div class="qr-name">${displayName}</div>
                         <div class="qr-code-wrapper">
-                            <img src="${qrUrl}" alt="${name} QR Code">
+                            <img src="${qrUrl}" alt="${displayName} QR Code">
                         </div>
                         <div class="qr-actions">
-                            <a href="${qrUrl}" download="${name}-qr.png" class="btn-small">Download</a>
+                            <a href="${qrUrl}" download="${displayName}-qr.png" class="btn-small">Download</a>
                             <button onclick="deleteScout('${name}')" class="btn-small btn-delete">Delete</button>
                         </div>
                     </div>

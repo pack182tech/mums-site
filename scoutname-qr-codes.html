@@ -164,6 +164,9 @@
                         <li>Neighborhood flyers</li>
                         <li>Direct marketing</li>
                     </ul>
+                    <p style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 5px; font-size: 14px;">
+                        <strong>✨ Special feature:</strong> This QR code automatically fills "Dylan" in the Scout Name field!
+                    </p>
                 </div>
             </div>
         </div>
@@ -192,8 +195,9 @@
         document.getElementById('scout-qr').src = scoutQrUrl;
         document.getElementById('scout-download').href = scoutQrUrl;
         
-        // Dylan's QR (same URL, but visually labeled)
-        const dylanQrUrl = `${qrApiUrl}?size=300x300&data=${encodeURIComponent(baseUrl)}`;
+        // Dylan's QR with pre-filled scout name parameter
+        const dylanUrl = baseUrl + '?scout=Dylan';
+        const dylanQrUrl = `${qrApiUrl}?size=300x300&data=${encodeURIComponent(dylanUrl)}`;
         document.getElementById('dylan-qr').src = dylanQrUrl;
         document.getElementById('dylan-download').href = dylanQrUrl;
     </script>

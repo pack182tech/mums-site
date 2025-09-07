@@ -26,6 +26,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load saved customer info
     loadCustomerInfo();
     
+    // Check for scout name in URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const scoutName = urlParams.get('scout');
+    if (scoutName) {
+        // Pre-populate the scout name field
+        const scoutNameField = document.getElementById('scoutName');
+        if (scoutNameField && !scoutNameField.value) {
+            scoutNameField.value = decodeURIComponent(scoutName);
+            debugLog('Pre-populated scout name from URL:', scoutName);
+        }
+    }
+    
     debugLog('Application initialized');
 });
 
@@ -525,6 +537,16 @@ function showOrderForm() {
     
     // Load saved customer info
     loadCustomerInfo();
+    
+    // Check for scout name in URL parameters when showing order form
+    const urlParams = new URLSearchParams(window.location.search);
+    const scoutName = urlParams.get('scout');
+    if (scoutName) {
+        const scoutNameField = document.getElementById('scoutName');
+        if (scoutNameField && !scoutNameField.value) {
+            scoutNameField.value = decodeURIComponent(scoutName);
+        }
+    }
 }
 
 function showConfirmation(orderId, total, paymentMethod) {

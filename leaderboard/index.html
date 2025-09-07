@@ -327,8 +327,15 @@
             let totalOrders = 0;
             
             orders.forEach(order => {
-                const scoutName = order.scout_name || 'Unknown Scout';
+                const scoutName = order.scout_name;
                 const revenue = parseFloat(order.total_price || 0);
+                
+                // Skip orders without a scout name
+                if (!scoutName || scoutName.trim() === '') {
+                    totalSales += revenue;
+                    totalOrders++;
+                    return; // Skip this order for leaderboard
+                }
                 
                 if (!scoutData[scoutName]) {
                     scoutData[scoutName] = {
@@ -353,17 +360,31 @@
                 totalOrders++;
             });
             
-            // Find max revenue for progress bars
-            maxRevenue = Math.max(...Object.values(scoutData).map(s => s.revenue));
+            // Remove 'Unknown Scout' if it exists
+            delete scoutData['Unknown Scout'];
             
-            // Update stats
+            // Find max revenue for progress bars
+            const scoutValues = Object.values(scoutData);
+            maxRevenue = scoutValues.length > 0 ? Math.max(...scoutValues.map(s => s.revenue)) : 0;
+            
+            // Update stats (only count named scouts)
             document.getElementById('total-scouts').textContent = Object.keys(scoutData).length;
             document.getElementById('total-sales').textContent = `$${totalSales.toFixed(2)}`;
             document.getElementById('total-orders').textContent = totalOrders;
         }
         
         function displayLeaderboard() {
-            const sorted = Object.values(scoutData).sort((a, b) => b.revenue - a.revenue);
+            // Filter out any 'Unknown Scout' entries and sort
+            const sorted = Object.values(scoutData)
+                .filter(scout => scout.name !== 'Unknown Scout')
+                .sort((a, b) => b.revenue - a.revenue);
+            
+            if (sorted.length === 0) {
+                document.getElementById('leaderboard-content').innerHTML = 
+                    '<div class="loading">No scouts with sales yet. Be the first!</div>';
+                return;
+            }
+            
             let html = '';
             
             sorted.forEach((scout, index) => {

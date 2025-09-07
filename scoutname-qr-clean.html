@@ -48,32 +48,35 @@
         
         .qr-card {
             text-align: center;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
             padding: 20px;
             background: white;
         }
         
+        .qr-container {
+            display: inline-block;
+            border: 3px solid #003F87;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
         .scout-name-label {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #003F87;
             background: #FFD700;
-            padding: 10px 20px;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 20px;
+            padding: 12px 20px;
+            margin: 0;
             letter-spacing: 2px;
             text-transform: uppercase;
-            border: 2px solid #003F87;
+            border-bottom: 3px solid #003F87;
         }
         
         .qr-wrapper {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-            border: 3px solid #003F87;
+            padding: 15px;
+            display: block;
         }
         
         .qr-wrapper img {
@@ -171,15 +174,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>📱 Scout QR Codes - Clean & Scannable</h1>
-        <p class="subtitle">QR codes that work with all phone cameras - no overlays blocking the scan!</p>
+        <h1>📱 Pack 182 Scout QR Codes</h1>
+        <p class="subtitle">Personalized QR codes for Dylan, Anthony, Mason, Josh and more!</p>
         
         <div class="qr-grid">
             <!-- Generic Scout QR -->
             <div class="qr-card">
-                <div class="scout-name-label">SCOUT</div>
-                <div class="qr-wrapper">
-                    <img id="scout-qr" alt="Scout QR Code">
+                <div class="qr-container">
+                    <div class="scout-name-label">SCOUT</div>
+                    <div class="qr-wrapper">
+                        <img id="scout-qr" alt="Scout QR Code">
+                    </div>
                 </div>
                 <div class="url-display">
                     https://pack182tech.github.io/mums-site/scoutname/
@@ -197,9 +202,11 @@
 
             <!-- Dylan's QR -->
             <div class="qr-card">
-                <div class="scout-name-label" style="background: #FFD700;">DYLAN</div>
-                <div class="qr-wrapper">
-                    <img id="dylan-qr" alt="Dylan QR Code">
+                <div class="qr-container">
+                    <div class="scout-name-label">DYLAN</div>
+                    <div class="qr-wrapper">
+                        <img id="dylan-qr" alt="Dylan QR Code">
+                    </div>
                 </div>
                 <div class="url-display">
                     https://pack182tech.github.io/mums-site/scoutname/?scout=Dylan
@@ -213,6 +220,72 @@
                     </ul>
                 </div>
                 <a id="dylan-download" class="download-btn" download="dylan-qr.png">Download QR Code</a>
+            </div>
+            
+            <!-- Anthony's QR -->
+            <div class="qr-card">
+                <div class="qr-container">
+                    <div class="scout-name-label">ANTHONY</div>
+                    <div class="qr-wrapper">
+                        <img id="anthony-qr" alt="Anthony QR Code">
+                    </div>
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/?scout=Anthony
+                </div>
+                <div class="features">
+                    <h4>Special Features:</h4>
+                    <ul>
+                        <li>✅ Auto-fills "Anthony" in Scout Name field</li>
+                        <li>✅ Tracks sales to Anthony</li>
+                        <li>✅ Shows on leaderboard</li>
+                    </ul>
+                </div>
+                <a id="anthony-download" class="download-btn" download="anthony-qr.png">Download QR Code</a>
+            </div>
+            
+            <!-- Mason's QR -->
+            <div class="qr-card">
+                <div class="qr-container">
+                    <div class="scout-name-label">MASON</div>
+                    <div class="qr-wrapper">
+                        <img id="mason-qr" alt="Mason QR Code">
+                    </div>
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/?scout=Mason
+                </div>
+                <div class="features">
+                    <h4>Special Features:</h4>
+                    <ul>
+                        <li>✅ Auto-fills "Mason" in Scout Name field</li>
+                        <li>✅ Tracks sales to Mason</li>
+                        <li>✅ Shows on leaderboard</li>
+                    </ul>
+                </div>
+                <a id="mason-download" class="download-btn" download="mason-qr.png">Download QR Code</a>
+            </div>
+            
+            <!-- Josh's QR -->
+            <div class="qr-card">
+                <div class="qr-container">
+                    <div class="scout-name-label">JOSH</div>
+                    <div class="qr-wrapper">
+                        <img id="josh-qr" alt="Josh QR Code">
+                    </div>
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/?scout=Josh
+                </div>
+                <div class="features">
+                    <h4>Special Features:</h4>
+                    <ul>
+                        <li>✅ Auto-fills "Josh" in Scout Name field</li>
+                        <li>✅ Tracks sales to Josh</li>
+                        <li>✅ Shows on leaderboard</li>
+                    </ul>
+                </div>
+                <a id="josh-download" class="download-btn" download="josh-qr.png">Download QR Code</a>
             </div>
         </div>
 
@@ -272,8 +345,25 @@
         document.getElementById('dylan-qr').src = dylanQrUrl;
         document.getElementById('dylan-download').href = dylanQrUrl;
         
-        console.log('Scout QR URL:', scoutQrUrl);
-        console.log('Dylan QR URL:', dylanQrUrl);
+        // Anthony QR
+        const anthonyUrl = baseUrl + '?scout=Anthony';
+        const anthonyQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(anthonyUrl)}`;
+        document.getElementById('anthony-qr').src = anthonyQrUrl;
+        document.getElementById('anthony-download').href = anthonyQrUrl;
+        
+        // Mason QR
+        const masonUrl = baseUrl + '?scout=Mason';
+        const masonQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(masonUrl)}`;
+        document.getElementById('mason-qr').src = masonQrUrl;
+        document.getElementById('mason-download').href = masonQrUrl;
+        
+        // Josh QR
+        const joshUrl = baseUrl + '?scout=Josh';
+        const joshQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(joshUrl)}`;
+        document.getElementById('josh-qr').src = joshQrUrl;
+        document.getElementById('josh-download').href = joshQrUrl;
+        
+        console.log('All QR codes generated successfully');
     </script>
 </body>
 </html>

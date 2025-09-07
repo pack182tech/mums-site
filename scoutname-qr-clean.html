@@ -175,7 +175,7 @@
 <body>
     <div class="container">
         <h1>📱 Pack 182 Scout QR Codes</h1>
-        <p class="subtitle">Personalized QR codes for Dylan, Anthony, Mason, Josh and more!</p>
+        <p class="subtitle">Personalized QR codes for Dylan, Anthony, Mason, Josh, Rodriguez and more!</p>
         
         <div class="qr-grid">
             <!-- Generic Scout QR -->
@@ -287,6 +287,28 @@
                 </div>
                 <a id="josh-download" class="download-btn" download="josh-qr.png">Download QR Code</a>
             </div>
+            
+            <!-- Rodriguez's QR -->
+            <div class="qr-card">
+                <div class="qr-container">
+                    <div class="scout-name-label">RODRIGUEZ</div>
+                    <div class="qr-wrapper">
+                        <img id="rodriguez-qr" alt="Rodriguez QR Code">
+                    </div>
+                </div>
+                <div class="url-display">
+                    https://pack182tech.github.io/mums-site/scoutname/?scout=Rodriguez
+                </div>
+                <div class="features">
+                    <h4>Special Features:</h4>
+                    <ul>
+                        <li>✅ Auto-fills "Rodriguez" in Scout Name field</li>
+                        <li>✅ Tracks sales to Rodriguez</li>
+                        <li>✅ Shows on leaderboard</li>
+                    </ul>
+                </div>
+                <a id="rodriguez-download" class="download-btn" download="rodriguez-qr.png">Download QR Code</a>
+            </div>
         </div>
 
         <div class="instructions">
@@ -362,6 +384,12 @@
         const joshQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(joshUrl)}`;
         document.getElementById('josh-qr').src = joshQrUrl;
         document.getElementById('josh-download').href = joshQrUrl;
+        
+        // Rodriguez QR
+        const rodriguezUrl = baseUrl + '?scout=Rodriguez';
+        const rodriguezQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=2&color=003F87&format=png&data=${encodeURIComponent(rodriguezUrl)}`;
+        document.getElementById('rodriguez-qr').src = rodriguezQrUrl;
+        document.getElementById('rodriguez-download').href = rodriguezQrUrl;
         
         console.log('All QR codes generated successfully');
     </script>

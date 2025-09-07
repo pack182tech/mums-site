@@ -129,9 +129,15 @@ function createProductCard(product) {
         `;
     }).join('');
     
+    // Adjust image path for scoutname subdirectory
+    let imageUrl = product.image_url || 'https://via.placeholder.com/300';
+    if (imageUrl && !imageUrl.startsWith('http')) {
+        imageUrl = '../' + imageUrl;
+    }
+    
     card.innerHTML = `
         <div class="product-image">
-            <img src="${product.image_url || 'https://via.placeholder.com/300'}" 
+            <img src="${imageUrl}" 
                  alt="${product.title}"
                  loading="lazy"
                  crossorigin="anonymous">

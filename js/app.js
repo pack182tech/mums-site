@@ -10,6 +10,16 @@ let currentOrderId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     debugLog('Initializing application...');
     
+    // Check for scout name in URL and display it
+    const urlParams = new URLSearchParams(window.location.search);
+    const scoutName = urlParams.get('scout');
+    if (scoutName) {
+        const scoutNameDisplay = document.getElementById('header-scout-name');
+        if (scoutNameDisplay) {
+            scoutNameDisplay.textContent = decodeURIComponent(scoutName);
+        }
+    }
+    
     // Load saved cart
     loadCart();
     

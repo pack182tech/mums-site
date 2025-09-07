@@ -177,6 +177,28 @@ class SheetsAPI {
         };
     }
 
+    // Get scout names list
+    async getScoutNames() {
+        try {
+            const response = await this.apiCall('scouts');
+            return response;
+        } catch (error) {
+            console.error('Failed to fetch scout names:', error);
+            return { scouts: [] };
+        }
+    }
+    
+    // Update scout names list
+    async updateScoutNames(names) {
+        try {
+            const response = await this.apiCall('updateScouts', 'POST', { scouts: names });
+            return response;
+        } catch (error) {
+            console.error('Failed to update scout names:', error);
+            throw new Error('Failed to update scout names');
+        }
+    }
+    
     // Clear cache
     clearCache() {
         this.cache.clear();

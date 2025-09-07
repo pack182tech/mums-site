@@ -24,6 +24,8 @@ function doGet(e) {
         return getSettings();
       case 'orders':
         return getOrders(e);
+      case 'scouts':
+        return getScoutNames();
       default:
         return createJsonResponse({error: 'Invalid path'}, 404);
     }
@@ -49,6 +51,8 @@ function doPost(e) {
         return updateSettings(data, e);
       case 'updateOrderStatus':
         return updateOrderStatus(data, e);
+      case 'updateScouts':
+        return updateScoutNames(data);
       default:
         return createJsonResponse({error: 'Invalid path'}, 404);
     }
@@ -318,6 +322,59 @@ function isAdminRequest(e) {
   return e.parameter.admin === 'true';
 }
 
+// Get scout names
+function getScoutNames() {
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('ScoutNames');
+  if (!sheet) {
+    // Create the sheet if it doesn't exist
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const newSheet = ss.insertSheet('ScoutNames');
+    newSheet.appendRow(['scout_name', 'date_added']);
+    return createJsonResponse({scouts: []});
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  const scouts = [];
+  
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (row[0]) {
+      scouts.push(row[0]);
+    }
+  }
+  
+  return createJsonResponse({scouts: scouts.sort()});
+}
+
+// Update scout names
+function updateScoutNames(data) {
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('ScoutNames');
+  if (!sheet) {
+    // Create the sheet if it doesn't exist
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const newSheet = ss.insertSheet('ScoutNames');
+    newSheet.appendRow(['scout_name', 'date_added']);
+  }
+  
+  const scouts = data.scouts || [];
+  const timestamp = new Date();
+  
+  // Clear existing data (except headers)
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.deleteRows(2, lastRow - 1);
+  }
+  
+  // Add new scout names
+  scouts.forEach(name => {
+    if (name && name.trim()) {
+      sheet.appendRow([name.trim(), timestamp]);
+    }
+  });
+  
+  return createJsonResponse({success: true, scouts: scouts});
+}
+
 // Initialize sheets with proper headers including scout_name
 function initializeSheets() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -355,6 +412,13 @@ function initializeSheets() {
     if (!hasScoutHelpText) {
       settingsSheet.appendRow(['scout_help_text', 'Help the scout you are supporting earn a badge by entering their name here.']);
     }
+  }
+  
+  // Create ScoutNames sheet if it doesn't exist
+  let scoutNamesSheet = ss.getSheetByName('ScoutNames');
+  if (!scoutNamesSheet) {
+    scoutNamesSheet = ss.insertSheet('ScoutNames');
+    scoutNamesSheet.appendRow(['scout_name', 'date_added']);
   }
 }
 

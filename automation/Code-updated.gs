@@ -109,10 +109,14 @@ function submitOrder(orderData) {
   const orderId = generateOrderId();
   const timestamp = new Date();
   
-  // Prepare row data
+  // Extract scout name (new field)
+  const scoutName = orderData.scoutName || '';
+  
+  // Prepare row data with scout name
   const rowData = [
     orderId,
     timestamp,
+    scoutName,  // Add scout name as third column
     orderData.firstName,
     orderData.lastName,
     orderData.email,
@@ -122,15 +126,15 @@ function submitOrder(orderData) {
     orderData.totalPrice,
     orderData.comments || '',
     'PENDING', // Payment Status
-    orderData.paymentMethod || 'Venmo',
+    orderData.paymentMethod || 'Zelle',  // Default to Zelle now
     'NEW' // Order Status
   ];
   
   // Append to sheet
   sheet.appendRow(rowData);
   
-  // Send notification email
-  sendOrderNotification(orderId, orderData);
+  // Send notification email with scout name
+  sendOrderNotification(orderId, orderData, scoutName);
   
   return createJsonResponse({
     success: true,
@@ -140,17 +144,25 @@ function submitOrder(orderData) {
 }
 
 // Send email notification for new order
-function sendOrderNotification(orderId, orderData) {
+function sendOrderNotification(orderId, orderData, scoutName) {
   const subject = `New Mums Order #${orderId}`;
-  const body = `
+  let body = `
     New order received!
     
-    Order ID: ${orderId}
+    Order ID: ${orderId}`;
+  
+  // Include scout name if provided
+  if (scoutName) {
+    body += `
+    Scout Name: ${scoutName}`;
+  }
+  
+  body += `
     Customer: ${orderData.firstName} ${orderData.lastName}
     Email: ${orderData.email}
     Phone: ${orderData.phone}
     Total: $${orderData.totalPrice}
-    Payment Method: ${orderData.paymentMethod || 'Venmo'}
+    Payment Method: ${orderData.paymentMethod || 'Zelle'}
     
     Products:
     ${formatProductsForEmail(orderData.products)}
@@ -304,6 +316,46 @@ function isAdminRequest(e) {
   // In production, verify OAuth token or session
   // For now, check for admin parameter (NOT SECURE - just for demo)
   return e.parameter.admin === 'true';
+}
+
+// Initialize sheets with proper headers including scout_name
+function initializeSheets() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  // Create Orders sheet if it doesn't exist with scout_name column
+  let ordersSheet = ss.getSheetByName('Orders');
+  if (!ordersSheet) {
+    ordersSheet = ss.insertSheet('Orders');
+    ordersSheet.appendRow([
+      'order_id', 'timestamp', 'scout_name', 'first_name', 'last_name', 
+      'email', 'phone', 'address', 'products', 'total_price', 
+      'comments', 'payment_status', 'payment_method', 'order_status'
+    ]);
+  } else {
+    // Check if scout_name column exists, if not, add it
+    const headers = ordersSheet.getRange(1, 1, 1, ordersSheet.getLastColumn()).getValues()[0];
+    if (!headers.includes('scout_name')) {
+      // Insert scout_name column after timestamp (column 3)
+      ordersSheet.insertColumnAfter(2);
+      ordersSheet.getRange(1, 3).setValue('scout_name');
+    }
+  }
+  
+  // Ensure Settings sheet has scout_help_text
+  let settingsSheet = ss.getSheetByName('Settings');
+  if (settingsSheet) {
+    const data = settingsSheet.getDataRange().getValues();
+    let hasScoutHelpText = false;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === 'scout_help_text') {
+        hasScoutHelpText = true;
+        break;
+      }
+    }
+    if (!hasScoutHelpText) {
+      settingsSheet.appendRow(['scout_help_text', 'Help the scout you are supporting earn a badge by entering their name here.']);
+    }
+  }
 }
 
 // Create JSON response with CORS headers

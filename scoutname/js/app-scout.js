@@ -112,6 +112,8 @@ function createProductCard(product) {
     let colorOptions = ['Yellow', 'Orange', 'Red', 'Purple', 'White'];
     if (product.id === 'APPLE') {
         colorOptions = ['Yellow', 'Orange', 'Red']; // Apple basket only has 3 colors
+    } else if (product.id === 'OVAL') {
+        colorOptions = ['Tricolor']; // Oval pot only available in Tricolor
     }
     
     // Create color rows with individual quantity selectors

@@ -425,7 +425,7 @@
             
             .container {
                 box-shadow: none;
-                padding: 10px;
+                padding: 5px;
                 max-width: 100%;
             }
             
@@ -446,56 +446,76 @@
             }
             
             .header {
-                border-bottom: 2px solid black;
-                margin-bottom: 10px;
-                padding-bottom: 10px;
+                border-bottom: 1px solid black;
+                margin-bottom: 5px;
+                padding-bottom: 5px;
             }
             
             .header h1 {
-                font-size: 1.3rem;
-            }
-            
-            .stats {
-                margin-bottom: 10px;
-            }
-            
-            .stat-card {
-                padding: 5px;
-            }
-            
-            .stat-label {
-                font-size: 0.7rem;
-            }
-            
-            .stat-value {
                 font-size: 1rem;
             }
             
+            /* Hide original title in print for inventory */
+            .print-inventory #dashboard-title {
+                display: none;
+            }
+            
+            .print-title {
+                display: none;
+            }
+            
+            .print-inventory .print-title {
+                display: block;
+                font-size: 1rem;
+                font-weight: bold;
+            }
+            
+            .stats {
+                margin-bottom: 5px;
+                display: flex;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 3px;
+                flex: 1;
+            }
+            
+            .stat-label {
+                font-size: 0.55rem;
+            }
+            
+            .stat-value {
+                font-size: 0.75rem;
+            }
+            
             .summary-date {
-                font-size: 0.8rem;
-                margin-bottom: 8px;
+                font-size: 0.6rem;
+                margin-bottom: 3px;
             }
             
             .inventory-section {
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
             
             .inventory-section h3 {
-                font-size: 0.9rem;
-                margin-bottom: 5px;
+                font-size: 0.7rem;
+                margin-bottom: 2px;
             }
             
             .data-table,
             .inventory-table {
-                font-size: 0.65rem;
+                font-size: 0.5rem;
+                width: 100%;
             }
             
             .data-table th,
             .data-table td,
             .inventory-table th,
             .inventory-table td {
-                padding: 3px 4px;
-                border: 1px solid #333;
+                padding: 1px 2px;
+                border: 0.5px solid #333;
+                line-height: 1.2;
             }
             
             .inventory-table thead {
@@ -587,7 +607,8 @@
         <div class="header">
             <div class="header-left">
                 <img src="pack182logo.png" alt="Pack 182 Logo">
-                <h1>Admin Dashboard</h1>
+                <h1 id="dashboard-title">Admin Dashboard</h1>
+                <h1 class="print-title">Order Summary</h1>
             </div>
             <div class="header-buttons">
                 <button class="btn btn-secondary" onclick="location.href='index.html'">Main Site</button>
@@ -689,7 +710,7 @@
             </div>
             
             <div style="text-align: right; margin-bottom: 20px;">
-                <button class="btn btn-success" onclick="window.print()">Print Summary</button>
+                <button class="btn btn-success" onclick="printInventorySummary()">Print Summary</button>
             </div>
             
             <div id="inventory-container">
@@ -886,6 +907,16 @@
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('admin-password').value = '';
+        }
+        
+        function printInventorySummary() {
+            // Add class to body for print-specific styles
+            document.body.classList.add('print-inventory');
+            window.print();
+            // Remove class after print dialog
+            setTimeout(() => {
+                document.body.classList.remove('print-inventory');
+            }, 100);
         }
         
         // Tab switching

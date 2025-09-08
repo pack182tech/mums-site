@@ -531,6 +531,11 @@ function showConfirmation(orderId, total, paymentMethod) {
     hideAllScreens();
     document.getElementById('confirmation-screen').style.display = 'block';
     
+    // Show pickup modal after a short delay
+    setTimeout(() => {
+        showPickupModal();
+    }, 500);
+    
     // Set order details
     document.getElementById('confirmation-order-id').textContent = orderId;
     document.getElementById('confirmation-total').textContent = `$${total.toFixed(2)}`;
@@ -680,4 +685,12 @@ function showError(message) {
 
 function closeErrorModal() {
     document.getElementById('error-modal').style.display = 'none';
+}
+
+function showPickupModal() {
+    document.getElementById('pickup-modal').style.display = 'flex';
+}
+
+function closePickupModal() {
+    document.getElementById('pickup-modal').style.display = 'none';
 }

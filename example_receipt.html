@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Receipt - Pack 182 Mums Sale</title>
+    <link rel="icon" type="image/png" href="pack182logo.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
+    <style>
+        body {
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .example-notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .example-notice h2 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="example-notice">
+        <h2>📋 Example Receipt</h2>
+        <p>This is a sample receipt showing how your order confirmation will look.</p>
+        <button onclick="window.print()" class="btn btn-primary" style="margin-top: 10px;">Print Example Receipt</button>
+    </div>
+
+    <!-- Example Receipt -->
+    <div class="receipt-container">
+        <!-- Receipt Header -->
+        <div class="receipt-header">
+            <div class="receipt-logo">
+                <img src="pack182logo.png" alt="Pack 182 Logo" style="height: 60px;">
+            </div>
+            <div class="receipt-title">
+                <h1>Order Receipt</h1>
+                <p class="receipt-subtitle">Cub Scouts Pack 182 - Mums Fundraiser</p>
+            </div>
+            <div class="receipt-status">
+                <div class="status-badge success">CONFIRMED</div>
+            </div>
+        </div>
+        
+        <!-- Order Info Bar -->
+        <div class="receipt-info-bar">
+            <div class="info-item">
+                <span class="info-label">Order ID:</span>
+                <strong>MUM24101512345</strong>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date:</span>
+                <strong>October 15, 2024</strong>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Total:</span>
+                <strong class="total-amount">$85.00</strong>
+            </div>
+        </div>
+        
+        <!-- Customer Information -->
+        <div class="receipt-section">
+            <h3 class="section-title">Customer Information</h3>
+            <div class="customer-info-grid">
+                <div class="info-group">
+                    <label>Name:</label>
+                    <span>John Smith</span>
+                </div>
+                <div class="info-group">
+                    <label>Email:</label>
+                    <span>john.smith@email.com</span>
+                </div>
+                <div class="info-group">
+                    <label>Phone:</label>
+                    <span>(555) 123-4567</span>
+                </div>
+                <div class="info-group">
+                    <label>Address:</label>
+                    <span>123 Main Street, Springfield, NJ 07081</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Details -->
+        <div class="receipt-section">
+            <h3 class="section-title">Order Details</h3>
+            <table class="receipt-items-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mum Plant - Purple (9")</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">$15.00</td>
+                        <td style="text-align: right;">$30.00</td>
+                    </tr>
+                    <tr>
+                        <td>Mum Plant - Yellow (9")</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">$15.00</td>
+                        <td style="text-align: right;">$15.00</td>
+                    </tr>
+                    <tr>
+                        <td>Mum Plant - Orange (12")</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">$20.00</td>
+                        <td style="text-align: right;">$40.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="3">Order Total:</td>
+                        <td class="total-cell">$85.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <!-- Scout Information (if provided) -->
+        <div class="receipt-section">
+            <p><strong>Supporting Scout:</strong> Dylan from Pack 182</p>
+        </div>
+        
+        <!-- Payment & Pickup Information -->
+        <div class="receipt-footer">
+            <div class="footer-section payment-section-compact">
+                <h4>Payment Information</h4>
+                <p><strong>Pay via Zelle to:</strong> threebridgespack182@gmail.com</p>
+                <p class="important-note">⚠️ Include Order ID in memo: MUM24101512345</p>
+            </div>
+            <div class="footer-section pickup-section-compact">
+                <h4>Pickup Information</h4>
+                <p><strong>Location:</strong> Three Bridges School Parking Lot<br>
+                <strong>Date/Time:</strong> Saturday, October 28, 2024 - 9:00 AM to 2:00 PM</p>
+            </div>
+        </div>
+        
+        <!-- Thank You Message -->
+        <div class="receipt-thank-you">
+            <p>Thank you for supporting Pack 182!</p>
+            <p class="receipt-contact">Questions? Contact us at pack182tech@gmail.com</p>
+        </div>
+        
+        <!-- Action Buttons (hidden in print) -->
+        <div class="confirmation-actions no-print" style="text-align: center; margin-top: 30px;">
+            <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
+            <a href="index.html" class="btn btn-primary">Return to Order Form</a>
+        </div>
+    </div>
+
+    <script>
+        // Add version for consistency
+        console.log('Example Receipt Page v1.0.6');
+    </script>
+</body>
+</html>

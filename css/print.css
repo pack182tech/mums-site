@@ -44,32 +44,96 @@
         page-break-after: avoid;
     }
     
-    /* Confirmation screen print layout */
-    .confirmation-container {
-        min-height: auto;
-        padding: 0;
+    /* Professional Receipt Print Layout - One Page Landscape */
+    .receipt-container {
+        max-width: 100%;
+        padding: 20px;
+        box-shadow: none;
     }
     
-    .success-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 2rem;
-        background: none;
-        border: 2px solid black;
-        color: black;
+    .receipt-header {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
     }
     
-    .order-details,
-    .payment-section,
-    .pickup-info {
-        border: 1px solid #999;
-        margin: 10px 0;
-        page-break-inside: avoid;
+    .receipt-logo img {
+        height: 40px;
     }
     
+    .receipt-title h1 {
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
+    
+    .receipt-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .receipt-info-bar {
+        padding: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .receipt-section {
+        margin-bottom: 15px;
+    }
+    
+    .section-title {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+    }
+    
+    .customer-info-grid {
+        font-size: 0.85rem;
+    }
+    
+    .receipt-items-table {
+        font-size: 0.85rem;
+    }
+    
+    .receipt-items-table th,
+    .receipt-items-table td {
+        padding: 5px;
+    }
+    
+    .receipt-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 15px;
+        padding: 10px;
+    }
+    
+    .footer-section {
+        flex: 1;
+    }
+    
+    .footer-section h4 {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .footer-section p {
+        font-size: 0.8rem;
+        margin: 3px 0;
+    }
+    
+    .receipt-thank-you {
+        margin-top: 15px;
+        padding-top: 10px;
+        font-size: 0.85rem;
+    }
+    
+    /* Hide QR code in print to save space */
     .qr-code {
-        max-width: 150px;
-        max-height: 150px;
+        display: none;
+    }
+    
+    /* Ensure it fits on one page */
+    .receipt-page {
+        page-break-inside: avoid;
+        page-break-after: auto;
     }
     
     /* Order details modal print */
@@ -151,9 +215,10 @@
         font-size: 0.8em;
     }
     
-    /* Header for print */
+    /* Header for print - Landscape orientation */
     @page {
-        margin: 1in;
+        size: landscape;
+        margin: 0.5in;
     }
     
     /* Add print header */

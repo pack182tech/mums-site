@@ -167,43 +167,107 @@
         </div>
     </section>
 
-    <!-- Confirmation Screen -->
-    <section id="confirmation-screen" class="confirmation-container" style="display: none;">
-        <div class="container">
-            <div class="success-icon">✓</div>
-            <h2>Order Submitted Successfully!</h2>
-            
-            <div class="order-details">
-                <p class="order-id">Order ID: <strong id="confirmation-order-id"></strong></p>
-                <p>Total Amount: <strong id="confirmation-total"></strong></p>
+    <!-- Confirmation Screen - Professional Receipt -->
+    <section id="confirmation-screen" class="confirmation-container receipt-page" style="display: none;">
+        <div class="receipt-container">
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <div class="receipt-logo">
+                    <img src="pack182logo.png" alt="Pack 182 Logo" style="height: 60px;">
+                </div>
+                <div class="receipt-title">
+                    <h1>Order Receipt</h1>
+                    <p class="receipt-subtitle">Cub Scouts Pack 182 - Mums Fundraiser</p>
+                </div>
+                <div class="receipt-status">
+                    <div class="status-badge success">CONFIRMED</div>
+                </div>
             </div>
             
-            <div id="payment-instructions" class="payment-section">
-                <h3>Payment Instructions</h3>
-                <div id="zelle-section" class="zelle-section">
-                    <div style="text-align: center; max-width: 500px; margin: 0 auto;">
-                        <h3 style="margin-bottom: 10px; font-size: 1.5rem;">Send Money with Zelle®</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 1.1rem;">Scan in your banking app to pay</p>
-                        <h4 style="margin: 20px 0; font-size: 1.3rem;">Boy Scouts Of America</h4>
-                        <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code" style="margin: 20px auto; display: block;">
-                        <div class="payment-details" style="text-align: left; max-width: 450px; margin: 20px auto; padding: 20px; background: #f5f5f5; border-radius: 10px;">
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">First Name:</span> <strong>Boy Scouts</strong></p>
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">Last Name:</span> <strong>of America</strong></p>
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">Email:</span> <strong id="zelle-email">threebridgespack182@gmail.com</strong></p>
-                        </div>
-                        <p class="payment-note" style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
-                            ⚠️ Include your order ID (<span id="payment-order-id" style="font-weight: bold;"></span>) in the memo
-                        </p>
+            <!-- Order Info Bar -->
+            <div class="receipt-info-bar">
+                <div class="info-item">
+                    <span class="info-label">Order ID:</span>
+                    <strong id="confirmation-order-id"></strong>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date:</span>
+                    <strong id="order-date"></strong>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Total:</span>
+                    <strong class="total-amount" id="confirmation-total"></strong>
+                </div>
+            </div>
+            
+            <!-- Customer Information -->
+            <div class="receipt-section">
+                <h3 class="section-title">Customer Information</h3>
+                <div class="customer-info-grid">
+                    <div class="info-group">
+                        <label>Name:</label>
+                        <span id="receipt-customer-name"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Email:</label>
+                        <span id="receipt-customer-email"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Phone:</label>
+                        <span id="receipt-customer-phone"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Address:</label>
+                        <span id="receipt-customer-address"></span>
                     </div>
                 </div>
             </div>
             
-            <div class="pickup-info">
-                <h3>Pickup Information</h3>
-                <p id="pickup-details"></p>
+            <!-- Order Details -->
+            <div class="receipt-section">
+                <h3 class="section-title">Order Details</h3>
+                <table class="receipt-items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-items">
+                        <!-- Items will be populated here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="3">Order Total:</td>
+                            <td class="total-cell" id="receipt-order-total"></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
             
-            <div class="confirmation-actions">
+            <!-- Payment & Pickup Information -->
+            <div class="receipt-footer">
+                <div class="footer-section payment-section-compact">
+                    <h4>Payment Information</h4>
+                    <p><strong>Pay via Zelle to:</strong> threebridgespack182@gmail.com</p>
+                    <p class="important-note">⚠️ Include Order ID in memo: <span id="payment-order-id-footer"></span></p>
+                </div>
+                <div class="footer-section pickup-section-compact">
+                    <h4>Pickup Information</h4>
+                    <p id="pickup-details-compact"></p>
+                </div>
+            </div>
+            
+            <!-- Thank You Message -->
+            <div class="receipt-thank-you">
+                <p>Thank you for supporting Pack 182!</p>
+                <p class="receipt-contact">Questions? Contact us at pack182tech@gmail.com</p>
+            </div>
+            
+            <!-- Action Buttons (hidden in print) -->
+            <div class="confirmation-actions no-print">
                 <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
                 <button onclick="startNewOrder()" class="btn btn-primary">Place Another Order</button>
             </div>

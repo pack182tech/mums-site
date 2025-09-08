@@ -178,11 +178,22 @@
         </div>
     </section>
 
-    <!-- Confirmation Screen -->
-    <section id="confirmation-screen" class="confirmation-container" style="display: none;">
-        <div class="container">
-            <div class="success-icon">✓</div>
-            <h2>Order Submitted Successfully!</h2>
+    <!-- Confirmation Screen - Professional Receipt -->
+    <section id="confirmation-screen" class="confirmation-container receipt-page" style="display: none;">
+        <div class="receipt-container">
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <div class="receipt-logo">
+                    <img src="../pack182logo.png" alt="Pack 182 Logo" style="height: 60px;">
+                </div>
+                <div class="receipt-title">
+                    <h1>Order Receipt</h1>
+                    <p class="receipt-subtitle">Cub Scouts Pack 182 - Mums Fundraiser</p>
+                </div>
+                <div class="receipt-status">
+                    <div class="status-badge success">CONFIRMED</div>
+                </div>
+            </div>
             
             <div class="order-details">
                 <p class="order-id">Order ID: <strong id="confirmation-order-id"></strong></p>

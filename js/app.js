@@ -7,7 +7,7 @@ let settings = {};
 let currentOrderId = null;
 
 // Version tracking
-const APP_VERSION = '1.0.5';
+const APP_VERSION = '1.0.6';
 console.log(`Main App v${APP_VERSION} loaded`);
 
 // Initialize the application
@@ -534,15 +534,42 @@ function showConfirmation(orderId, total, paymentMethod) {
     // Set order details
     document.getElementById('confirmation-order-id').textContent = orderId;
     document.getElementById('confirmation-total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('receipt-order-total').textContent = `$${total.toFixed(2)}`;
     
-    // Show Zelle payment instructions (only payment method now)
-    document.getElementById('zelle-section').style.display = 'block';
+    // Set date
+    const orderDate = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    document.getElementById('order-date').textContent = orderDate;
     
-    // Update order ID in payment instructions
-    const paymentOrderId = document.getElementById('payment-order-id');
-    if (paymentOrderId) {
-        paymentOrderId.textContent = orderId;
-    }
+    // Set customer information
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    document.getElementById('receipt-customer-name').textContent = `${firstName} ${lastName}`;
+    document.getElementById('receipt-customer-email').textContent = document.getElementById('email').value;
+    document.getElementById('receipt-customer-phone').textContent = document.getElementById('phone').value;
+    
+    const address = `${document.getElementById('street').value}, ${document.getElementById('city').value}, ${document.getElementById('state').value} ${document.getElementById('zip').value}`;
+    document.getElementById('receipt-customer-address').textContent = address;
+    
+    // Populate order items table
+    const itemsContainer = document.getElementById('receipt-items');
+    let itemsHTML = '';
+    cart.forEach(item => {
+        itemsHTML += `
+            <tr>
+                <td>${item.title}</td>
+                <td style="text-align: center;">${item.quantity}</td>
+                <td style="text-align: right;">$${item.price.toFixed(2)}</td>
+                <td style="text-align: right;">$${(item.quantity * item.price).toFixed(2)}</td>
+            </tr>`;
+    });
+    itemsContainer.innerHTML = itemsHTML;
+    
+    // Update payment order ID in footer
+    document.getElementById('payment-order-id-footer').textContent = orderId;
     
     // Set Zelle QR code with memo included
     const zelleQR = document.getElementById('zelle-qr');
@@ -569,7 +596,10 @@ function showConfirmation(orderId, total, paymentMethod) {
     
     // Set pickup details
     const pickupInfo = `${settings.pickup_location || 'Location TBD'}<br>${settings.pickup_date || 'Date TBD'}`;
-    document.getElementById('pickup-details').innerHTML = pickupInfo;
+    const pickupDetails = document.getElementById('pickup-details');
+    const pickupDetailsCompact = document.getElementById('pickup-details-compact');
+    if (pickupDetails) pickupDetails.innerHTML = pickupInfo;
+    if (pickupDetailsCompact) pickupDetailsCompact.innerHTML = pickupInfo;
 }
 
 function startNewOrder() {

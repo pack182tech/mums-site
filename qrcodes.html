@@ -496,6 +496,56 @@
             }
         }
         
+        // Download QR code with name attached
+        function downloadQRWithName(name, qrUrl, displayName) {
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Load QR code image
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            img.onload = function() {
+                // Set canvas size (QR code + text area at top)
+                const textHeight = 80;
+                canvas.width = 400;
+                canvas.height = 400 + textHeight;
+                
+                // Fill background white
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw scout name at top
+                ctx.fillStyle = '#003F87'; // Scout blue
+                ctx.font = 'bold 48px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(displayName, canvas.width / 2, textHeight / 2);
+                
+                // Draw QR code below text
+                ctx.drawImage(img, 0, textHeight, 400, 400);
+                
+                // Convert canvas to blob and download
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${displayName}-QR.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            };
+            
+            img.onerror = function() {
+                alert('Unable to download QR code. Please try again.');
+            };
+            
+            img.src = qrUrl;
+        }
+        
         // Display all QR codes
         function displayAllQRCodes() {
             displayedScouts = [...scoutNames];
@@ -529,7 +579,7 @@
                             <img src="${qrUrl}" alt="${displayName} QR Code">
                         </div>
                         <div class="qr-actions">
-                            <a href="${qrUrl}" download="${displayName}-qr.png" class="btn-small">Download</a>
+                            <button onclick="downloadQRWithName('${name}', '${qrUrl}', '${displayName}')" class="btn-small">Download</button>
                             <button onclick="deleteScout('${name}')" class="btn-small btn-delete">Delete</button>
                         </div>
                     </div>

@@ -7,7 +7,7 @@ let settings = {};
 let currentOrderId = null;
 
 // Version tracking
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.0.2';
 console.log(`Main App v${APP_VERSION} loaded`);
 
 // Initialize the application
@@ -547,7 +547,7 @@ function showConfirmation(orderId, total, paymentMethod) {
     // Set Zelle QR code with memo included
     const zelleQR = document.getElementById('zelle-qr');
     if (zelleQR) {
-        const zelleEmail = settings.zelle_email || 'pack182tech@gmail.com';
+        const zelleEmail = settings.zelle_email || 'threebridgespack182@gmail.com';
         // Create QR data with email and memo
         const memo = `Order: ${orderId}`;
         const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;

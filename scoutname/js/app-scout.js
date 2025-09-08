@@ -569,7 +569,7 @@ function showConfirmation(orderId, total, paymentMethod) {
     // Set Zelle QR code with memo included
     const zelleQR = document.getElementById('zelle-qr');
     if (zelleQR) {
-        const zelleEmail = settings.zelle_email || 'pack182tech@gmail.com';
+        const zelleEmail = settings.zelle_email || 'threebridgespack182@gmail.com';
         // Create QR data with email and memo
         const memo = `Order: ${orderId}`;
         const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;

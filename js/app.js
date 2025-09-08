@@ -6,6 +6,10 @@ let products = [];
 let settings = {};
 let currentOrderId = null;
 
+// Version tracking
+const APP_VERSION = '1.0.1';
+console.log(`Main App v${APP_VERSION} loaded`);
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
     debugLog('Initializing application...');

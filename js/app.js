@@ -688,6 +688,20 @@ function closeErrorModal() {
 }
 
 function showPickupModal() {
+    // Check for scout name from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const scoutName = urlParams.get('scout');
+    
+    // Update thank you message based on scout name
+    const thankYouElement = document.getElementById('pickup-thank-you');
+    if (thankYouElement) {
+        if (scoutName && scoutName.trim() !== '') {
+            thankYouElement.textContent = `${scoutName} thanks you for your support!`;
+        } else {
+            thankYouElement.textContent = 'We thank you for your support!';
+        }
+    }
+    
     document.getElementById('pickup-modal').style.display = 'flex';
 }
 

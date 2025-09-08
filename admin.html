@@ -413,6 +413,11 @@
         
         /* Print styles */
         @media print {
+            @page {
+                size: landscape;
+                margin: 0.5in;
+            }
+            
             body {
                 background: white;
                 padding: 0;
@@ -420,13 +425,15 @@
             
             .container {
                 box-shadow: none;
-                padding: 20px;
+                padding: 10px;
                 max-width: 100%;
             }
             
             .header-buttons,
             .nav-tabs,
-            .btn {
+            .btn,
+            .actions,
+            .filters {
                 display: none !important;
             }
             
@@ -440,19 +447,54 @@
             
             .header {
                 border-bottom: 2px solid black;
-                margin-bottom: 20px;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .stats {
+                margin-bottom: 10px;
+            }
+            
+            .stat-card {
+                padding: 5px;
+            }
+            
+            .stat-label {
+                font-size: 0.7rem;
+            }
+            
+            .stat-value {
+                font-size: 1rem;
+            }
+            
+            .summary-date {
+                font-size: 0.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .inventory-section {
+                margin-bottom: 10px;
+            }
+            
+            .inventory-section h3 {
+                font-size: 0.9rem;
+                margin-bottom: 5px;
             }
             
             .data-table,
             .inventory-table {
-                font-size: 12px;
+                font-size: 0.65rem;
             }
             
             .data-table th,
             .data-table td,
             .inventory-table th,
             .inventory-table td {
-                padding: 8px;
+                padding: 3px 4px;
                 border: 1px solid #333;
             }
             

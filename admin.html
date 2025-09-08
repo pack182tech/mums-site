@@ -720,7 +720,7 @@
             </div>
             
             <div style="text-align: right; margin-bottom: 20px;">
-                <button class="btn btn-success" onclick="printInventorySummary()">Print Summary</button>
+                <button id="print-summary-btn" class="btn btn-success" onclick="printInventorySummary()" disabled>Print Summary</button>
             </div>
             
             <div id="inventory-container">
@@ -1243,6 +1243,12 @@
         }
         
         async function loadInventory() {
+            // Disable print button while loading
+            const printBtn = document.getElementById('print-summary-btn');
+            if (printBtn) {
+                printBtn.disabled = true;
+            }
+            
             try {
                 if (allOrders.length === 0) {
                     const response = await fetch(`${CONFIG.API_URL}?path=orders&admin=true`);
@@ -1255,11 +1261,23 @@
                 processInventory();
                 displayInventory();
                 updateInventoryStats();
+                
+                // Enable print button after successful load
+                const printBtn = document.getElementById('print-summary-btn');
+                if (printBtn) {
+                    printBtn.disabled = false;
+                }
             } catch (error) {
                 console.error('Error loading inventory:', error);
                 showMessage('Failed to load inventory data. Please try again.', 'error');
                 document.getElementById('inventory-container').innerHTML = 
                     '<div class="error">Unable to load inventory data</div>';
+                
+                // Keep button disabled on error
+                const printBtn = document.getElementById('print-summary-btn');
+                if (printBtn) {
+                    printBtn.disabled = true;
+                }
             }
         }
         

@@ -415,7 +415,7 @@
         @media print {
             @page {
                 size: landscape;
-                margin: 0.5in;
+                margin: 0.25in;
             }
             
             body {
@@ -425,7 +425,7 @@
             
             .container {
                 box-shadow: none;
-                padding: 5px;
+                padding: 2px;
                 max-width: 100%;
             }
             
@@ -447,12 +447,16 @@
             
             .header {
                 border-bottom: 1px solid black;
-                margin-bottom: 5px;
-                padding-bottom: 5px;
+                margin-bottom: 2px;
+                padding-bottom: 2px;
             }
             
             .header h1 {
-                font-size: 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .header img {
+                height: 20px;
             }
             
             /* Hide original title in print for inventory */
@@ -466,56 +470,61 @@
             
             .print-inventory .print-title {
                 display: block;
-                font-size: 1rem;
+                font-size: 0.8rem;
                 font-weight: bold;
             }
             
             .stats {
-                margin-bottom: 5px;
+                margin-bottom: 2px;
                 display: flex;
-                gap: 10px;
+                gap: 5px;
             }
             
             .stat-card {
-                padding: 3px;
+                padding: 1px;
                 flex: 1;
+                border: 0.5px solid #ccc;
             }
             
             .stat-label {
-                font-size: 0.55rem;
+                font-size: 0.4rem;
+                line-height: 1;
             }
             
             .stat-value {
-                font-size: 0.75rem;
+                font-size: 0.55rem;
+                line-height: 1;
             }
             
             .summary-date {
-                font-size: 0.6rem;
-                margin-bottom: 3px;
+                font-size: 0.45rem;
+                margin-bottom: 1px;
             }
             
             .inventory-section {
-                margin-bottom: 5px;
+                margin-bottom: 2px;
             }
             
             .inventory-section h3 {
-                font-size: 0.7rem;
-                margin-bottom: 2px;
+                font-size: 0.5rem;
+                margin-bottom: 1px;
+                line-height: 1;
             }
             
             .data-table,
             .inventory-table {
-                font-size: 0.5rem;
+                font-size: 0.35rem;
                 width: 100%;
+                border-collapse: collapse;
             }
             
             .data-table th,
             .data-table td,
             .inventory-table th,
             .inventory-table td {
-                padding: 1px 2px;
+                padding: 0.5px 1px;
                 border: 0.5px solid #333;
-                line-height: 1.2;
+                line-height: 1;
             }
             
             .inventory-table thead {

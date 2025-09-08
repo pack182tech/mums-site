@@ -543,15 +543,15 @@
                     
                     // Draw scout name in header (blue text on gold)
                     ctx.fillStyle = '#003F87'; // Scout blue
-                    ctx.font = 'bold 42px Arial, sans-serif';
+                    ctx.font = 'bold 38px Arial, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     const textX = logoX + logoWidth + (canvas.width - logoX - logoWidth) / 2;
-                    ctx.fillText(displayName, textX, headerHeight / 2);
+                    ctx.fillText(displayName, textX, headerHeight / 2 - 12);
                     
-                    // Add "Pack 182" subtitle
-                    ctx.font = '20px Arial, sans-serif';
-                    ctx.fillText('Pack 182 Mums Fundraiser', textX, headerHeight / 2 + 25);
+                    // Add "Pack 182" subtitle with more spacing
+                    ctx.font = '18px Arial, sans-serif';
+                    ctx.fillText('Pack 182 Mums Fundraiser', textX, headerHeight / 2 + 18);
                     
                     // Add border line under header
                     ctx.strokeStyle = '#003F87';

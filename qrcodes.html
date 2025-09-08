@@ -264,16 +264,6 @@
     </style>
 </head>
 <body>
-    <!-- Header with Logo -->
-    <header class="site-header">
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="pack182logo.png" alt="Pack 182 Logo" class="header-logo">
-                <div class="scout-name-display" id="header-scout-name"></div>
-            </div>
-        </div>
-    </header>
-    
     <div class="container">
         <div class="main-card">
             <h1>🎯 Scout QR Code Management</h1>
@@ -323,15 +313,7 @@
         let scoutNames = [];
         let displayedScouts = [];
         
-        // Check for scout parameter in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const scoutParam = urlParams.get('scout');
-        if (scoutParam) {
-            const scoutNameDisplay = document.getElementById('header-scout-name');
-            if (scoutNameDisplay) {
-                scoutNameDisplay.textContent = decodeURIComponent(scoutParam);
-            }
-        }
+        // Check for scout parameter in URL (removed header, so this is no longer needed)
         
         // Initialize the page
         async function initialize() {
@@ -433,7 +415,8 @@
             }
             
             // Check for duplicates (case-insensitive)
-            const exists = scoutNames.some(s => s.toLowerCase() === name.toLowerCase());
+            const normalizedName = name.toLowerCase().trim();
+            const exists = scoutNames.some(s => s.toLowerCase().trim() === normalizedName);
             if (exists) {
                 errorDiv.textContent = `A QR code for "${name}" already exists`;
                 errorDiv.style.display = 'block';

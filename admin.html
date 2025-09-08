@@ -561,6 +561,8 @@
             <button class="nav-tab active" onclick="switchTab('orders')">Orders</button>
             <button class="nav-tab" onclick="switchTab('inventory')">Inventory Summary</button>
             <button class="nav-tab" onclick="switchTab('scouts')">Scout Names</button>
+            <button class="nav-tab" onclick="switchTab('qrcodes')">QR Codes</button>
+            <button class="nav-tab" onclick="switchTab('leaderboard')">Leaderboard</button>
             <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
         </div>
         
@@ -696,6 +698,24 @@
                         <!-- Scout names will be loaded here -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+        
+        <!-- QR Codes Tab -->
+        <div id="qrcodes-tab" class="tab-content">
+            <h2>QR Code Management</h2>
+            <p style="color: #718096; margin-bottom: 20px;">Manage scout QR codes for personalized order forms.</p>
+            <div style="background: #f7fafc; border-radius: 10px; padding: 20px; height: calc(100vh - 300px); min-height: 500px;">
+                <iframe src="qrcodes.html" style="width: 100%; height: 100%; border: none; border-radius: 10px;" title="QR Code Management"></iframe>
+            </div>
+        </div>
+        
+        <!-- Leaderboard Tab -->
+        <div id="leaderboard-tab" class="tab-content">
+            <h2>Sales Leaderboard</h2>
+            <p style="color: #718096; margin-bottom: 20px;">View top selling scouts and track sales performance.</p>
+            <div style="background: #f7fafc; border-radius: 10px; padding: 20px; height: calc(100vh - 300px); min-height: 500px;">
+                <iframe src="leaderboard/" style="width: 100%; height: 100%; border: none; border-radius: 10px;" title="Sales Leaderboard"></iframe>
             </div>
         </div>
         

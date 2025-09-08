@@ -7,7 +7,7 @@ let settings = {};
 let currentOrderId = null;
 
 // Version tracking
-const APP_VERSION = '1.0.3';
+const APP_VERSION = '1.0.4';
 console.log(`Main App v${APP_VERSION} loaded`);
 
 // Initialize the application

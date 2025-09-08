@@ -12,7 +12,7 @@ console.log(`Main App v${APP_VERSION} loaded`);
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
-    debugLog('Initializing application...');
+    debugLog('Initializing application... (Monopage version)');
     
     // Check for scout name in URL and display it
     const urlParams = new URLSearchParams(window.location.search);
@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSettings();
     await loadProducts();
     
+    // MONOPAGE: Show catalog immediately and update cart icon
+    document.getElementById('catalog-screen').style.display = 'block';
+    updateCartIcon();
+    
     // Set up form handlers
     setupFormHandlers();
     
@@ -40,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load saved customer info
     loadCustomerInfo();
     
-    debugLog('Application initialized');
+    debugLog('Application initialized - Catalog shown automatically');
 });
 
 // Load settings from API

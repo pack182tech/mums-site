@@ -502,48 +502,104 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // Load QR code image
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
+            // Load both QR code and logo images
+            const qrImg = new Image();
+            const logoImg = new Image();
+            qrImg.crossOrigin = 'anonymous';
+            logoImg.crossOrigin = 'anonymous';
             
-            img.onload = function() {
-                // Set canvas size (QR code + text area at top)
-                const textHeight = 80;
-                canvas.width = 400;
-                canvas.height = 400 + textHeight;
-                
-                // Fill background white
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Draw scout name at top
-                ctx.fillStyle = '#003F87'; // Scout blue
-                ctx.font = 'bold 48px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(displayName, canvas.width / 2, textHeight / 2);
-                
-                // Draw QR code below text
-                ctx.drawImage(img, 0, textHeight, 400, 400);
-                
-                // Convert canvas to blob and download
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${displayName}-QR.png`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                });
-            };
+            let imagesLoaded = 0;
             
-            img.onerror = function() {
+            function tryDrawCanvas() {
+                imagesLoaded++;
+                if (imagesLoaded === 2) {
+                    // Set canvas size (QR code + header)
+                    const headerHeight = 100;
+                    const padding = 20;
+                    canvas.width = 440; // Slightly wider for padding
+                    canvas.height = 440 + headerHeight + padding;
+                    
+                    // Fill entire background white
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw gold header bar
+                    ctx.fillStyle = '#FDB813'; // Cub Scout gold
+                    ctx.fillRect(0, 0, canvas.width, headerHeight);
+                    
+                    // Add subtle gradient to header
+                    const gradient = ctx.createLinearGradient(0, 0, 0, headerHeight);
+                    gradient.addColorStop(0, '#FDB813');
+                    gradient.addColorStop(1, '#F5A623');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, headerHeight);
+                    
+                    // Draw logo on left side of header
+                    const logoHeight = 60;
+                    const logoWidth = logoHeight * (logoImg.width / logoImg.height);
+                    const logoX = 20;
+                    const logoY = (headerHeight - logoHeight) / 2;
+                    ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+                    
+                    // Draw scout name in header (blue text on gold)
+                    ctx.fillStyle = '#003F87'; // Scout blue
+                    ctx.font = 'bold 42px Arial, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const textX = logoX + logoWidth + (canvas.width - logoX - logoWidth) / 2;
+                    ctx.fillText(displayName, textX, headerHeight / 2);
+                    
+                    // Add "Pack 182" subtitle
+                    ctx.font = '20px Arial, sans-serif';
+                    ctx.fillText('Pack 182 Mums Fundraiser', textX, headerHeight / 2 + 25);
+                    
+                    // Add border line under header
+                    ctx.strokeStyle = '#003F87';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, headerHeight);
+                    ctx.lineTo(canvas.width, headerHeight);
+                    ctx.stroke();
+                    
+                    // Draw QR code centered below header with padding
+                    const qrX = (canvas.width - 400) / 2;
+                    const qrY = headerHeight + padding;
+                    ctx.drawImage(qrImg, qrX, qrY, 400, 400);
+                    
+                    // Add thin border around entire card
+                    ctx.strokeStyle = '#003F87';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+                    
+                    // Convert canvas to blob and download
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${displayName}-QR.png`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    });
+                }
+            }
+            
+            qrImg.onload = tryDrawCanvas;
+            logoImg.onload = tryDrawCanvas;
+            
+            qrImg.onerror = function() {
                 alert('Unable to download QR code. Please try again.');
             };
             
-            img.src = qrUrl;
+            logoImg.onerror = function() {
+                // If logo fails, still proceed without it
+                imagesLoaded++;
+                tryDrawCanvas();
+            };
+            
+            qrImg.src = qrUrl;
+            logoImg.src = 'pack182logo.png';
         }
         
         // Display all QR codes

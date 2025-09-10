@@ -444,6 +444,27 @@ async function handleOrderSubmit(e) {
     const paymentMethodInput = form.querySelector('input[name="paymentMethod"]:checked');
     const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Zelle';
     
+    // Check if this is a volunteer signup
+    if (window.volunteerInterest) {
+        // Handle volunteer signup differently
+        const volunteerData = {
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
+            email: form.email.value,
+            phone: form.phone.value,
+            volunteerTypes: window.volunteerInterest.types,
+            message: window.volunteerInterest.message,
+            comments: form.comments.value
+        };
+        
+        submitVolunteerInterest(volunteerData);
+        return;
+    }
+    
+    // Check for donations and donation recipients
+    const hasDonation = cart.some(item => item.isDonation);
+    const hasDonatedMums = window.donationMode && cart.some(item => !item.isDonation);
+    
     // Prepare order data
     const orderData = {
         firstName: form.firstName.value,
@@ -454,7 +475,9 @@ async function handleOrderSubmit(e) {
         products: cart,
         totalPrice: total,
         comments: form.comments.value,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod,
+        orderType: hasDonation ? 'donation' : (hasDonatedMums ? 'donated_mums' : 'standard'),
+        donationRecipient: hasDonatedMums ? (form.donationRecipient?.value || 'Three Bridges Reformed Church') : null
     };
     
     debugLog('Order data being submitted:', orderData);
@@ -857,6 +880,67 @@ function showVolunteerForm() {
     if (paymentSection && window.volunteerInterest) {
         paymentSection.style.display = 'none';
     }
+}
+
+// Submit volunteer interest
+async function submitVolunteerInterest(volunteerData) {
+    showLoading(true);
+    try {
+        const response = await sheetsAPI.submitVolunteer(volunteerData);
+        
+        if (response.success) {
+            // Show special confirmation for volunteers
+            hideAllScreens();
+            showVolunteerConfirmation(volunteerData);
+            
+            // Clear volunteer interest
+            window.volunteerInterest = null;
+        } else {
+            throw new Error(response.message || 'Failed to submit volunteer interest');
+        }
+    } catch (error) {
+        console.error('Volunteer submission failed:', error);
+        showError(error.message || 'Failed to submit volunteer interest. Please try again.');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Show volunteer confirmation
+function showVolunteerConfirmation(volunteerData) {
+    const confirmationScreen = document.getElementById('confirmation-screen');
+    confirmationScreen.style.display = 'block';
+    
+    // Customize confirmation for volunteers
+    document.getElementById('confirmation-order-id').textContent = 'VOLUNTEER-' + Date.now();
+    document.getElementById('confirmation-total').textContent = 'Thank You!';
+    document.getElementById('receipt-order-total').textContent = 'Volunteer Interest Submitted';
+    
+    // Update customer info
+    document.getElementById('receipt-customer-name').textContent = `${volunteerData.firstName} ${volunteerData.lastName}`;
+    document.getElementById('receipt-customer-email').textContent = volunteerData.email;
+    document.getElementById('receipt-customer-phone').textContent = volunteerData.phone;
+    
+    // Update items to show volunteer interests
+    const itemsContainer = document.getElementById('receipt-items');
+    let itemsHTML = '<tr><td colspan="4" style="text-align: center;">Thank you for your interest in volunteering!</td></tr>';
+    volunteerData.volunteerTypes.forEach(type => {
+        const typeLabels = {
+            'events': 'Help at pack events',
+            'equipment': 'Donate camping equipment',
+            'space': 'Provide meeting space',
+            'skills': 'Share professional skills',
+            'transport': 'Help with transportation'
+        };
+        itemsHTML += `<tr><td colspan="4">✓ ${typeLabels[type] || type}</td></tr>`;
+    });
+    if (volunteerData.message) {
+        itemsHTML += `<tr><td colspan="4">Message: ${volunteerData.message}</td></tr>`;
+    }
+    itemsContainer.innerHTML = itemsHTML;
+    
+    // Hide payment info for volunteers
+    document.querySelector('.payment-section-compact').style.display = 'none';
 }
 
 // Update custom donation on input

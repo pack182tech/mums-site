@@ -199,6 +199,19 @@ class SheetsAPI {
         }
     }
     
+    // Submit volunteer interest
+    async submitVolunteer(volunteerData) {
+        try {
+            debugLog('Submitting volunteer interest:', volunteerData);
+            const response = await this.apiCall('volunteer', 'POST', volunteerData);
+            debugLog('Volunteer submission response:', response);
+            return response;
+        } catch (error) {
+            console.error('Failed to submit volunteer interest:', error);
+            throw new Error(`Failed to submit volunteer interest: ${error.message}`);
+        }
+    }
+    
     // Clear cache
     clearCache() {
         this.cache.clear();

@@ -43,6 +43,8 @@ function doPost(e) {
     switch(path) {
       case 'order':
         return submitOrder(data);
+      case 'volunteer':
+        return submitVolunteer(data);
       case 'updateProduct':
         return updateProduct(data, e);
       case 'updateSettings':
@@ -109,7 +111,7 @@ function submitOrder(orderData) {
   const orderId = generateOrderId();
   const timestamp = new Date();
   
-  // Prepare row data
+  // Prepare row data (with new donation fields)
   const rowData = [
     orderId,
     timestamp,
@@ -123,7 +125,9 @@ function submitOrder(orderData) {
     orderData.comments || '',
     'PENDING', // Payment Status
     orderData.paymentMethod || 'Venmo',
-    'NEW' // Order Status
+    'NEW', // Order Status
+    orderData.orderType || 'standard', // Order Type (standard, donation, donated_mums)
+    orderData.donationRecipient || '' // Donation Recipient if applicable
   ];
   
   // Append to sheet
@@ -141,9 +145,16 @@ function submitOrder(orderData) {
 
 // Send email notification for new order
 function sendOrderNotification(orderId, orderData) {
-  const subject = `New Mums Order #${orderId}`;
-  const body = `
-    New order received!
+  // Customize subject based on order type
+  let subject = `New Mums Order #${orderId}`;
+  if (orderData.orderType === 'donation') {
+    subject = `New Donation #${orderId}`;
+  } else if (orderData.orderType === 'donated_mums') {
+    subject = `New Donated Mums Order #${orderId}`;
+  }
+  
+  let body = `
+    New ${orderData.orderType === 'donation' ? 'donation' : 'order'} received!
     
     Order ID: ${orderId}
     Customer: ${orderData.firstName} ${orderData.lastName}
@@ -151,6 +162,17 @@ function sendOrderNotification(orderId, orderData) {
     Phone: ${orderData.phone}
     Total: $${orderData.totalPrice}
     Payment Method: ${orderData.paymentMethod || 'Venmo'}
+    `;
+  
+  // Add order type specific information
+  if (orderData.orderType === 'donation') {
+    body += `\n    Type: Direct Monetary Donation`;
+  } else if (orderData.orderType === 'donated_mums') {
+    body += `\n    Type: Donated Mums
+    Recipient: ${orderData.donationRecipient || 'Three Bridges Reformed Church'}`;
+  }
+  
+  body += `
     
     Products:
     ${formatProductsForEmail(orderData.products)}
@@ -297,6 +319,95 @@ function updateOrderStatus(orderData, e) {
   }
   
   return createJsonResponse({error: 'Order not found'}, 404);
+}
+
+// Submit volunteer interest
+function submitVolunteer(volunteerData) {
+  // Check if Volunteers sheet exists, create if not
+  let sheet;
+  try {
+    sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Volunteers');
+  } catch(e) {
+    // Create Volunteers sheet if it doesn't exist
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    sheet = spreadsheet.insertSheet('Volunteers');
+    
+    // Add headers
+    const headers = [
+      'Volunteer ID',
+      'Timestamp',
+      'First Name',
+      'Last Name',
+      'Email',
+      'Phone',
+      'Volunteer Types',
+      'Message',
+      'Comments',
+      'Status',
+      'Contacted'
+    ];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+  }
+  
+  const volunteerId = 'VOL' + Date.now();
+  const timestamp = new Date();
+  
+  // Prepare row data
+  const rowData = [
+    volunteerId,
+    timestamp,
+    volunteerData.firstName,
+    volunteerData.lastName,
+    volunteerData.email,
+    volunteerData.phone,
+    volunteerData.volunteerTypes ? volunteerData.volunteerTypes.join(', ') : '',
+    volunteerData.message || '',
+    volunteerData.comments || '',
+    'NEW',
+    'NO'
+  ];
+  
+  // Append to sheet
+  sheet.appendRow(rowData);
+  
+  // Send notification email
+  sendVolunteerNotification(volunteerId, volunteerData);
+  
+  return createJsonResponse({
+    success: true,
+    volunteerId: volunteerId,
+    message: 'Thank you for your interest in volunteering!'
+  });
+}
+
+// Send email notification for new volunteer
+function sendVolunteerNotification(volunteerId, volunteerData) {
+  const subject = `New Volunteer Interest - ${volunteerData.firstName} ${volunteerData.lastName}`;
+  const body = `
+    New volunteer interest received!
+    
+    Volunteer ID: ${volunteerId}
+    Name: ${volunteerData.firstName} ${volunteerData.lastName}
+    Email: ${volunteerData.email}
+    Phone: ${volunteerData.phone}
+    
+    Areas of Interest:
+    ${volunteerData.volunteerTypes ? volunteerData.volunteerTypes.map(t => '- ' + t).join('\n') : 'None specified'}
+    
+    Message: ${volunteerData.message || 'None'}
+    Comments: ${volunteerData.comments || 'None'}
+    
+    Please follow up with this volunteer soon!
+  `;
+  
+  ADMIN_EMAILS.forEach(email => {
+    try {
+      MailApp.sendEmail(email, subject, body);
+    } catch(e) {
+      console.error('Failed to send email to:', email, e);
+    }
+  });
 }
 
 // Check if request is from admin (simplified - implement proper auth in production)

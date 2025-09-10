@@ -35,22 +35,22 @@ function setupSpreadsheet() {
   productsSheet.getRange(1, 1, 1, 6).setFontWeight('bold').setBackground('#4CAF50').setFontColor('white');
   productsSheet.autoResizeColumns(1, 6);
   
-  // Create Orders sheet
+  // Create Orders sheet (with donation fields)
   let ordersSheet = ss.getSheetByName('Orders');
   if (!ordersSheet) {
     ordersSheet = ss.insertSheet('Orders');
   }
   ordersSheet.clear();
-  ordersSheet.getRange(1, 1, 1, 13).setValues([[
+  ordersSheet.getRange(1, 1, 1, 15).setValues([[
     'Order ID', 'Timestamp', 'First Name', 'Last Name', 'Email', 'Phone', 
     'Address', 'Products', 'Total Price', 'Comments', 'Payment Status', 
-    'Payment Method', 'Order Status'
+    'Payment Method', 'Order Status', 'Order Type', 'Donation Recipient'
   ]]);
   
   // Format Orders sheet
   ordersSheet.setFrozenRows(1);
-  ordersSheet.getRange(1, 1, 1, 13).setFontWeight('bold').setBackground('#2196F3').setFontColor('white');
-  ordersSheet.autoResizeColumns(1, 13);
+  ordersSheet.getRange(1, 1, 1, 15).setFontWeight('bold').setBackground('#2196F3').setFontColor('white');
+  ordersSheet.autoResizeColumns(1, 15);
   
   // Create Settings sheet
   let settingsSheet = ss.getSheetByName('Settings');
@@ -79,6 +79,22 @@ function setupSpreadsheet() {
   settingsSheet.setFrozenRows(1);
   settingsSheet.getRange(1, 1, 1, 3).setFontWeight('bold').setBackground('#FF9800').setFontColor('white');
   settingsSheet.autoResizeColumns(1, 3);
+  
+  // Create Volunteers sheet
+  let volunteersSheet = ss.getSheetByName('Volunteers');
+  if (!volunteersSheet) {
+    volunteersSheet = ss.insertSheet('Volunteers');
+  }
+  volunteersSheet.clear();
+  volunteersSheet.getRange(1, 1, 1, 11).setValues([[
+    'Volunteer ID', 'Timestamp', 'First Name', 'Last Name', 'Email', 'Phone',
+    'Volunteer Types', 'Message', 'Comments', 'Status', 'Contacted'
+  ]]);
+  
+  // Format Volunteers sheet
+  volunteersSheet.setFrozenRows(1);
+  volunteersSheet.getRange(1, 1, 1, 11).setFontWeight('bold').setBackground('#9C27B0').setFontColor('white');
+  volunteersSheet.autoResizeColumns(1, 11);
   
   // Set spreadsheet name
   ss.rename('Cub Scouts Mums Order System');

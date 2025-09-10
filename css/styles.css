@@ -1,5 +1,15 @@
 /* Main stylesheet for Cub Scouts Mums Ordering System */
 
+/* CSS Variables for Donation Feature Colors */
+:root {
+    --donate-yellow: #FFC107;
+    --donate-green: #4CAF50;
+    --donate-purple: #9C27B0;
+    --donate-yellow-bg: #FFF8E1;
+    --donate-green-bg: #E8F5E9;
+    --donate-purple-bg: #F3E5F5;
+}
+
 /* Site Header */
 .site-header {
     background: white;
@@ -1257,4 +1267,131 @@ body {
 .scout-law-banner {
     /* Removed - Scout Law is now background texture */
     display: none;
+}
+
+/* Donation Feature Styles */
+.btn-support {
+    background: linear-gradient(135deg, var(--donate-yellow) 0%, var(--donate-green) 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-support:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.hero-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Donation Modal Styles */
+.support-options {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.support-card {
+    transition: transform 0.3s ease;
+}
+
+.support-card:hover {
+    transform: translateY(-2px);
+}
+
+.donation-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--donate-green);
+    background: white;
+    color: var(--donate-green);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.donation-btn:hover,
+.donation-btn.selected {
+    background: var(--donate-green);
+    color: white;
+}
+
+/* Donate Product Card */
+.donate-product-card {
+    background: linear-gradient(135deg, var(--donate-yellow-bg) 0%, var(--donate-green-bg) 100%);
+    border: 2px solid var(--donate-yellow);
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    transition: all 0.3s ease;
+}
+
+.donate-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.donate-icon {
+    font-size: 72px;
+    margin-bottom: 20px;
+}
+
+.donate-title {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.donate-description {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Donation Checkbox on Product Cards */
+.donation-checkbox {
+    background: var(--donate-yellow-bg);
+    border: 2px solid var(--donate-yellow);
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.donation-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.donation-checkbox label {
+    cursor: pointer;
+    font-weight: 600;
+    color: #F57C00;
+}
+
+/* Modal Close Button */
+.modal-close {
+    transition: transform 0.3s ease;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg);
 }

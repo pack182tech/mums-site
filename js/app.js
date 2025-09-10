@@ -95,12 +95,38 @@ function renderProducts() {
     const grid = document.getElementById('products-grid');
     grid.innerHTML = '';
     
+    // Add donation card first
+    const donationCard = createDonationCard();
+    grid.appendChild(donationCard);
+    
     products.forEach(product => {
         if (product.available === true || product.available === 'TRUE' || product.available === 'true') {
             const productCard = createProductCard(product);
             grid.appendChild(productCard);
         }
     });
+}
+
+// Create donation support card
+function createDonationCard() {
+    const card = document.createElement('div');
+    card.className = 'product-card donate-product-card';
+    
+    card.innerHTML = `
+        <div class="donate-icon">🎁</div>
+        <h3 class="donate-title">Support Pack 182</h3>
+        <p class="donate-description">
+            Can't buy mums? You can still help!<br>
+            • Donate mums to the community<br>
+            • Make a direct donation<br>
+            • Volunteer your time & talents
+        </p>
+        <button onclick="showSupportOptions()" class="btn btn-primary" style="background: linear-gradient(135deg, #FFC107 0%, #4CAF50 100%);">
+            Explore Support Options
+        </button>
+    `;
+    
+    return card;
 }
 
 // Create a product card element
@@ -714,3 +740,138 @@ function showPickupModal() {
 function closePickupModal() {
     document.getElementById('pickup-modal').style.display = 'none';
 }
+
+// Donation Support Functions
+function showSupportOptions() {
+    document.getElementById('support-modal').style.display = 'flex';
+}
+
+function closeSupportModal() {
+    document.getElementById('support-modal').style.display = 'none';
+}
+
+// Donate Mums Functions
+function showDonateMums() {
+    closeSupportModal();
+    // Scroll to product grid and highlight donation options
+    const catalogScreen = document.getElementById('catalog-screen');
+    if (catalogScreen) {
+        catalogScreen.scrollIntoView({ behavior: 'smooth' });
+        // Add donation mode flag
+        window.donationMode = true;
+        showError('Select the mums you\'d like to donate, then proceed to checkout. You can specify the recipient in the order form.');
+    }
+}
+
+// Direct Donation Functions
+let selectedDonationAmount = 0;
+
+function selectDonationAmount(amount) {
+    selectedDonationAmount = amount;
+    
+    // Update button states
+    document.querySelectorAll('.donation-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.getAttribute('data-amount') == amount) {
+            btn.classList.add('selected');
+        }
+    });
+    
+    // Clear custom amount if preset selected
+    document.getElementById('custom-donation').value = '';
+    
+    // Show impact message
+    showDonationImpact(amount);
+}
+
+function showDonationImpact(amount) {
+    const impactDiv = document.getElementById('donation-impact');
+    const impacts = {
+        10: 'Provides a Scout handbook for one scout',
+        25: 'Supplies camping gear for the pack',
+        50: 'Funds activity supplies for meetings',
+        100: 'Helps sponsor a scout\'s camp experience'
+    };
+    
+    if (impactDiv) {
+        const message = impacts[amount] || `Your $${amount} donation makes a real difference!`;
+        impactDiv.querySelector('p').textContent = message;
+        impactDiv.style.display = 'block';
+    }
+}
+
+function processDonation() {
+    // Get donation amount
+    const customAmount = document.getElementById('custom-donation').value;
+    const amount = customAmount || selectedDonationAmount;
+    
+    if (!amount || amount <= 0) {
+        showError('Please select or enter a donation amount');
+        return;
+    }
+    
+    // Close modal and proceed to order form with donation
+    closeSupportModal();
+    
+    // Add donation to cart as special item
+    cart.push({
+        id: 'DONATION',
+        title: 'Direct Donation to Pack 182',
+        price: parseFloat(amount),
+        quantity: 1,
+        isDonation: true
+    });
+    
+    saveCart();
+    updateCartSummary();
+    showOrderForm();
+}
+
+// Volunteer Functions
+function showVolunteerForm() {
+    // Get selected volunteer options
+    const selectedOptions = [];
+    document.querySelectorAll('input[name="volunteer-type"]:checked').forEach(checkbox => {
+        selectedOptions.push(checkbox.value);
+    });
+    
+    const message = document.getElementById('volunteer-message').value;
+    
+    if (selectedOptions.length === 0 && !message) {
+        showError('Please select at least one way you\'d like to help or provide a message');
+        return;
+    }
+    
+    // Store volunteer interest
+    window.volunteerInterest = {
+        types: selectedOptions,
+        message: message
+    };
+    
+    // Close modal and go to simplified contact form
+    closeSupportModal();
+    showOrderForm();
+    
+    // Hide payment section for volunteer signups
+    const paymentSection = document.querySelector('.payment-options');
+    if (paymentSection && window.volunteerInterest) {
+        paymentSection.style.display = 'none';
+    }
+}
+
+// Update custom donation on input
+document.addEventListener('DOMContentLoaded', () => {
+    const customDonationInput = document.getElementById('custom-donation');
+    if (customDonationInput) {
+        customDonationInput.addEventListener('input', (e) => {
+            const amount = parseFloat(e.target.value);
+            if (amount > 0) {
+                selectedDonationAmount = amount;
+                document.querySelectorAll('.donation-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                showDonationImpact(amount);
+            }
+        });
+    }
+});

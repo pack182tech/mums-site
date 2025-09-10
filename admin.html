@@ -938,56 +938,115 @@
                 return;
             }
             
-            // Get all unique colors and products
-            const allColors = new Set();
-            const productList = [];
-            
-            // Collect all colors and product data
-            Object.keys(inventoryData).sort().forEach(productName => {
-                const product = inventoryData[productName];
-                Object.keys(product.colors).forEach(color => allColors.add(color));
-                productList.push({
-                    name: productName,
-                    colors: product.colors,
-                    total: product.total
-                });
-            });
-            
-            const colorList = Array.from(allColors).sort();
+            // Product pricing and cost data (matching vendor format)
+            const productInfo = {
+                '9" Pot Mum Bundle': { size: '9" Pot', price: 10, cost: 5 },
+                '10" Hanging Basket Bundle': { size: '10" Hanging Basket', price: 15, cost: 10 },
+                '10" Deck Planter Bundle': { size: '10" Decorative Deck', price: 15, cost: 10 },
+                '14" Deck Planter Bundle': { size: '14" Decorative Deck', price: 25, cost: 15 },
+                'Apple Basket Bushel Bundle': { size: 'Bushel', price: 35, cost: 20 },
+                'Oval Tricolor Pot': { size: '16" Oval Tricolor', price: 20, cost: 10 }
+            };
             
             // Create worksheet data
             const wsData = [];
             
             // Add header row
-            const headerRow = ['Product', ...colorList, 'Total'];
+            const headerRow = ['Size', 'Price', 'Cost', 'Quantity', 'Total Price', 'Total Cost', 
+                             'Total Profit', 'Profit %', 'Yellow', 'Orange', 'Red', 'Purple', 
+                             'White', 'Any Color', 'Total'];
             wsData.push(headerRow);
             
+            // Process inventory data
+            let grandTotals = {
+                quantity: 0,
+                totalPrice: 0,
+                totalCost: 0,
+                totalProfit: 0,
+                yellow: 0,
+                orange: 0,
+                red: 0,
+                purple: 0,
+                white: 0,
+                anyColor: 0,
+                total: 0
+            };
+            
             // Add product rows
-            let grandTotalByColor = {};
-            colorList.forEach(color => grandTotalByColor[color] = 0);
-            let grandTotal = 0;
-            
-            productList.forEach(product => {
-                const row = [product.name];
-                colorList.forEach(color => {
-                    const qty = product.colors[color] || 0;
-                    row.push(qty > 0 ? qty : '-');
-                    grandTotalByColor[color] += qty;
-                });
-                row.push(product.total);
+            Object.keys(inventoryData).sort().forEach(productName => {
+                const product = inventoryData[productName];
+                const info = productInfo[productName] || { size: productName, price: 0, cost: 0 };
+                
+                const quantity = product.total;
+                const totalPrice = quantity * info.price;
+                const totalCost = quantity * info.cost;
+                const totalProfit = totalPrice - totalCost;
+                const profitPercent = totalCost > 0 ? Math.round((totalProfit / totalCost) * 100) : 0;
+                
+                // Get color quantities
+                const yellow = product.colors['Yellow'] || 0;
+                const orange = product.colors['Orange'] || 0;
+                const red = product.colors['Red'] || 0;
+                const purple = product.colors['Purple'] || 0;
+                const white = product.colors['White'] || 0;
+                const tricolor = product.colors['Tricolor'] || 0;
+                const anyColor = tricolor; // Tricolor goes in "Any Color" column
+                
+                const row = [
+                    info.size,
+                    `$ ${info.price}`,
+                    `$ ${info.cost}`,
+                    quantity,
+                    `$ ${totalPrice.toLocaleString()}`,
+                    `$ ${totalCost}`,
+                    `$ ${totalProfit}`,
+                    profitPercent ? `${profitPercent}%` : '',
+                    yellow || 0,
+                    orange || 0,
+                    red || 0,
+                    purple || 0,
+                    white || 0,
+                    anyColor || 0,
+                    quantity
+                ];
+                
                 wsData.push(row);
-                grandTotal += product.total;
+                
+                // Update grand totals
+                grandTotals.quantity += quantity;
+                grandTotals.totalPrice += totalPrice;
+                grandTotals.totalCost += totalCost;
+                grandTotals.totalProfit += totalProfit;
+                grandTotals.yellow += yellow;
+                grandTotals.orange += orange;
+                grandTotals.red += red;
+                grandTotals.purple += purple;
+                grandTotals.white += white;
+                grandTotals.anyColor += anyColor;
+                grandTotals.total += quantity;
             });
-            
-            // Add empty row
-            wsData.push([]);
             
             // Add grand total row
-            const totalRow = ['GRAND TOTAL'];
-            colorList.forEach(color => {
-                totalRow.push(grandTotalByColor[color]);
-            });
-            totalRow.push(grandTotal);
+            const grandProfitPercent = grandTotals.totalCost > 0 ? 
+                Math.round((grandTotals.totalProfit / grandTotals.totalCost) * 100) : 0;
+            
+            const totalRow = [
+                'Grand Total',
+                '2024', // Year as shown in example
+                grandTotals.quantity,
+                '',
+                `$ ${grandTotals.totalPrice.toLocaleString()}`,
+                `$ ${grandTotals.totalCost.toLocaleString()}`,
+                `$ ${grandTotals.totalProfit.toLocaleString()}`,
+                `${grandProfitPercent}%`,
+                grandTotals.yellow,
+                grandTotals.orange,
+                grandTotals.red,
+                grandTotals.purple,
+                grandTotals.white,
+                grandTotals.anyColor,
+                grandTotals.total
+            ];
             wsData.push(totalRow);
             
             // Create workbook and worksheet
@@ -995,29 +1054,24 @@
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
             // Set column widths
-            const colWidths = [{ wch: 25 }]; // Product column
-            colorList.forEach(() => colWidths.push({ wch: 10 })); // Color columns
-            colWidths.push({ wch: 10 }); // Total column
+            const colWidths = [
+                { wch: 20 }, // Size
+                { wch: 8 },  // Price
+                { wch: 8 },  // Cost
+                { wch: 10 }, // Quantity
+                { wch: 12 }, // Total Price
+                { wch: 12 }, // Total Cost
+                { wch: 12 }, // Total Profit
+                { wch: 10 }, // Profit %
+                { wch: 8 },  // Yellow
+                { wch: 8 },  // Orange
+                { wch: 8 },  // Red
+                { wch: 8 },  // Purple
+                { wch: 8 },  // White
+                { wch: 10 }, // Any Color
+                { wch: 8 }   // Total
+            ];
             ws['!cols'] = colWidths;
-            
-            // Style the header row (bold)
-            const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let C = range.s.c; C <= range.e.c; ++C) {
-                const address = XLSX.utils.encode_col(C) + '1';
-                if (!ws[address]) continue;
-                if (!ws[address].s) ws[address].s = {};
-                ws[address].s.font = { bold: true };
-            }
-            
-            // Style the grand total row (bold)
-            const lastRow = wsData.length;
-            for (let C = range.s.c; C <= range.e.c; ++C) {
-                const address = XLSX.utils.encode_col(C) + lastRow;
-                if (!ws[address]) continue;
-                if (!ws[address].s) ws[address].s = {};
-                ws[address].s.font = { bold: true };
-                ws[address].s.fill = { fgColor: { rgb: "E6FFFA" } };
-            }
             
             // Add worksheet to workbook
             XLSX.utils.book_append_sheet(wb, ws, 'Mums Order Summary');

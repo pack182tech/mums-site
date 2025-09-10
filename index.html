@@ -21,8 +21,8 @@
     
     <!-- Scout Law Background -->
     <div id="scout-law-background" class="scout-law-background"></div>
-    <!-- Welcome Screen -->
-    <section id="welcome-screen" class="welcome-container">
+    <!-- Welcome Screen (Hidden in monopage) -->
+    <section id="welcome-screen" class="welcome-container" style="display: none;">
         <div class="container">
             <div class="logo-container">
                 <img src="pack182logo.png" alt="Pack 182 Logo" class="logo">
@@ -47,11 +47,45 @@
     </div>
 
     <!-- Product Catalog -->
-    <section id="catalog-screen" class="catalog-container" style="display: none;">
+    <section id="catalog-screen" class="catalog-container" style="display: block;">
         <div class="container">
+            <!-- New integrated hero header -->
+            <div class="catalog-hero">
+                <div class="hero-content">
+                    <div class="hero-logo">
+                        <img src="pack182logo.png" alt="Pack 182 Logo" class="hero-logo-img">
+                    </div>
+                    <div class="hero-text">
+                        <h1 class="hero-title">🎃 Fall Mums Fundraiser 🎃</h1>
+                        <p class="hero-tagline">Support Pack 182's Amazing Adventures!</p>
+                        <p class="hero-message">Beautiful mums in 5 vibrant colors • Every purchase helps our scouts!</p>
+                    </div>
+                </div>
+                <div class="hero-steps">
+                    <div class="step-item">
+                        <span class="step-icon">🌻</span>
+                        <span class="step-text">Select</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">📝</span>
+                        <span class="step-text">Order</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">💳</span>
+                        <span class="step-text">Pay</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">🚗</span>
+                        <span class="step-text">Pickup</span>
+                    </div>
+                </div>
+            </div>
+            
             <div class="header">
-                <h2 id="catalog-title">Select Your Mums</h2>
-                <button onclick="showWelcome()" class="btn btn-secondary">Back</button>
+                <h2 id="catalog-title">Choose Your Beautiful Mums!</h2>
             </div>
             <p id="catalog-subtitle" style="text-align: center; color: #666; margin: 10px 20px 20px; font-style: italic;"></p>
             

@@ -106,6 +106,10 @@ body {
     padding: 0 20px;
 }
 
+.catalog-container .container {
+    padding-top: 20px;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
@@ -202,8 +206,126 @@ h3 { font-size: 1.5rem; }
 
 /* Product Catalog */
 .catalog-container {
-    padding: 40px 0;
+    padding: 0;
     min-height: 100vh;
+}
+
+/* Monopage Hero Section */
+.catalog-hero {
+    background: linear-gradient(135deg, #FDB813 0%, #F5A623 50%, #FDB813 100%);
+    padding: 30px 20px;
+    margin-bottom: 30px;
+    border-bottom: 4px solid #003F87;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.hero-logo {
+    flex-shrink: 0;
+}
+
+.hero-logo-img {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+}
+
+.hero-text {
+    text-align: center;
+    color: #003F87;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    letter-spacing: -1px;
+}
+
+.hero-tagline {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #003F87;
+}
+
+.hero-message {
+    font-size: 1.1rem;
+    margin: 0;
+    color: #003F87;
+    opacity: 0.9;
+}
+
+/* Visual Steps */
+.hero-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.9);
+    padding: 15px 20px;
+    border-radius: 50px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.step-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.step-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #003F87;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.step-arrow {
+    font-size: 1.5rem;
+    color: #003F87;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-tagline {
+        font-size: 1.1rem;
+    }
+    
+    .hero-steps {
+        gap: 10px;
+        padding: 12px 15px;
+    }
+    
+    .step-icon {
+        font-size: 1.5rem;
+    }
+    
+    .step-text {
+        font-size: 0.7rem;
+    }
 }
 
 .header {

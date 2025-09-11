@@ -579,12 +579,12 @@ function sendReachOutNotification(reachOutData) {
 
 // Submit helper request
 function submitHelper(helperData) {
-  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Helpers');
+  let sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Helpers');
   
   // Create sheet if it doesn't exist
   if (!sheet) {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const newSheet = ss.insertSheet('Helpers');
+    sheet = ss.insertSheet('Helpers');
     
     // Add headers
     const headers = [
@@ -598,10 +598,8 @@ function submitHelper(helperData) {
       'Contacted By',
       'Notes'
     ];
-    newSheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-    newSheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
-    
-    sheet = newSheet;
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
   }
   
   const helperId = helperData.id || 'HELPER-' + Date.now();

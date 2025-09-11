@@ -665,9 +665,6 @@
                 <button onclick="exportOrders()" class="btn btn-secondary" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                     📊 Export CSV
                 </button>
-                <button onclick="debugOrders()" class="btn-secondary" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                    🐛 Debug
-                </button>
                 <button onclick="generateOrdersPDF()" class="btn-primary" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
                     📄 Generate PDF Report
                 </button>
@@ -1156,45 +1153,6 @@
             XLSX.writeFile(wb, filename);
         }
         
-        // Debug function to inspect order data
-        function debugOrders() {
-            if (allOrders.length === 0) {
-                console.log('No orders to debug');
-                return;
-            }
-            
-            console.log('=== DEBUG: First Order Structure ===');
-            const firstOrder = allOrders[0];
-            console.log('Full order object:', firstOrder);
-            
-            let products = firstOrder.products;
-            if (typeof products === 'string') {
-                try {
-                    products = JSON.parse(products);
-                } catch (e) {
-                    console.error('Failed to parse products:', e);
-                    products = [];
-                }
-            }
-            
-            console.log('Parsed products:', products);
-            
-            if (products && Array.isArray(products)) {
-                products.forEach((product, index) => {
-                    console.log(`Product ${index}:`, {
-                        title: product.title,
-                        name: product.name,
-                        color: product.color,
-                        quantity: product.quantity,
-                        fullProduct: product
-                    });
-                });
-            }
-            
-            console.log('=== END DEBUG ===');
-            alert('Check console for debug output');
-        }
-        
         // Generate PDF Report for Orders
         async function generateOrdersPDF() {
             if (allOrders.length === 0) {
@@ -1278,7 +1236,6 @@
                 // For any catalog products that still have no colors, add default colors
                 catalogProductNames.forEach(productName => {
                     if (!availableProducts.has(productName)) {
-                        console.log(`Product "${productName}" has no colors defined, adding defaults`);
                         // These products are in catalog but have no colors defined
                         // Use standard mum colors as default
                         if (productName.toLowerCase().includes('tricolor')) {
@@ -1288,12 +1245,6 @@
                             availableProducts.set(productName, new Set(['Yellow', 'Orange', 'Red', 'White', 'Burgundy']));
                         }
                     }
-                });
-                
-                // Debug: Log what we found
-                console.log('Available products for PDF:');
-                availableProducts.forEach((colors, product) => {
-                    console.log(`  ${product}: ${Array.from(colors).join(', ')}`);
                 });
                 
             } catch (error) {
@@ -1464,24 +1415,18 @@
                         const productName = product.title || product.name || 'Unknown';
                         let color = product.color;
                         
-                        // Debug: log what we're processing
-                        console.log(`Processing order product: ${productName}, color field: ${product.color}`);
-                        
                         // If no color is specified, try to extract from title
                         if (!color) {
                             // Check if the product title contains color information
                             if (productName.includes(' - ')) {
                                 const parts = productName.split(' - ');
                                 color = parts[1].trim();
-                                console.log(`  Extracted color from title: ${color}`);
                             } else if (productName.toLowerCase().includes('tricolor')) {
                                 color = 'Mixed';
-                                console.log(`  Detected tricolor, using Mixed`);
                             } else {
                                 // For bundle products without specific color
                                 // We'll handle them specially below
                                 color = null;
-                                console.log(`  No color found, this is likely a bundle product`);
                             }
                         }
                         
@@ -1496,7 +1441,6 @@
                                 const firstColor = Array.from(colors)[0];
                                 const key = `${productName}|${firstColor}`;
                                 orderProducts.set(key, qty);
-                                console.log(`  Bundle product placed in first color column: ${firstColor}`);
                             }
                         } else if (color) {
                             // Regular product with a specific color

@@ -52,19 +52,10 @@
             <!-- New integrated hero header -->
             <div class="catalog-hero">
                 <div class="hero-content">
-                    <div class="hero-logo">
-                        <img src="pack182logo.png" alt="Pack 182 Logo" class="hero-logo-img">
-                    </div>
-                    <div class="hero-text">
-                        <h1 class="hero-title">🎃 Fall Mums Fundraiser 🎃</h1>
-                        <p class="hero-tagline">Support Pack 182's Amazing Adventures!</p>
-                        <p class="hero-message">Beautiful mums in 5 vibrant colors • Every purchase helps our scouts!</p>
-                        <div class="hero-actions">
-                            <button onclick="showSupportOptions()" class="btn btn-support">
-                                <span style="margin-right: 5px;">🎁</span> Other Ways to Support Pack 182
-                            </button>
-                        </div>
-                    </div>
+                    <img src="pack182logo.png" alt="Pack 182 Logo" class="hero-logo-img">
+                    <h1 class="hero-title">🎃 Fall Mums Fundraiser 🎃</h1>
+                    <p class="hero-tagline">Support Pack 182's Amazing Adventures!</p>
+                    <p class="hero-message">Beautiful mums in 5 vibrant colors • Every purchase helps our scouts!</p>
                 </div>
                 <div class="hero-steps">
                     <div class="step-item">
@@ -86,6 +77,11 @@
                         <span class="step-icon">🚗</span>
                         <span class="step-text">Pickup</span>
                     </div>
+                </div>
+                <div class="hero-actions">
+                    <button onclick="showSupportOptions()" class="btn btn-support">
+                        <span style="margin-right: 5px;">🎁</span> Other Ways to Support Pack 182
+                    </button>
                 </div>
             </div>
             
@@ -351,61 +347,45 @@
 
     <!-- Support Options Modal -->
     <div id="support-modal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content" style="max-width: 650px; padding: 40px;">
             <button onclick="closeSupportModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
-            <h2 style="color: #003F87; margin-bottom: 10px; text-align: center;">🎁 Other Ways to Support Pack 182</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 30px;">Can't buy mums? You can still make a difference!</p>
+            <h2 id="support-modal-title" style="color: #003F87; margin-bottom: 15px; text-align: center;">🎁 Other Ways to Support Pack 182</h2>
+            <p id="support-modal-description" style="text-align: center; color: #666; margin-bottom: 35px; line-height: 1.6;">Choose how you'd like to help our scouts!</p>
             
             <div class="support-options">
-                <!-- Donate Mums Option -->
-                <div class="support-card" style="background: #FFF8E1; border: 2px solid #FFC107; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="color: #F57C00; margin-bottom: 10px;">🌻 Donate Mums to the Community</h3>
-                    <p style="margin-bottom: 15px;">Purchase mums that will be donated to Three Bridges Reformed Church, local nursing homes, or families in need.</p>
-                    <button onclick="showDonateMums()" class="btn btn-primary" style="background: #FFC107; color: #333;">Select Mums to Donate</button>
+                <!-- Donate to Charter Organization -->
+                <div class="support-card" style="background: #E8F5E9; border: 2px solid #4CAF50; border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                    <h3 style="color: #2E7D32; margin-bottom: 15px;">⛪ Donate my order to Pack 182's Charter Organization, Three Bridges Reformed Church</h3>
+                    <p style="margin-bottom: 20px; line-height: 1.6;">Your mums order will be donated to Three Bridges Reformed Church, our charter organization that supports Pack 182 throughout the year.</p>
+                    <button onclick="donateToChurch()" class="btn btn-primary" style="background: #4CAF50; width: 100%; padding: 12px; font-size: 1.1rem;">Donate My Order to the Church</button>
                 </div>
                 
-                <!-- Direct Donation Option -->
-                <div class="support-card" style="background: #E8F5E9; border: 2px solid #4CAF50; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="color: #2E7D32; margin-bottom: 10px;">💰 Make a Direct Donation</h3>
-                    <p style="margin-bottom: 10px;">Support our scouts directly with a tax-deductible donation through Three Bridges Reformed Church.</p>
-                    <div class="donation-amounts" style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                        <button onclick="selectDonationAmount(10)" class="donation-btn" data-amount="10">$10</button>
-                        <button onclick="selectDonationAmount(25)" class="donation-btn" data-amount="25">$25</button>
-                        <button onclick="selectDonationAmount(50)" class="donation-btn" data-amount="50">$50</button>
-                        <button onclick="selectDonationAmount(100)" class="donation-btn" data-amount="100">$100</button>
-                        <input type="number" id="custom-donation" placeholder="Other $" style="width: 100px; padding: 8px; border: 2px solid #4CAF50; border-radius: 5px;">
-                    </div>
-                    <div id="donation-impact" style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 15px; display: none;">
-                        <p style="color: #2E7D32; font-weight: bold; margin: 0;"></p>
-                    </div>
-                    <button onclick="processDonation()" class="btn btn-primary" style="background: #4CAF50;">Continue with Donation</button>
-                </div>
-                
-                <!-- Volunteer Option -->
-                <div class="support-card" style="background: #F3E5F5; border: 2px solid #9C27B0; border-radius: 10px; padding: 20px;">
-                    <h3 style="color: #6A1B9A; margin-bottom: 10px;">🤝 Volunteer or Provide Other Support</h3>
-                    <p style="margin-bottom: 15px;">Share your time, talents, or resources with our pack!</p>
-                    <div class="volunteer-options" style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" name="volunteer-type" value="events"> Help at pack events
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" name="volunteer-type" value="equipment"> Donate camping equipment
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" name="volunteer-type" value="space"> Provide meeting space
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" name="volunteer-type" value="skills"> Share professional skills
-                        </label>
-                        <label style="display: block; margin-bottom: 8px;">
-                            <input type="checkbox" name="volunteer-type" value="transport"> Help with transportation
-                        </label>
-                    </div>
-                    <textarea id="volunteer-message" placeholder="Tell us more about how you'd like to help..." style="width: 100%; padding: 8px; border: 2px solid #9C27B0; border-radius: 5px; margin-bottom: 10px;" rows="3"></textarea>
-                    <button onclick="showVolunteerForm()" class="btn btn-primary" style="background: #9C27B0;">Contact Me About Volunteering</button>
-                </div>
+                <!-- Help in Other Ways -->
+                <button onclick="requestOtherHelp()" class="btn btn-primary" style="background: #FFC107; color: #333; width: 100%; padding: 15px; font-size: 1.1rem; border: 2px solid #FFC107; margin-top: 15px;">
+                    💝 Help Pack 182 in some other way...
+                </button>
             </div>
+        </div>
+    </div>
+    
+    <!-- Contact Request Modal -->
+    <div id="contact-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; padding: 40px;">
+            <button onclick="closeContactModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: white; border: 1px solid #ddd; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+            <h3 id="contact-modal-title" style="color: #003F87; margin-bottom: 20px; text-align: center;">💝 Help Pack 182</h3>
+            <p id="contact-modal-description" style="text-align: center; color: #666; margin-bottom: 30px; line-height: 1.6;">Thank you for your interest! Someone from Pack 182 will reach out to discuss how you can help.</p>
+            
+            <form id="contact-form" onsubmit="submitContactRequest(event); return false;">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="contact-name" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Your Name *</label>
+                    <input type="text" id="contact-name" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="contact-email" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Email Address *</label>
+                    <input type="email" id="contact-email" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.1rem; background: #FFC107; color: #333; border: none;">Submit</button>
+            </form>
         </div>
     </div>
 

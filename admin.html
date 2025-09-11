@@ -636,6 +636,7 @@
             <button class="nav-tab" onclick="switchTab('scouts')">Scout Names</button>
             <button class="nav-tab" onclick="switchTab('qrcodes')">QR Codes</button>
             <button class="nav-tab" onclick="switchTab('leaderboard')">Leaderboard</button>
+            <button class="nav-tab" onclick="switchTab('reachouts')">Reach Outs</button>
             <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
         </div>
         
@@ -661,6 +662,9 @@
             </div>
             
             <div class="filters">
+                <button onclick="generateOrdersPDF()" class="btn-primary" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 15px;">
+                    📄 Generate PDF Report
+                </button>
                 <div class="filter-group">
                     <label>Payment Status</label>
                     <select id="payment-filter" onchange="filterOrders()">
@@ -793,6 +797,46 @@
             </div>
         </div>
         
+        <!-- Reach Outs Tab -->
+        <div id="reachouts-tab" class="tab-content">
+            <h2>Reach Out Requests</h2>
+            <p style="color: #718096; margin-bottom: 30px;">People who have requested to be contacted about helping Pack 182.</p>
+            
+            <div class="filters">
+                <input type="text" id="reachouts-search" placeholder="Search by name, email, or scout..." style="width: 300px;">
+                <button onclick="loadReachOuts()" class="btn-filter">Refresh</button>
+            </div>
+            
+            <div class="stats" id="reachouts-stats" style="margin-top: 20px;">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-reachouts">0</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pending-reachouts">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="contacted-reachouts">0</div>
+                    <div class="stat-label">Contacted</div>
+                </div>
+            </div>
+            
+            <table id="reachouts-table" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Scout</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
         <!-- Settings Tab -->
         <div id="settings-tab" class="tab-content">
             <h2>Site Settings</h2>
@@ -807,6 +851,26 @@
                 <div class="filter-group" style="margin-bottom: 20px;">
                     <label>Welcome Message</label>
                     <textarea id="setting-welcome_message" rows="3" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('welcome_message', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Support Modal Title</label>
+                    <input type="text" id="setting-support_modal_title" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px;" placeholder="🎁 Other Ways to Support Pack 182" onchange="saveSetting('support_modal_title', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Support Modal Description</label>
+                    <textarea id="setting-support_modal_description" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" placeholder="Choose how you'd like to help our scouts!" onchange="saveSetting('support_modal_description', this.value)"></textarea>
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Contact Modal Title</label>
+                    <input type="text" id="setting-contact_modal_title" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px;" placeholder="💝 Help Pack 182" onchange="saveSetting('contact_modal_title', this.value)">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Contact Modal Description</label>
+                    <textarea id="setting-contact_modal_description" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" placeholder="Thank you for your interest! Someone from Pack 182 will reach out to discuss how you can help." onchange="saveSetting('contact_modal_description', this.value)"></textarea>
                 </div>
                 
                 <div class="filter-group" style="margin-bottom: 20px;">
@@ -878,6 +942,8 @@
     
     <!-- SheetJS for Excel export -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     <script src="js/config.js"></script>
     <script>
         let allOrders = [];
@@ -1085,6 +1151,189 @@
             XLSX.writeFile(wb, filename);
         }
         
+        // Generate PDF Report for Orders
+        function generateOrdersPDF() {
+            if (allOrders.length === 0) {
+                showMessage('No orders to export', 'error');
+                return;
+            }
+            
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape', 'pt', 'letter');
+            
+            // Get unique products to create columns
+            const productColumns = new Map();
+            let productIndex = 0;
+            
+            allOrders.forEach(order => {
+                // Parse products from JSON string if needed
+                let products = order.products;
+                if (typeof products === 'string') {
+                    try {
+                        products = JSON.parse(products);
+                    } catch (e) {
+                        products = [];
+                    }
+                }
+                
+                if (products && Array.isArray(products)) {
+                    products.forEach(product => {
+                        const productName = product.title || product.name || 'Unknown';
+                        const color = product.color || '';
+                        const key = `${productName}|${color}`;
+                        if (!productColumns.has(key)) {
+                            productColumns.set(key, {
+                                index: productIndex++,
+                                product: productName,
+                                color: color,
+                                shortName: productName.substring(0, 10) + (color ? '-' + color.substring(0, 5) : '')
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Sort product columns alphabetically
+            const sortedProducts = Array.from(productColumns.entries())
+                .sort((a, b) => a[0].localeCompare(b[0]));
+            productColumns.clear();
+            sortedProducts.forEach(([key, value], index) => {
+                value.index = index;
+                productColumns.set(key, value);
+            });
+            
+            // Prepare table headers
+            const headers = [
+                { content: 'Scout', styles: { cellWidth: 90 } },
+                { content: 'Customer Name', styles: { cellWidth: 120 } },
+                { content: 'Total', styles: { cellWidth: 60 } }
+            ];
+            
+            // Add product columns with narrow width
+            const productColumnWidth = Math.min(40, (750 - 270) / Math.max(productColumns.size, 1));
+            productColumns.forEach((info, key) => {
+                headers.push({
+                    content: info.shortName,
+                    styles: { cellWidth: productColumnWidth, fontSize: 6 }
+                });
+            });
+            
+            // Prepare table data
+            const tableData = [];
+            
+            allOrders.forEach(order => {
+                const row = [
+                    order.scout_name || '-',
+                    (order.first_name || '') + ' ' + (order.last_name || ''),
+                    '$' + parseFloat(order.total_price || 0).toFixed(2)
+                ];
+                
+                // Parse products for this order
+                let products = order.products;
+                if (typeof products === 'string') {
+                    try {
+                        products = JSON.parse(products);
+                    } catch (e) {
+                        products = [];
+                    }
+                }
+                
+                // Create product quantity map for this order
+                const orderProducts = new Map();
+                if (products && Array.isArray(products)) {
+                    products.forEach(product => {
+                        const productName = product.title || product.name || 'Unknown';
+                        const color = product.color || '';
+                        const key = `${productName}|${color}`;
+                        orderProducts.set(key, product.quantity || 0);
+                    });
+                }
+                
+                // Fill in product quantities
+                productColumns.forEach((info, key) => {
+                    row.push(orderProducts.get(key) || '');
+                });
+                
+                tableData.push(row);
+            });
+            
+            // Add title
+            doc.setFontSize(16);
+            doc.text('Pack 182 Mums Orders Report', doc.internal.pageSize.width / 2, 30, { align: 'center' });
+            
+            // Add date
+            doc.setFontSize(10);
+            const today = new Date();
+            doc.text(`Generated: ${today.toLocaleDateString()} ${today.toLocaleTimeString()}`, doc.internal.pageSize.width / 2, 45, { align: 'center' });
+            
+            // Add summary stats
+            const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
+            doc.text(`Total Orders: ${allOrders.length} | Total Revenue: $${totalRevenue.toFixed(2)}`, doc.internal.pageSize.width / 2, 60, { align: 'center' });
+            
+            // Generate table with autoTable
+            doc.autoTable({
+                head: [headers.map(h => typeof h === 'object' ? h.content : h)],
+                body: tableData,
+                startY: 75,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    lineColor: [200, 200, 200],
+                    lineWidth: 0.5
+                },
+                headStyles: {
+                    fillColor: [0, 63, 135],
+                    textColor: [255, 255, 255],
+                    fontSize: 7,
+                    fontStyle: 'bold',
+                    halign: 'center',
+                    valign: 'middle',
+                    cellPadding: 3
+                },
+                columnStyles: {
+                    0: { halign: 'left', cellWidth: 90 },   // Scout
+                    1: { halign: 'left', cellWidth: 120 },  // Customer Name
+                    2: { halign: 'right', cellWidth: 60 }   // Total
+                },
+                didParseCell: function(data) {
+                    // Apply narrow width and center alignment to product columns
+                    if (data.column.index >= 3) {
+                        data.cell.styles.cellWidth = productColumnWidth;
+                        data.cell.styles.fontSize = 7;
+                        data.cell.styles.halign = 'center';
+                        data.cell.styles.fontStyle = 'normal';
+                    }
+                    // Add alternating row colors for better readability
+                    if (data.row.index % 2 === 0 && data.section === 'body') {
+                        data.cell.styles.fillColor = [245, 245, 245];
+                    }
+                },
+                margin: { top: 10, right: 10, bottom: 10, left: 10 },
+                tableWidth: 'auto',
+                showHead: 'everyPage'
+            });
+            
+            // Add page numbers
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 50, doc.internal.pageSize.height - 20, { align: 'right' });
+            }
+            
+            // Generate filename with date
+            const dateStr = today.toISOString().split('T')[0];
+            const filename = `Pack182_Orders_Report_${dateStr}.pdf`;
+            
+            // Save the PDF
+            doc.save(filename);
+            
+            showMessage(`PDF report generated: ${filename}`, 'success');
+        }
+        
         // Tab switching
         function switchTab(tab) {
             currentTab = tab;
@@ -1116,6 +1365,9 @@
                 document.getElementById('qrcodes-tab').classList.add('active');
             } else if (tab === 'leaderboard') {
                 document.getElementById('leaderboard-tab').classList.add('active');
+            } else if (tab === 'reachouts') {
+                document.getElementById('reachouts-tab').classList.add('active');
+                loadReachOuts();
             } else if (tab === 'settings') {
                 document.getElementById('settings-tab').classList.add('active');
                 loadSettings();
@@ -1578,6 +1830,112 @@
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
+        }
+        
+        // Reach Outs functionality
+        let allReachOuts = [];
+        
+        async function loadReachOuts() {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?path=reachouts&admin=true`);
+                const data = await response.json();
+                
+                if (data.reachouts) {
+                    allReachOuts = data.reachouts;
+                    displayReachOuts(allReachOuts);
+                    updateReachOutsStats();
+                }
+            } catch (error) {
+                console.error('Error loading reach outs:', error);
+                showMessage('Failed to load reach out requests', 'error');
+            }
+        }
+        
+        function displayReachOuts(reachouts) {
+            const tbody = document.querySelector('#reachouts-table tbody');
+            tbody.innerHTML = '';
+            
+            if (reachouts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No reach out requests yet</td></tr>';
+                return;
+            }
+            
+            reachouts.forEach(reachout => {
+                const row = document.createElement('tr');
+                const date = new Date(reachout.date);
+                const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours() % 12 || 12}:${String(date.getMinutes()).padStart(2, '0')} ${date.getHours() >= 12 ? 'PM' : 'AM'}`;
+                
+                row.innerHTML = `
+                    <td>${dateStr}</td>
+                    <td>${reachout.name || '-'}</td>
+                    <td><a href="mailto:${reachout.email}">${reachout.email}</a></td>
+                    <td>${reachout.scoutName || '-'}</td>
+                    <td>
+                        <span class="status-badge ${reachout.status === 'contacted' ? 'status-success' : 'status-pending'}">
+                            ${reachout.status || 'pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="markAsContacted('${reachout.id}')" 
+                                class="btn-action" 
+                                ${reachout.status === 'contacted' ? 'disabled' : ''}>
+                            Mark Contacted
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateReachOutsStats() {
+            const totalReachOuts = allReachOuts.length;
+            const pendingReachOuts = allReachOuts.filter(r => r.status !== 'contacted').length;
+            const contactedReachOuts = allReachOuts.filter(r => r.status === 'contacted').length;
+            
+            document.getElementById('total-reachouts').textContent = totalReachOuts;
+            document.getElementById('pending-reachouts').textContent = pendingReachOuts;
+            document.getElementById('contacted-reachouts').textContent = contactedReachOuts;
+        }
+        
+        async function markAsContacted(reachoutId) {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?path=updateReachOut&admin=true`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify({ id: reachoutId, status: 'contacted' })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Marked as contacted', 'success');
+                    loadReachOuts();
+                } else {
+                    throw new Error('Failed to update status');
+                }
+            } catch (error) {
+                console.error('Error updating reach out:', error);
+                showMessage('Failed to update status', 'error');
+            }
+        }
+        
+        function filterReachOuts() {
+            const searchTerm = document.getElementById('reachouts-search').value.toLowerCase();
+            
+            if (!searchTerm) {
+                displayReachOuts(allReachOuts);
+                return;
+            }
+            
+            const filtered = allReachOuts.filter(reachout => {
+                return (reachout.name && reachout.name.toLowerCase().includes(searchTerm)) ||
+                       (reachout.email && reachout.email.toLowerCase().includes(searchTerm)) ||
+                       (reachout.scoutName && reachout.scoutName.toLowerCase().includes(searchTerm));
+            });
+            
+            displayReachOuts(filtered);
         }
         
         // Settings functionality

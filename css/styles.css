@@ -231,26 +231,18 @@ h3 { font-size: 1.5rem; }
 
 .hero-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
     margin-bottom: 25px;
-    flex-wrap: wrap;
-}
-
-.hero-logo {
-    flex-shrink: 0;
+    text-align: center;
 }
 
 .hero-logo-img {
     height: 80px;
     width: auto;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
-}
-
-.hero-text {
-    text-align: center;
-    color: #003F87;
+    margin-bottom: 20px;
 }
 
 .hero-title {
@@ -259,6 +251,7 @@ h3 { font-size: 1.5rem; }
     margin: 0 0 10px 0;
     text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
     letter-spacing: -1px;
+    color: #003F87;
 }
 
 .hero-tagline {
@@ -270,7 +263,7 @@ h3 { font-size: 1.5rem; }
 
 .hero-message {
     font-size: 1.1rem;
-    margin: 0;
+    margin: 0 0 20px 0;
     color: #003F87;
     opacity: 0.9;
 }
@@ -1290,7 +1283,7 @@ body {
 }
 
 .hero-actions {
-    margin-top: 20px;
+    margin-top: 25px;
     text-align: center;
 }
 

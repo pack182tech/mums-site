@@ -57,6 +57,26 @@ async function loadSettings() {
         document.getElementById('welcome-title').textContent = settings.welcome_title || 'Cub Scouts Mum Sale';
         document.getElementById('welcome-message').textContent = settings.welcome_message || '';
         
+        // Update support modal settings
+        const supportModalTitle = document.getElementById('support-modal-title');
+        if (supportModalTitle) {
+            supportModalTitle.textContent = settings.support_modal_title || '🎁 Other Ways to Support Pack 182';
+        }
+        const supportModalDescription = document.getElementById('support-modal-description');
+        if (supportModalDescription) {
+            supportModalDescription.textContent = settings.support_modal_description || 'Choose how you\'d like to help our scouts!';
+        }
+        
+        // Update contact modal settings
+        const contactModalTitle = document.getElementById('contact-modal-title');
+        if (contactModalTitle) {
+            contactModalTitle.textContent = settings.contact_modal_title || '💝 Help Pack 182';
+        }
+        const contactModalDescription = document.getElementById('contact-modal-description');
+        if (contactModalDescription) {
+            contactModalDescription.textContent = settings.contact_modal_description || 'Thank you for your interest! Someone from Pack 182 will reach out to discuss how you can help.';
+        }
+        
         // Format instructions as a numbered list
         const instructionsText = settings.instructions || '';
         const instructionsList = instructionsText.split(/\d+\.\s+/).filter(item => item.trim());
@@ -773,17 +793,115 @@ function closeSupportModal() {
     document.getElementById('support-modal').style.display = 'none';
 }
 
-// Donate Mums Functions
-function showDonateMums() {
+// Donate to Church Function
+function donateToChurch() {
     closeSupportModal();
-    // Scroll to product grid and highlight donation options
-    const catalogScreen = document.getElementById('catalog-screen');
-    if (catalogScreen) {
-        catalogScreen.scrollIntoView({ behavior: 'smooth' });
-        // Add donation mode flag
-        window.donationMode = true;
-        showError('Select the mums you\'d like to donate, then proceed to checkout. You can specify the recipient in the order form.');
+    // Set donation mode for church
+    window.donationMode = true;
+    window.donationRecipient = 'Three Bridges Reformed Church';
+    
+    // Show info message
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px; padding: 50px;">
+            <h3 style="color: #003F87; margin-bottom: 20px; font-size: 1.5rem;">⛪ Donating to Three Bridges Reformed Church</h3>
+            <p style="margin-bottom: 30px; line-height: 1.6; font-size: 1.1rem;">Please select the mums you'd like to donate. Your entire order will be donated to the church.</p>
+            <button onclick="this.closest('.modal').remove(); document.getElementById('catalog-screen').scrollIntoView({ behavior: 'smooth' });" 
+                    class="btn btn-primary" style="background: #4CAF50; width: 100%; padding: 15px; font-size: 1.1rem;">Select Mums to Donate</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// Request Other Help Function
+function requestOtherHelp() {
+    closeSupportModal();
+    document.getElementById('contact-modal').style.display = 'flex';
+}
+
+// Close Contact Modal
+function closeContactModal() {
+    document.getElementById('contact-modal').style.display = 'none';
+}
+
+// Submit Contact Request
+async function submitContactRequest(event) {
+    event.preventDefault();
+    
+    // Get the current scout name if available
+    const scoutName = document.getElementById('scout-name')?.value || 
+                     localStorage.getItem('scoutName') || '';
+    
+    const contactData = {
+        name: document.getElementById('contact-name').value,
+        email: document.getElementById('contact-email').value,
+        scoutName: scoutName,
+        type: 'other_help_inquiry'
+    };
+    
+    showLoading(true);
+    try {
+        // Check if function exists
+        if (!sheetsAPI || typeof sheetsAPI.submitReachOut !== 'function') {
+            console.error('sheetsAPI.submitReachOut is not available');
+            // Fallback to submitVolunteer if submitReachOut doesn't exist
+            const response = await sheetsAPI.submitVolunteer({
+                firstName: contactData.name.split(' ')[0] || contactData.name,
+                lastName: contactData.name.split(' ').slice(1).join(' ') || '',
+                email: contactData.email,
+                phone: '',
+                volunteerTypes: ['other_help'],
+                message: 'Interested in helping Pack 182',
+                comments: `Scout: ${contactData.scoutName || 'Not specified'}`
+            });
+            
+            if (response.success) {
+                closeContactModal();
+                showSuccess('Thank you! Someone from Pack 182 will reach out to discuss how you can help.');
+            } else {
+                throw new Error('Failed to submit request');
+            }
+            return;
+        }
+        
+        // Submit as a reach out request
+        const response = await sheetsAPI.submitReachOut({
+            name: contactData.name,
+            email: contactData.email,
+            scoutName: contactData.scoutName,
+            date: new Date().toISOString(),
+            status: 'pending'
+        });
+        
+        if (response.success) {
+            closeContactModal();
+            showSuccess('Thank you! Someone from Pack 182 will reach out to discuss how you can help.');
+        } else {
+            throw new Error('Failed to submit request');
+        }
+    } catch (error) {
+        console.error('Contact request failed:', error);
+        showError('Failed to submit contact request. Please try again or email pack182tech@gmail.com directly.');
+    } finally {
+        showLoading(false);
     }
+}
+
+// Show Success Message
+function showSuccess(message) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h3 style="color: #4CAF50; margin-bottom: 15px;">✓ Success!</h3>
+            <p style="margin-bottom: 20px;">${message}</p>
+            <button onclick="this.closest('.modal').remove();" class="btn btn-primary" style="background: #4CAF50;">OK</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // Direct Donation Functions

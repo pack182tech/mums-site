@@ -24,6 +24,8 @@ function doGet(e) {
         return getSettings();
       case 'orders':
         return getOrders(e);
+      case 'reachouts':
+        return getReachOuts(e);
       default:
         return createJsonResponse({error: 'Invalid path'}, 404);
     }
@@ -45,6 +47,10 @@ function doPost(e) {
         return submitOrder(data);
       case 'volunteer':
         return submitVolunteer(data);
+      case 'submitReachOut':
+        return submitReachOut(data);
+      case 'updateReachOut':
+        return updateReachOut(data, e);
       case 'updateProduct':
         return updateProduct(data, e);
       case 'updateSettings':
@@ -399,6 +405,161 @@ function sendVolunteerNotification(volunteerId, volunteerData) {
     Comments: ${volunteerData.comments || 'None'}
     
     Please follow up with this volunteer soon!
+  `;
+  
+  ADMIN_EMAILS.forEach(email => {
+    try {
+      MailApp.sendEmail(email, subject, body);
+    } catch(e) {
+      console.error('Failed to send email to:', email, e);
+    }
+  });
+}
+
+// Submit reach out request
+function submitReachOut(reachOutData) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    
+    // Create or get ReachOuts sheet
+    let reachOutsSheet;
+    try {
+      reachOutsSheet = ss.getSheetByName('ReachOuts');
+    } catch(e) {
+      reachOutsSheet = ss.insertSheet('ReachOuts');
+      // Add headers
+      reachOutsSheet.getRange(1, 1, 1, 6).setValues([
+        ['ID', 'Date', 'Name', 'Email', 'Scout Name', 'Status']
+      ]);
+      reachOutsSheet.getRange(1, 1, 1, 6).setFontWeight('bold');
+    }
+    
+    // Generate ID
+    const reachOutId = 'RO' + Date.now();
+    
+    // Add reach out data
+    const rowData = [
+      reachOutId,
+      reachOutData.date || new Date().toISOString(),
+      reachOutData.name || '',
+      reachOutData.email || '',
+      reachOutData.scoutName || '',
+      reachOutData.status || 'pending'
+    ];
+    
+    reachOutsSheet.appendRow(rowData);
+    
+    // Send email notification
+    sendReachOutNotification(reachOutData);
+    
+    return createJsonResponse({
+      success: true,
+      id: reachOutId,
+      message: 'Reach out request submitted successfully'
+    });
+  } catch(error) {
+    console.error('Error submitting reach out:', error);
+    return createJsonResponse({success: false, error: error.toString()}, 500);
+  }
+}
+
+// Get reach outs (admin only)
+function getReachOuts(e) {
+  if (!isAdminRequest(e)) {
+    return createJsonResponse({error: 'Unauthorized'}, 403);
+  }
+  
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let reachOutsSheet;
+    
+    try {
+      reachOutsSheet = ss.getSheetByName('ReachOuts');
+    } catch(e) {
+      // Sheet doesn't exist yet
+      return createJsonResponse({reachouts: []});
+    }
+    
+    const data = reachOutsSheet.getDataRange().getValues();
+    
+    if (data.length <= 1) {
+      return createJsonResponse({reachouts: []});
+    }
+    
+    // Convert to objects
+    const headers = data[0];
+    const reachouts = [];
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (row[0]) { // Check if ID exists
+        reachouts.push({
+          id: row[0],
+          date: row[1],
+          name: row[2],
+          email: row[3],
+          scoutName: row[4],
+          status: row[5]
+        });
+      }
+    }
+    
+    // Sort by date descending
+    reachouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    return createJsonResponse({reachouts: reachouts});
+  } catch(error) {
+    console.error('Error fetching reach outs:', error);
+    return createJsonResponse({error: error.toString()}, 500);
+  }
+}
+
+// Update reach out status
+function updateReachOut(data, e) {
+  if (!isAdminRequest(e)) {
+    return createJsonResponse({error: 'Unauthorized'}, 403);
+  }
+  
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const reachOutsSheet = ss.getSheetByName('ReachOuts');
+    const dataRange = reachOutsSheet.getDataRange();
+    const values = dataRange.getValues();
+    
+    // Find the reach out by ID
+    for (let i = 1; i < values.length; i++) {
+      if (values[i][0] === data.id) {
+        // Update status
+        reachOutsSheet.getRange(i + 1, 6).setValue(data.status);
+        
+        return createJsonResponse({
+          success: true,
+          message: 'Reach out status updated'
+        });
+      }
+    }
+    
+    return createJsonResponse({error: 'Reach out not found'}, 404);
+  } catch(error) {
+    console.error('Error updating reach out:', error);
+    return createJsonResponse({error: error.toString()}, 500);
+  }
+}
+
+// Send email notification for reach out
+function sendReachOutNotification(reachOutData) {
+  const subject = `New Help Request from ${reachOutData.name}`;
+  const body = `
+    Someone has requested to be contacted about helping Pack 182!
+    
+    Name: ${reachOutData.name}
+    Email: ${reachOutData.email}
+    Scout Name: ${reachOutData.scoutName || 'Not specified'}
+    Date: ${new Date(reachOutData.date).toLocaleString()}
+    
+    Please reach out to them soon to discuss how they can help the pack.
+    
+    You can manage all reach out requests in the admin panel.
   `;
   
   ADMIN_EMAILS.forEach(email => {

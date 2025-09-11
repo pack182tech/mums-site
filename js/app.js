@@ -863,7 +863,10 @@ async function submitContactRequest(event) {
         
         const response = await sheetsAPI.submitHelper(helperData);
         
-        if (response.success) {
+        // Debug logging to see what we're getting
+        console.log('Helper submission response:', response);
+        
+        if (response && response.success) {
             // Show thank you message
             const thankYouModal = document.createElement('div');
             thankYouModal.className = 'modal';
@@ -883,7 +886,8 @@ async function submitContactRequest(event) {
                 closeContactModal();
             }, 3000);
         } else {
-            throw new Error('Failed to submit request');
+            console.error('Invalid response from API:', response);
+            throw new Error(response?.error || response?.message || 'Failed to submit request - please check if Google Apps Script is updated');
         }
     } catch (error) {
         console.error('Contact request failed:', error);

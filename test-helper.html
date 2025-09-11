@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Helper Submission</title>
+</head>
+<body>
+    <h1>Test Helper Submission</h1>
+    <button onclick="testHelperSubmission()">Test Submit Helper</button>
+    <div id="result"></div>
+    
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwFihgdlUthlTMhKp8Ea0P1QUi198WibKsgCC-4XLDOyr42qObexjLyRMQfEHWTJE-vqg/exec';
+        
+        async function testHelperSubmission() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            const helperData = {
+                id: 'HELPER-TEST-' + Date.now(),
+                name: 'Test User',
+                email: 'test@example.com',
+                scoutName: 'Test Scout',
+                date: new Date().toISOString(),
+                contacted: false,
+                contactedBy: '',
+                type: 'other_help'
+            };
+            
+            try {
+                console.log('Sending data:', helperData);
+                
+                const url = `${API_URL}?path=submitHelper`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify(helperData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Failed to parse response as JSON:', e);
+                    result = { error: 'Invalid JSON response', raw: responseText };
+                }
+                
+                console.log('Parsed result:', result);
+                
+                resultDiv.innerHTML = `
+                    <h3>Result:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                    <h3>Response Status: ${response.status}</h3>
+                    <p>Check console for more details</p>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <h3 style="color: red;">Error:</h3>
+                    <pre>${error.toString()}</pre>
+                    <p>Check console for more details</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

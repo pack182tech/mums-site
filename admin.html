@@ -1411,6 +1411,25 @@
                 });
             });
             
+            // Sort orders by Scout name first, then by Customer name
+            const sortedOrders = [...allOrders].sort((a, b) => {
+                // First sort by scout name
+                const scoutA = (a.scout_name || '').toLowerCase();
+                const scoutB = (b.scout_name || '').toLowerCase();
+                
+                if (scoutA !== scoutB) {
+                    // Put empty scout names at the end
+                    if (!scoutA) return 1;
+                    if (!scoutB) return -1;
+                    return scoutA.localeCompare(scoutB);
+                }
+                
+                // If scout names are the same, sort by customer name
+                const customerA = ((a.first_name || '') + ' ' + (a.last_name || '')).toLowerCase().trim();
+                const customerB = ((b.first_name || '') + ' ' + (b.last_name || '')).toLowerCase().trim();
+                return customerA.localeCompare(customerB);
+            });
+            
             // Prepare table data
             const tableData = [];
             const columnTotals = new Array(3 + productColorColumns.length).fill(0);
@@ -1418,7 +1437,7 @@
             columnTotals[1] = '';
             let grandTotal = 0;
             
-            allOrders.forEach(order => {
+            sortedOrders.forEach(order => {
                 const orderTotal = parseFloat(order.total_price || 0);
                 grandTotal += orderTotal;
                 
@@ -1518,8 +1537,8 @@
             doc.text(`Generated: ${today.toLocaleDateString()} ${today.toLocaleTimeString()}`, doc.internal.pageSize.width / 2, 45, { align: 'center' });
             
             // Add summary stats
-            const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
-            doc.text(`Total Orders: ${allOrders.length} | Total Revenue: $${totalRevenue.toFixed(2)}`, doc.internal.pageSize.width / 2, 60, { align: 'center' });
+            const totalRevenue = sortedOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
+            doc.text(`Total Orders: ${sortedOrders.length} | Total Revenue: $${totalRevenue.toFixed(2)}`, doc.internal.pageSize.width / 2, 60, { align: 'center' });
             
             // Generate table with autoTable - complex header with column spans
             doc.autoTable({

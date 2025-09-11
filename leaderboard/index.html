@@ -253,8 +253,63 @@
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
             .subtitle { font-size: 1.2rem; }
-            .scout-name { font-size: 1.2rem; }
-            .scout-revenue { font-size: 1.5rem; }
+            
+            .scout-entry {
+                padding: 12px 8px;
+                margin: 8px 0;
+            }
+            
+            .rank {
+                font-size: 1.5rem;
+                width: 40px;
+            }
+            
+            .rank-1 { font-size: 1.8rem; }
+            .rank-2 { font-size: 1.7rem; }
+            .rank-3 { font-size: 1.6rem; }
+            
+            .trophy {
+                font-size: 1.5rem;
+                margin-right: 8px;
+            }
+            
+            .scout-info {
+                flex: 1;
+                min-width: 0; /* Allow content to shrink */
+            }
+            
+            .scout-name { 
+                font-size: 1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .scout-stats {
+                flex-direction: column;
+                gap: 2px;
+                font-size: 0.85rem;
+            }
+            
+            .scout-stats span {
+                display: block;
+            }
+            
+            .scout-revenue { 
+                font-size: 1.2rem;
+                margin-right: 8px;
+                min-width: fit-content;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                width: 100%;
+                padding: 15px;
+            }
         }
     </style>
 </head>

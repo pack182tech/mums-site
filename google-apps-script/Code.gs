@@ -24,6 +24,8 @@ function doGet(e) {
         return getSettings();
       case 'orders':
         return getOrders(e);
+      case 'helpers':
+        return getHelpers(e);
       case 'reachouts':
         return getReachOuts(e);
       default:
@@ -47,6 +49,10 @@ function doPost(e) {
         return submitOrder(data);
       case 'volunteer':
         return submitVolunteer(data);
+      case 'submitHelper':
+        return submitHelper(data);
+      case 'updateHelper':
+        return updateHelper(data, e);
       case 'submitReachOut':
         return submitReachOut(data);
       case 'updateReachOut':
@@ -560,6 +566,167 @@ function sendReachOutNotification(reachOutData) {
     Please reach out to them soon to discuss how they can help the pack.
     
     You can manage all reach out requests in the admin panel.
+  `;
+  
+  ADMIN_EMAILS.forEach(email => {
+    try {
+      MailApp.sendEmail(email, subject, body);
+    } catch(e) {
+      console.error('Failed to send email to:', email, e);
+    }
+  });
+}
+
+// Submit helper request
+function submitHelper(helperData) {
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Helpers');
+  
+  // Create sheet if it doesn't exist
+  if (!sheet) {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const newSheet = ss.insertSheet('Helpers');
+    
+    // Add headers
+    const headers = [
+      'Helper ID',
+      'Timestamp',
+      'Name',
+      'Email',
+      'Scout Name',
+      'Type',
+      'Contacted',
+      'Contacted By',
+      'Notes'
+    ];
+    newSheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    newSheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+    
+    sheet = newSheet;
+  }
+  
+  const helperId = helperData.id || 'HELPER-' + Date.now();
+  const timestamp = new Date();
+  
+  // Prepare row data
+  const rowData = [
+    helperId,
+    timestamp,
+    helperData.name,
+    helperData.email,
+    helperData.scoutName || 'Not specified',
+    helperData.type || 'other_help',
+    helperData.contacted || false,
+    helperData.contactedBy || '',
+    helperData.notes || ''
+  ];
+  
+  // Append to sheet
+  sheet.appendRow(rowData);
+  
+  // Send notification email
+  sendHelperNotification(helperId, helperData);
+  
+  return createJsonResponse({
+    success: true,
+    helperId: helperId,
+    message: 'Thank you for your interest in helping Pack 182!'
+  });
+}
+
+// Get helpers list (admin only)
+function getHelpers(e) {
+  if (!isAdminRequest(e)) {
+    return createJsonResponse({error: 'Unauthorized'}, 401);
+  }
+  
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Helpers');
+  
+  if (!sheet) {
+    return createJsonResponse({helpers: []});
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const helpers = [];
+  
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue; // Skip empty rows
+    
+    helpers.push({
+      id: row[0],
+      timestamp: row[1],
+      name: row[2],
+      email: row[3],
+      scoutName: row[4],
+      type: row[5],
+      contacted: row[6] === true || row[6] === 'TRUE' || row[6] === 'Yes',
+      contactedBy: row[7],
+      notes: row[8]
+    });
+  }
+  
+  return createJsonResponse({helpers: helpers});
+}
+
+// Update helper status (admin only)
+function updateHelper(helperData, e) {
+  if (!isAdminRequest(e)) {
+    return createJsonResponse({error: 'Unauthorized'}, 401);
+  }
+  
+  try {
+    const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Helpers');
+    if (!sheet) {
+      return createJsonResponse({error: 'Helpers sheet not found'}, 404);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === helperData.id) {
+        // Update contacted status
+        if (helperData.contacted !== undefined) {
+          sheet.getRange(i + 1, 7).setValue(helperData.contacted);
+        }
+        // Update contacted by
+        if (helperData.contactedBy !== undefined) {
+          sheet.getRange(i + 1, 8).setValue(helperData.contactedBy);
+        }
+        // Update notes
+        if (helperData.notes !== undefined) {
+          sheet.getRange(i + 1, 9).setValue(helperData.notes);
+        }
+        
+        return createJsonResponse({
+          success: true,
+          message: 'Helper status updated'
+        });
+      }
+    }
+    
+    return createJsonResponse({error: 'Helper not found'}, 404);
+  } catch(error) {
+    console.error('Error updating helper:', error);
+    return createJsonResponse({error: error.toString()}, 500);
+  }
+}
+
+// Send email notification for helper
+function sendHelperNotification(helperId, helperData) {
+  const subject = `New Helper Request from ${helperData.name}`;
+  const body = `
+    Someone has requested to help Pack 182!
+    
+    Name: ${helperData.name}
+    Email: ${helperData.email}
+    Scout Name: ${helperData.scoutName || 'Not specified'}
+    Type: ${helperData.type || 'other_help'}
+    Date: ${new Date().toLocaleString()}
+    
+    Please reach out to them soon to discuss how they can help the pack.
+    
+    You can manage all helper requests in the admin panel.
   `;
   
   ADMIN_EMAILS.forEach(email => {

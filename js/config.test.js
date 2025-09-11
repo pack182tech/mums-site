@@ -6,15 +6,9 @@ const CONFIG = {
     VERSION: '1.5.0-test',
     
     // TEST Google Apps Script Web App URL
-    // Instructions:
-    // 1. Open your Google Apps Script project
-    // 2. Click "Deploy" > "Test deployments"
-    // 3. Create a new test deployment
-    // 4. Copy the test URL here
-    API_URL: 'YOUR_TEST_DEPLOYMENT_URL_HERE',
-    
-    // Alternative: Use the production URL but with a test spreadsheet
-    // API_URL: 'https://script.google.com/macros/s/AKfycbwFihgdlUthlTMhKp8Ea0P1QUi198WibKsgCC-4XLDOyr42qObexjLyRMQfEHWTJE-vqg/exec',
+    // Using production API for testing (data will still go to production sheets)
+    // For true test isolation, deploy a separate test Google Apps Script
+    API_URL: 'https://script.google.com/macros/s/AKfycbwFihgdlUthlTMhKp8Ea0P1QUi198WibKsgCC-4XLDOyr42qObexjLyRMQfEHWTJE-vqg/exec',
     
     // Local storage keys (prefixed for test)
     STORAGE_KEYS: {

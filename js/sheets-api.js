@@ -117,36 +117,6 @@ class SheetsAPI {
         }
     }
 
-    // Submit reach out request
-    async submitReachOut(reachOutData) {
-        try {
-            const response = await this.apiCall('submitReachOut', {
-                method: 'POST',
-                body: JSON.stringify(reachOutData)
-            });
-            
-            if (!response || typeof response !== 'object') {
-                throw new Error('Invalid response from server');
-            }
-            
-            return response;
-        } catch (error) {
-            console.error('Failed to submit reach out request:', error);
-            throw new Error(`Failed to submit request: ${error.message}`);
-        }
-    }
-    
-    // Get reach outs (admin only)
-    async getReachOuts(adminToken) {
-        try {
-            const response = await this.apiCall('reachouts&admin=true');
-            return response.reachouts || [];
-        } catch (error) {
-            console.error('Failed to fetch reach outs:', error);
-            return [];
-        }
-    }
-    
     // Get orders (admin only)
     async getOrders(adminToken) {
         try {
@@ -239,6 +209,41 @@ class SheetsAPI {
         } catch (error) {
             console.error('Failed to submit volunteer interest:', error);
             throw new Error(`Failed to submit volunteer interest: ${error.message}`);
+        }
+    }
+    
+    // Submit helper request
+    async submitHelper(helperData) {
+        try {
+            debugLog('Submitting helper request:', helperData);
+            const response = await this.apiCall('submitHelper', 'POST', helperData);
+            debugLog('Helper submission response:', response);
+            return response;
+        } catch (error) {
+            console.error('Failed to submit helper request:', error);
+            throw new Error(`Failed to submit helper request: ${error.message}`);
+        }
+    }
+    
+    // Get helpers list (admin only)
+    async getHelpers() {
+        try {
+            const response = await this.apiCall('helpers&admin=true');
+            return response.helpers || [];
+        } catch (error) {
+            console.error('Failed to fetch helpers:', error);
+            return [];
+        }
+    }
+    
+    // Update helper status (admin only)
+    async updateHelper(helperData) {
+        try {
+            const response = await this.apiCall('updateHelper&admin=true', 'POST', helperData);
+            return response;
+        } catch (error) {
+            console.error('Failed to update helper:', error);
+            throw new Error('Failed to update helper status');
         }
     }
     

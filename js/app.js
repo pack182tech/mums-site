@@ -115,38 +115,12 @@ function renderProducts() {
     const grid = document.getElementById('products-grid');
     grid.innerHTML = '';
     
-    // Add donation card first
-    const donationCard = createDonationCard();
-    grid.appendChild(donationCard);
-    
     products.forEach(product => {
         if (product.available === true || product.available === 'TRUE' || product.available === 'true') {
             const productCard = createProductCard(product);
             grid.appendChild(productCard);
         }
     });
-}
-
-// Create donation support card
-function createDonationCard() {
-    const card = document.createElement('div');
-    card.className = 'product-card donate-product-card';
-    
-    card.innerHTML = `
-        <div class="donate-icon">🎁</div>
-        <h3 class="donate-title">Support Pack 182</h3>
-        <p class="donate-description">
-            Can't buy mums? You can still help!<br>
-            • Donate mums to the community<br>
-            • Make a direct donation<br>
-            • Volunteer your time & talents
-        </p>
-        <button onclick="showSupportOptions()" class="btn btn-primary" style="background: linear-gradient(135deg, #FFC107 0%, #4CAF50 100%);">
-            Explore Support Options
-        </button>
-    `;
-    
-    return card;
 }
 
 // Create a product card element
@@ -606,10 +580,40 @@ function showConfirmation(orderId, total, paymentMethod) {
     hideAllScreens();
     document.getElementById('confirmation-screen').style.display = 'block';
     
-    // Show pickup modal after a short delay
-    setTimeout(() => {
-        showPickupModal();
-    }, 500);
+    // Show donation thank you message if this is a donation
+    if (window.donationMode && window.donationRecipient) {
+        // Create and show donation thank you modal
+        const thankYouModal = document.createElement('div');
+        thankYouModal.className = 'modal';
+        thankYouModal.style.display = 'flex';
+        thankYouModal.style.zIndex = '10000';
+        thankYouModal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px; padding: 50px; text-align: center;">
+                <h2 style="color: #4CAF50; margin-bottom: 20px; font-size: 2rem;">🙏 Thank You for Your Donation!</h2>
+                <p style="font-size: 1.2rem; color: #333; line-height: 1.8; margin-bottom: 25px;">
+                    Your generous donation to <strong>${window.donationRecipient}</strong> will make a meaningful impact in our community.
+                </p>
+                <p style="font-size: 1.1rem; color: #666; line-height: 1.6;">
+                    Order ID: <strong>${orderId}</strong><br>
+                    Donation Amount: <strong>$${total.toFixed(2)}</strong>
+                </p>
+                <button onclick="this.closest('.modal').remove();" 
+                        class="btn btn-primary" style="background: #4CAF50; margin-top: 30px; padding: 15px 30px; font-size: 1.1rem;">
+                    Continue to Receipt
+                </button>
+            </div>
+        `;
+        document.body.appendChild(thankYouModal);
+        
+        // Clear donation mode after showing message
+        window.donationMode = false;
+        window.donationRecipient = '';
+    } else {
+        // Show pickup modal after a short delay for regular orders
+        setTimeout(() => {
+            showPickupModal();
+        }, 500);
+    }
     
     // Set order details
     document.getElementById('confirmation-order-id').textContent = orderId;
@@ -809,7 +813,9 @@ function donateToChurch() {
             <h3 style="color: #003F87; margin-bottom: 20px; font-size: 1.5rem;">⛪ Donating to Three Bridges Reformed Church</h3>
             <p style="margin-bottom: 30px; line-height: 1.6; font-size: 1.1rem;">Please select the mums you'd like to donate. Your entire order will be donated to the church.</p>
             <button onclick="this.closest('.modal').remove(); document.getElementById('catalog-screen').scrollIntoView({ behavior: 'smooth' });" 
-                    class="btn btn-primary" style="background: #4CAF50; width: 100%; padding: 15px; font-size: 1.1rem;">Select Mums to Donate</button>
+                    class="btn btn-primary" style="background: #4CAF50; width: 100%; padding: 15px; font-size: 1.1rem; margin-bottom: 10px;">Select Mums to Donate</button>
+            <button onclick="this.closest('.modal').remove(); window.donationMode = false; window.donationRecipient = '';" 
+                    class="btn btn-secondary" style="background: #9E9E9E; color: white; width: 100%; padding: 15px; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer;">No thanks</button>
         </div>
     `;
     document.body.appendChild(modal);
@@ -843,41 +849,39 @@ async function submitContactRequest(event) {
     
     showLoading(true);
     try {
-        // Check if function exists
-        if (!sheetsAPI || typeof sheetsAPI.submitReachOut !== 'function') {
-            console.error('sheetsAPI.submitReachOut is not available');
-            // Fallback to submitVolunteer if submitReachOut doesn't exist
-            const response = await sheetsAPI.submitVolunteer({
-                firstName: contactData.name.split(' ')[0] || contactData.name,
-                lastName: contactData.name.split(' ').slice(1).join(' ') || '',
-                email: contactData.email,
-                phone: '',
-                volunteerTypes: ['other_help'],
-                message: 'Interested in helping Pack 182',
-                comments: `Scout: ${contactData.scoutName || 'Not specified'}`
-            });
-            
-            if (response.success) {
-                closeContactModal();
-                showSuccess('Thank you! Someone from Pack 182 will reach out to discuss how you can help.');
-            } else {
-                throw new Error('Failed to submit request');
-            }
-            return;
-        }
-        
-        // Submit as a reach out request
-        const response = await sheetsAPI.submitReachOut({
+        // Submit helper contact request to Sheets
+        const helperData = {
+            id: 'HELPER-' + Date.now(),
             name: contactData.name,
             email: contactData.email,
-            scoutName: contactData.scoutName,
+            scoutName: contactData.scoutName || 'Not specified',
             date: new Date().toISOString(),
-            status: 'pending'
-        });
+            contacted: false,
+            contactedBy: '',
+            type: 'other_help'
+        };
+        
+        const response = await sheetsAPI.submitHelper(helperData);
         
         if (response.success) {
-            closeContactModal();
-            showSuccess('Thank you! Someone from Pack 182 will reach out to discuss how you can help.');
+            // Show thank you message
+            const thankYouModal = document.createElement('div');
+            thankYouModal.className = 'modal';
+            thankYouModal.style.display = 'flex';
+            thankYouModal.style.zIndex = '10000';
+            thankYouModal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; padding: 40px; text-align: center;">
+                    <h2 style="color: #4CAF50; margin-bottom: 20px;">✅ Thank You!</h2>
+                    <p style="font-size: 1.1rem; color: #333; line-height: 1.6;">Thanks! We'll reach out to you shortly to discuss how you can help Pack 182.</p>
+                </div>
+            `;
+            document.body.appendChild(thankYouModal);
+            
+            // Auto-dismiss after 3 seconds
+            setTimeout(() => {
+                thankYouModal.remove();
+                closeContactModal();
+            }, 3000);
         } else {
             throw new Error('Failed to submit request');
         }

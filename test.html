@@ -332,7 +332,7 @@
 
     <!-- Pickup Info Modal -->
     <div id="pickup-modal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content" style="max-width: 500px; padding: 50px;">
             <h3 style="color: #2d3748; margin-bottom: 20px;">📍 Order Pickup Information</h3>
             <div style="background: #f7fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <p style="font-size: 1.1rem; margin-bottom: 15px;"><strong>You will be able to pick your order up:</strong></p>
@@ -374,8 +374,8 @@
     
     <!-- Contact Request Modal -->
     <div id="contact-modal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 500px; padding: 40px;">
-            <button onclick="closeContactModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: white; border: 1px solid #ddd; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">×</button>
+        <div class="modal-content" style="max-width: 500px; padding: 40px; position: relative;">
+            <button onclick="closeContactModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: white; border: 1px solid #ddd; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1001;">×</button>
             <h3 id="contact-modal-title" style="color: #003F87; margin-bottom: 20px; text-align: center;">💝 Help Pack 182</h3>
             <p id="contact-modal-description" style="text-align: center; color: #666; margin-bottom: 30px; line-height: 1.6;">Thank you for your interest! Someone from Pack 182 will reach out to discuss how you can help.</p>
             
@@ -400,16 +400,24 @@
         v1.2.0
     </footer>
 
-    <script src="js/config.test.js"></script>
-    <script src="js/sheets-api.js"></script>
-    <script src="js/scout-law.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/config.test.js?v=1.5.1"></script>
+    <script src="js/sheets-api.js?v=1.5.1"></script>
+    <script src="js/scout-law.js?v=1.5.1"></script>
+    <script src="js/app.js?v=1.5.1"></script>
     <script>
         // Initialize Scout elements on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Display version
             document.getElementById('version-footer').textContent = 'v' + CONFIG.VERSION;
             console.log('Pack 182 Mums Site - Version ' + CONFIG.VERSION);
+            console.log('API URL:', CONFIG.API_URL);
+            console.log('Test Mode:', CONFIG.TEST_MODE);
+            
+            // Force reload if wrong URL detected
+            if (CONFIG.API_URL.includes('YOUR_TEST_DEPLOYMENT_URL_HERE')) {
+                console.error('Invalid API URL detected. Please clear cache and reload.');
+                alert('Configuration error detected. Please clear your browser cache (Ctrl+Shift+R or Cmd+Shift+R) and reload the page.');
+            }
             
             displayScoutLaw();  // Display Scout Oath in background
             createScoutLawTicker();  // Create the ticker at bottom

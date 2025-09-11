@@ -636,7 +636,7 @@
             <button class="nav-tab" onclick="switchTab('scouts')">Scout Names</button>
             <button class="nav-tab" onclick="switchTab('qrcodes')">QR Codes</button>
             <button class="nav-tab" onclick="switchTab('leaderboard')">Leaderboard</button>
-            <button class="nav-tab" onclick="switchTab('reachouts')">Reach Outs</button>
+            <button class="nav-tab" onclick="switchTab('helpers')">Helpers to Contact</button>
             <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
         </div>
         
@@ -661,10 +661,19 @@
                 </div>
             </div>
             
-            <div class="filters">
-                <button onclick="generateOrdersPDF()" class="btn-primary" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 15px;">
+            <div style="text-align: right; margin-bottom: 15px;">
+                <button onclick="exportOrders()" class="btn btn-secondary" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                    📊 Export CSV
+                </button>
+                <button onclick="debugOrders()" class="btn-secondary" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                    🐛 Debug
+                </button>
+                <button onclick="generateOrdersPDF()" class="btn-primary" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
                     📄 Generate PDF Report
                 </button>
+            </div>
+            
+            <div class="filters">
                 <div class="filter-group">
                     <label>Payment Status</label>
                     <select id="payment-filter" onchange="filterOrders()">
@@ -692,10 +701,6 @@
                 <div class="filter-group">
                     <label>Search</label>
                     <input type="text" id="search-input" placeholder="Name, Order ID..." onkeyup="filterOrders()">
-                </div>
-                <div class="filter-group" style="margin-left: auto;">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-secondary" onclick="exportOrders()">Export CSV</button>
                 </div>
             </div>
             
@@ -797,40 +802,40 @@
             </div>
         </div>
         
-        <!-- Reach Outs Tab -->
-        <div id="reachouts-tab" class="tab-content">
-            <h2>Reach Out Requests</h2>
-            <p style="color: #718096; margin-bottom: 30px;">People who have requested to be contacted about helping Pack 182.</p>
+        <!-- Helpers Tab -->
+        <div id="helpers-tab" class="tab-content">
+            <h2>Helpers to Contact</h2>
+            <p style="color: #718096; margin-bottom: 30px;">People interested in helping Pack 182 in other ways.</p>
             
             <div class="filters">
-                <input type="text" id="reachouts-search" placeholder="Search by name, email, or scout..." style="width: 300px;">
-                <button onclick="loadReachOuts()" class="btn-filter">Refresh</button>
+                <input type="text" id="helpers-search" placeholder="Search by name, email, or scout..." style="width: 300px;">
+                <button onclick="loadHelpers()" class="btn-filter">Refresh</button>
             </div>
             
-            <div class="stats" id="reachouts-stats" style="margin-top: 20px;">
+            <div class="stats" id="helpers-stats" style="margin-top: 20px;">
                 <div class="stat-card">
-                    <div class="stat-value" id="total-reachouts">0</div>
-                    <div class="stat-label">Total Requests</div>
+                    <div class="stat-value" id="total-helpers">0</div>
+                    <div class="stat-label">Total Helpers</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="pending-reachouts">0</div>
-                    <div class="stat-label">Pending</div>
+                    <div class="stat-value" id="pending-helpers">0</div>
+                    <div class="stat-label">To Contact</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="contacted-reachouts">0</div>
+                    <div class="stat-value" id="contacted-helpers">0</div>
                     <div class="stat-label">Contacted</div>
                 </div>
             </div>
             
-            <table id="reachouts-table" style="margin-top: 20px;">
+            <table id="helpers-table" class="data-table" style="margin-top: 20px; width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Scout</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th style="width: 40px; padding: 12px; background: #f7fafc; text-align: left;">✓</th>
+                        <th style="width: 15%; padding: 12px; background: #f7fafc; text-align: left;">Date</th>
+                        <th style="width: 15%; padding: 12px; background: #f7fafc; text-align: left;">Name</th>
+                        <th style="width: 25%; padding: 12px; background: #f7fafc; text-align: left;">Email</th>
+                        <th style="width: 15%; padding: 12px; background: #f7fafc; text-align: left;">Scout</th>
+                        <th style="width: auto; padding: 12px; background: #f7fafc; text-align: left;">Contacted By</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -1151,8 +1156,47 @@
             XLSX.writeFile(wb, filename);
         }
         
+        // Debug function to inspect order data
+        function debugOrders() {
+            if (allOrders.length === 0) {
+                console.log('No orders to debug');
+                return;
+            }
+            
+            console.log('=== DEBUG: First Order Structure ===');
+            const firstOrder = allOrders[0];
+            console.log('Full order object:', firstOrder);
+            
+            let products = firstOrder.products;
+            if (typeof products === 'string') {
+                try {
+                    products = JSON.parse(products);
+                } catch (e) {
+                    console.error('Failed to parse products:', e);
+                    products = [];
+                }
+            }
+            
+            console.log('Parsed products:', products);
+            
+            if (products && Array.isArray(products)) {
+                products.forEach((product, index) => {
+                    console.log(`Product ${index}:`, {
+                        title: product.title,
+                        name: product.name,
+                        color: product.color,
+                        quantity: product.quantity,
+                        fullProduct: product
+                    });
+                });
+            }
+            
+            console.log('=== END DEBUG ===');
+            alert('Check console for debug output');
+        }
+        
         // Generate PDF Report for Orders
-        function generateOrdersPDF() {
+        async function generateOrdersPDF() {
             if (allOrders.length === 0) {
                 showMessage('No orders to export', 'error');
                 return;
@@ -1162,71 +1206,226 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape', 'pt', 'letter');
             
-            // Get unique products to create columns
-            const productColumns = new Map();
-            let productIndex = 0;
+            // Get all available products from the catalog AND their actual ordered colors
+            const availableProducts = new Map(); // Map<productName, Set<color>>
             
-            allOrders.forEach(order => {
-                // Parse products from JSON string if needed
-                let products = order.products;
-                if (typeof products === 'string') {
-                    try {
-                        products = JSON.parse(products);
-                    } catch (e) {
-                        products = [];
-                    }
-                }
-                
-                if (products && Array.isArray(products)) {
-                    products.forEach(product => {
-                        const productName = product.title || product.name || 'Unknown';
-                        const color = product.color || '';
-                        const key = `${productName}|${color}`;
-                        if (!productColumns.has(key)) {
-                            productColumns.set(key, {
-                                index: productIndex++,
-                                product: productName,
-                                color: color,
-                                shortName: productName.substring(0, 10) + (color ? '-' + color.substring(0, 5) : '')
-                            });
+            // First, collect all products from the catalog
+            const catalogProductNames = new Set();
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?path=products`);
+                const data = await response.json();
+                if (data.products) {
+                    data.products.forEach(product => {
+                        if (product.available === true || product.available === 'TRUE' || product.available === 'true') {
+                            const fullTitle = product.title;
+                            let productName = fullTitle;
+                            let color = null;
+                            
+                            // Check if title contains a dash separator for color
+                            if (fullTitle.includes(' - ')) {
+                                const parts = fullTitle.split(' - ');
+                                productName = parts[0].trim();
+                                color = parts[1].trim();
+                            } else if (fullTitle.toLowerCase().includes('tricolor')) {
+                                productName = fullTitle;
+                                color = 'Mixed';
+                            } else {
+                                // Bundle products without explicit color
+                                productName = fullTitle;
+                            }
+                            
+                            // Add to catalog set
+                            catalogProductNames.add(productName);
+                            
+                            // If we have a color, add it
+                            if (color) {
+                                if (!availableProducts.has(productName)) {
+                                    availableProducts.set(productName, new Set());
+                                }
+                                availableProducts.get(productName).add(color);
+                            }
                         }
                     });
                 }
+                
+                // Now scan through orders to find what colors were actually ordered
+                allOrders.forEach(order => {
+                    let products = order.products;
+                    if (typeof products === 'string') {
+                        try {
+                            products = JSON.parse(products);
+                        } catch (e) {
+                            products = [];
+                        }
+                    }
+                    
+                    if (products && Array.isArray(products)) {
+                        products.forEach(product => {
+                            const productName = product.title || product.name || 'Unknown';
+                            const color = product.color || null;
+                            
+                            // Only add if this product is in our catalog
+                            if (catalogProductNames.has(productName) && color) {
+                                if (!availableProducts.has(productName)) {
+                                    availableProducts.set(productName, new Set());
+                                }
+                                availableProducts.get(productName).add(color);
+                            }
+                        });
+                    }
+                });
+                
+                // For any catalog products that still have no colors, add default colors
+                catalogProductNames.forEach(productName => {
+                    if (!availableProducts.has(productName)) {
+                        console.log(`Product "${productName}" has no colors defined, adding defaults`);
+                        // These products are in catalog but have no colors defined
+                        // Use standard mum colors as default
+                        if (productName.toLowerCase().includes('tricolor')) {
+                            availableProducts.set(productName, new Set(['Mixed']));
+                        } else {
+                            // Add standard mum colors for bundle products
+                            availableProducts.set(productName, new Set(['Yellow', 'Orange', 'Red', 'White', 'Burgundy']));
+                        }
+                    }
+                });
+                
+                // Debug: Log what we found
+                console.log('Available products for PDF:');
+                availableProducts.forEach((colors, product) => {
+                    console.log(`  ${product}: ${Array.from(colors).join(', ')}`);
+                });
+                
+            } catch (error) {
+                console.error('Failed to fetch products for PDF:', error);
+                // Fallback to hardcoded list if API fails
+                const fallbackProducts = [
+                    {name: '6" Small Pot', colors: ['Yellow', 'Orange', 'Red', 'White', 'Burgundy']},
+                    {name: '8" Large Pot', colors: ['Yellow', 'Orange', 'Red', 'White', 'Burgundy']},
+                    {name: '10" Hanging Basket', colors: ['Yellow', 'Orange', 'Red', 'White', 'Burgundy']},
+                    {name: 'Oval Tricolor Pot', colors: ['Mixed']}
+                ];
+                
+                fallbackProducts.forEach(product => {
+                    availableProducts.set(product.name, new Set(product.colors));
+                });
+            }
+            
+            const productColorColumns = []; // Array of {product, color, index}
+            
+            // Sort products and colors, then create column index
+            const sortedProductGroups = Array.from(availableProducts.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+            let columnIndex = 0;
+            
+            // Define standard color order for mums
+            const colorOrder = ['Yellow', 'Orange', 'Red', 'White', 'Burgundy', 'Mixed'];
+            
+            sortedProductGroups.forEach(([productName, colors]) => {
+                // Sort colors in the standard mum order
+                const sortedColors = Array.from(colors).sort((a, b) => {
+                    const aIndex = colorOrder.indexOf(a);
+                    const bIndex = colorOrder.indexOf(b);
+                    // If color not in standard order, put it at the end
+                    if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+                    if (aIndex === -1) return 1;
+                    if (bIndex === -1) return -1;
+                    return aIndex - bIndex;
+                });
+                sortedColors.forEach(color => {
+                    productColorColumns.push({
+                        product: productName,
+                        color: color,
+                        index: columnIndex++,
+                        key: `${productName}|${color}`
+                    });
+                });
             });
             
-            // Sort product columns alphabetically
-            const sortedProducts = Array.from(productColumns.entries())
-                .sort((a, b) => a[0].localeCompare(b[0]));
-            productColumns.clear();
-            sortedProducts.forEach(([key, value], index) => {
-                value.index = index;
-                productColumns.set(key, value);
+            // Color mapping for background colors
+            const colorMap = {
+                'orange': [255, 237, 213],
+                'yellow': [255, 253, 224],
+                'red': [255, 235, 238],
+                'purple': [243, 229, 245],
+                'burgundy': [248, 228, 232],
+                'white': [250, 250, 250],
+                'default': [245, 245, 245]
+            };
+            
+            // Calculate column widths
+            const fixedWidth = 270; // Scout + Customer + Total
+            const availableWidth = 750 - fixedWidth;
+            const productColumnWidth = Math.min(35, availableWidth / Math.max(productColorColumns.length, 1));
+            
+            // Build the header rows with proper cell objects for spanning
+            const headerRow1 = [];
+            const headerRow2 = [];
+            
+            // Add fixed columns
+            headerRow1.push('Scout');
+            headerRow1.push('Customer Name');
+            headerRow1.push('Total');
+            headerRow2.push('');
+            headerRow2.push('');
+            headerRow2.push('');
+            
+            // Group products to determine spans
+            const productGroups = [];
+            let currentProduct = '';
+            let currentColors = [];
+            
+            productColorColumns.forEach((col) => {
+                if (col.product !== currentProduct) {
+                    if (currentProduct !== '') {
+                        productGroups.push({
+                            product: currentProduct,
+                            colors: currentColors
+                        });
+                    }
+                    currentProduct = col.product;
+                    currentColors = [col.color];
+                } else {
+                    currentColors.push(col.color);
+                }
             });
             
-            // Prepare table headers
-            const headers = [
-                { content: 'Scout', styles: { cellWidth: 90 } },
-                { content: 'Customer Name', styles: { cellWidth: 120 } },
-                { content: 'Total', styles: { cellWidth: 60 } }
-            ];
+            // Add the last product group
+            if (currentProduct !== '') {
+                productGroups.push({
+                    product: currentProduct,
+                    colors: currentColors
+                });
+            }
             
-            // Add product columns with narrow width
-            const productColumnWidth = Math.min(40, (750 - 270) / Math.max(productColumns.size, 1));
-            productColumns.forEach((info, key) => {
-                headers.push({
-                    content: info.shortName,
-                    styles: { cellWidth: productColumnWidth, fontSize: 6 }
+            // Build header rows with spans
+            productGroups.forEach((group) => {
+                // For the first row, add the product name with colspan
+                headerRow1.push({
+                    content: group.product,
+                    colSpan: group.colors.length
+                });
+                
+                // For the second row, add each color
+                group.colors.forEach(color => {
+                    headerRow2.push(color);
                 });
             });
             
             // Prepare table data
             const tableData = [];
+            const columnTotals = new Array(3 + productColorColumns.length).fill(0);
+            columnTotals[0] = 'TOTALS';
+            columnTotals[1] = '';
+            let grandTotal = 0;
             
             allOrders.forEach(order => {
+                const orderTotal = parseFloat(order.total_price || 0);
+                grandTotal += orderTotal;
+                
                 const row = [
                     order.scout_name || '-',
                     (order.first_name || '') + ' ' + (order.last_name || ''),
-                    '$' + parseFloat(order.total_price || 0).toFixed(2)
+                    '$' + orderTotal.toFixed(2)
                 ];
                 
                 // Parse products for this order
@@ -1239,24 +1438,75 @@
                     }
                 }
                 
-                // Create product quantity map for this order
+                // Create product quantity map
                 const orderProducts = new Map();
                 if (products && Array.isArray(products)) {
                     products.forEach(product => {
                         const productName = product.title || product.name || 'Unknown';
-                        const color = product.color || '';
-                        const key = `${productName}|${color}`;
-                        orderProducts.set(key, product.quantity || 0);
+                        let color = product.color;
+                        
+                        // Debug: log what we're processing
+                        console.log(`Processing order product: ${productName}, color field: ${product.color}`);
+                        
+                        // If no color is specified, try to extract from title
+                        if (!color) {
+                            // Check if the product title contains color information
+                            if (productName.includes(' - ')) {
+                                const parts = productName.split(' - ');
+                                color = parts[1].trim();
+                                console.log(`  Extracted color from title: ${color}`);
+                            } else if (productName.toLowerCase().includes('tricolor')) {
+                                color = 'Mixed';
+                                console.log(`  Detected tricolor, using Mixed`);
+                            } else {
+                                // For bundle products without specific color
+                                // We'll handle them specially below
+                                color = null;
+                                console.log(`  No color found, this is likely a bundle product`);
+                            }
+                        }
+                        
+                        const qty = parseInt(product.quantity) || 0;
+                        
+                        // Handle products based on whether they have a color
+                        if (!color && availableProducts.has(productName)) {
+                            // This is a bundle product - show it in the first available color column
+                            const colors = availableProducts.get(productName);
+                            if (colors.size > 0) {
+                                // Use the first color for bundle display
+                                const firstColor = Array.from(colors)[0];
+                                const key = `${productName}|${firstColor}`;
+                                orderProducts.set(key, qty);
+                                console.log(`  Bundle product placed in first color column: ${firstColor}`);
+                            }
+                        } else if (color) {
+                            // Regular product with a specific color
+                            const key = `${productName}|${color}`;
+                            orderProducts.set(key, qty);
+                        }
                     });
                 }
                 
-                // Fill in product quantities
-                productColumns.forEach((info, key) => {
-                    row.push(orderProducts.get(key) || '');
+                // Fill in quantities and update totals
+                productColorColumns.forEach((col, index) => {
+                    const qty = orderProducts.get(col.key) || '';
+                    row.push(qty);
+                    if (qty) {
+                        columnTotals[index + 3] = (columnTotals[index + 3] || 0) + qty;
+                    }
                 });
                 
                 tableData.push(row);
             });
+            
+            // Format column totals
+            columnTotals[2] = '$' + grandTotal.toFixed(2);
+            for (let i = 3; i < columnTotals.length; i++) {
+                if (columnTotals[i] === 0) columnTotals[i] = '';
+            }
+            
+            // Add totals row to table data
+            tableData.push(columnTotals);
             
             // Add title
             doc.setFontSize(16);
@@ -1271,18 +1521,19 @@
             const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
             doc.text(`Total Orders: ${allOrders.length} | Total Revenue: $${totalRevenue.toFixed(2)}`, doc.internal.pageSize.width / 2, 60, { align: 'center' });
             
-            // Generate table with autoTable
+            // Generate table with autoTable - complex header with column spans
             doc.autoTable({
-                head: [headers.map(h => typeof h === 'object' ? h.content : h)],
-                body: tableData,
+                head: [headerRow1, headerRow2],
+                body: tableData.slice(0, -1), // Exclude totals row for now
+                foot: [tableData[tableData.length - 1]], // Add totals as footer
                 startY: 75,
                 styles: {
-                    fontSize: 8,
+                    fontSize: 7,
                     cellPadding: 2,
                     overflow: 'linebreak',
                     halign: 'center',
-                    lineColor: [200, 200, 200],
-                    lineWidth: 0.5
+                    lineColor: [180, 180, 180],
+                    lineWidth: 0.25
                 },
                 headStyles: {
                     fillColor: [0, 63, 135],
@@ -1290,8 +1541,14 @@
                     fontSize: 7,
                     fontStyle: 'bold',
                     halign: 'center',
-                    valign: 'middle',
-                    cellPadding: 3
+                    valign: 'middle'
+                },
+                footStyles: {
+                    fillColor: [240, 240, 240],
+                    textColor: [0, 0, 0],
+                    fontSize: 8,
+                    fontStyle: 'bold',
+                    lineWidth: 1
                 },
                 columnStyles: {
                     0: { halign: 'left', cellWidth: 90 },   // Scout
@@ -1299,16 +1556,58 @@
                     2: { halign: 'right', cellWidth: 60 }   // Total
                 },
                 didParseCell: function(data) {
-                    // Apply narrow width and center alignment to product columns
+                    // Handle column widths for product columns
                     if (data.column.index >= 3) {
                         data.cell.styles.cellWidth = productColumnWidth;
-                        data.cell.styles.fontSize = 7;
+                        data.cell.styles.fontSize = 6;
                         data.cell.styles.halign = 'center';
-                        data.cell.styles.fontStyle = 'normal';
                     }
-                    // Add alternating row colors for better readability
+                    
+                    // Color code the color header cells
+                    if (data.section === 'head' && data.row.index === 1 && data.column.index >= 3) {
+                        const colInfo = productColorColumns[data.column.index - 3];
+                        if (colInfo) {
+                            const colorName = colInfo.color.toLowerCase();
+                            const bgColor = colorMap[colorName] || colorMap['default'];
+                            data.cell.styles.fillColor = bgColor;
+                            data.cell.styles.textColor = [0, 0, 0];
+                            data.cell.styles.fontSize = 5;
+                        }
+                    }
+                    
+                    // Handle merged cells in first header row
+                    if (data.section === 'head' && data.row.index === 0 && data.column.index >= 3) {
+                        // Check if this should be a merged cell
+                        let currentProductStart = 3;
+                        let currentProductEnd = 3;
+                        let currentProduct = '';
+                        
+                        for (let i = 0; i < productColorColumns.length; i++) {
+                            if (productColorColumns[i].product !== currentProduct) {
+                                if (currentProduct !== '' && data.column.index >= currentProductStart && data.column.index < currentProductEnd) {
+                                    // This cell is part of a span
+                                    if (data.column.index > currentProductStart) {
+                                        data.cell.styles.fontSize = 0; // Hide text for spanned cells
+                                    }
+                                }
+                                currentProduct = productColorColumns[i].product;
+                                currentProductStart = i + 3;
+                                currentProductEnd = currentProductStart + 1;
+                            } else {
+                                currentProductEnd++;
+                            }
+                        }
+                    }
+                    
+                    // Alternating row colors
                     if (data.row.index % 2 === 0 && data.section === 'body') {
-                        data.cell.styles.fillColor = [245, 245, 245];
+                        data.cell.styles.fillColor = [250, 250, 250];
+                    }
+                    
+                    // Highlight totals row
+                    if (data.section === 'foot') {
+                        data.cell.styles.fillColor = [230, 230, 230];
+                        data.cell.styles.fontStyle = 'bold';
                     }
                 },
                 margin: { top: 10, right: 10, bottom: 10, left: 10 },
@@ -1365,9 +1664,9 @@
                 document.getElementById('qrcodes-tab').classList.add('active');
             } else if (tab === 'leaderboard') {
                 document.getElementById('leaderboard-tab').classList.add('active');
-            } else if (tab === 'reachouts') {
-                document.getElementById('reachouts-tab').classList.add('active');
-                loadReachOuts();
+            } else if (tab === 'helpers') {
+                document.getElementById('helpers-tab').classList.add('active');
+                loadHelpers();
             } else if (tab === 'settings') {
                 document.getElementById('settings-tab').classList.add('active');
                 loadSettings();
@@ -1832,110 +2131,196 @@
             }
         }
         
-        // Reach Outs functionality
-        let allReachOuts = [];
+        // Helpers functionality
+        let allHelpers = [];
         
-        async function loadReachOuts() {
+        async function loadHelpers() {
             try {
-                const response = await fetch(`${CONFIG.API_URL}?path=reachouts&admin=true`);
+                // Load helpers from Sheets API
+                const response = await fetch(`${CONFIG.API_URL}?path=helpers&admin=true`);
                 const data = await response.json();
                 
-                if (data.reachouts) {
-                    allReachOuts = data.reachouts;
-                    displayReachOuts(allReachOuts);
-                    updateReachOutsStats();
+                if (data.helpers) {
+                    allHelpers = data.helpers;
+                } else {
+                    allHelpers = [];
+                }
+                
+                displayHelpers(allHelpers);
+                updateHelpersStats();
+                
+                // Set up search listener
+                const searchInput = document.getElementById('helpers-search');
+                if (searchInput && !searchInput.hasAttribute('data-listener-added')) {
+                    searchInput.setAttribute('data-listener-added', 'true');
+                    searchInput.addEventListener('input', filterHelpers);
                 }
             } catch (error) {
-                console.error('Error loading reach outs:', error);
-                showMessage('Failed to load reach out requests', 'error');
+                console.error('Error loading helpers:', error);
+                showMessage('Failed to load helpers', 'error');
+                // Fallback to empty array
+                allHelpers = [];
+                displayHelpers(allHelpers);
+                updateHelpersStats();
             }
         }
         
-        function displayReachOuts(reachouts) {
-            const tbody = document.querySelector('#reachouts-table tbody');
+        function displayHelpers(helpers) {
+            const tbody = document.querySelector('#helpers-table tbody');
             tbody.innerHTML = '';
             
-            if (reachouts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No reach out requests yet</td></tr>';
+            if (helpers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No helper requests yet</td></tr>';
                 return;
             }
             
-            reachouts.forEach(reachout => {
+            // Sort by date, newest first
+            helpers.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            helpers.forEach(helper => {
                 const row = document.createElement('tr');
-                const date = new Date(reachout.date);
+                const date = new Date(helper.date);
                 const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours() % 12 || 12}:${String(date.getMinutes()).padStart(2, '0')} ${date.getHours() >= 12 ? 'PM' : 'AM'}`;
                 
+                // Apply dimmed style if contacted
+                if (helper.contacted) {
+                    row.style.opacity = '0.5';
+                    row.style.backgroundColor = '#f9f9f9';
+                }
+                
                 row.innerHTML = `
-                    <td>${dateStr}</td>
-                    <td>${reachout.name || '-'}</td>
-                    <td><a href="mailto:${reachout.email}">${reachout.email}</a></td>
-                    <td>${reachout.scoutName || '-'}</td>
-                    <td>
-                        <span class="status-badge ${reachout.status === 'contacted' ? 'status-success' : 'status-pending'}">
-                            ${reachout.status || 'pending'}
-                        </span>
+                    <td style="text-align: center; padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                        <input type="checkbox" 
+                               ${helper.contacted ? 'checked' : ''} 
+                               onchange="toggleHelperContacted('${helper.id}', this.checked)"
+                               style="width: 20px; height: 20px; cursor: pointer;">
                     </td>
-                    <td>
-                        <button onclick="markAsContacted('${reachout.id}')" 
-                                class="btn-action" 
-                                ${reachout.status === 'contacted' ? 'disabled' : ''}>
-                            Mark Contacted
-                        </button>
+                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${dateStr}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${helper.name || '-'}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${helper.email}" style="${helper.contacted ? 'color: #999;' : ''}">${helper.email}</a></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${helper.scoutName || '-'}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                        <input type="text" 
+                               value="${helper.contactedBy || ''}" 
+                               placeholder="Who reached out?"
+                               onchange="updateContactedBy('${helper.id}', this.value)"
+                               style="width: 90%; padding: 5px; border: 1px solid #ddd; border-radius: 3px; ${helper.contacted ? 'background-color: #f9f9f9;' : ''}">
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
         
-        function updateReachOutsStats() {
-            const totalReachOuts = allReachOuts.length;
-            const pendingReachOuts = allReachOuts.filter(r => r.status !== 'contacted').length;
-            const contactedReachOuts = allReachOuts.filter(r => r.status === 'contacted').length;
-            
-            document.getElementById('total-reachouts').textContent = totalReachOuts;
-            document.getElementById('pending-reachouts').textContent = pendingReachOuts;
-            document.getElementById('contacted-reachouts').textContent = contactedReachOuts;
-        }
-        
-        async function markAsContacted(reachoutId) {
-            try {
-                const response = await fetch(`${CONFIG.API_URL}?path=updateReachOut&admin=true`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    },
-                    body: JSON.stringify({ id: reachoutId, status: 'contacted' })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('Marked as contacted', 'success');
-                    loadReachOuts();
-                } else {
-                    throw new Error('Failed to update status');
+        async function toggleHelperContacted(helperId, isContacted) {
+            const helperIndex = allHelpers.findIndex(h => h.id === helperId);
+            if (helperIndex !== -1) {
+                const helper = allHelpers[helperIndex];
+                helper.contacted = isContacted;
+                if (!isContacted) {
+                    helper.contactedBy = '';
                 }
-            } catch (error) {
-                console.error('Error updating reach out:', error);
-                showMessage('Failed to update status', 'error');
+                
+                try {
+                    // Update in Sheets
+                    const response = await fetch(`${CONFIG.API_URL}?path=updateHelper&admin=true`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify({
+                            id: helperId,
+                            contacted: isContacted,
+                            contactedBy: helper.contactedBy
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        displayHelpers(allHelpers);
+                        updateHelpersStats();
+                        showMessage(isContacted ? 'Marked as contacted' : 'Unmarked as contacted', 'success');
+                    } else {
+                        throw new Error('Failed to update helper');
+                    }
+                } catch (error) {
+                    console.error('Error updating helper:', error);
+                    showMessage('Failed to update helper status', 'error');
+                    // Revert the change
+                    helper.contacted = !isContacted;
+                    displayHelpers(allHelpers);
+                }
             }
         }
         
-        function filterReachOuts() {
-            const searchTerm = document.getElementById('reachouts-search').value.toLowerCase();
+        async function updateContactedBy(helperId, contactedBy) {
+            const helperIndex = allHelpers.findIndex(h => h.id === helperId);
+            if (helperIndex !== -1) {
+                const helper = allHelpers[helperIndex];
+                const previousContactedBy = helper.contactedBy;
+                const previousContacted = helper.contacted;
+                
+                helper.contactedBy = contactedBy;
+                if (contactedBy) {
+                    helper.contacted = true;
+                }
+                
+                try {
+                    // Update in Sheets
+                    const response = await fetch(`${CONFIG.API_URL}?path=updateHelper&admin=true`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify({
+                            id: helperId,
+                            contacted: helper.contacted,
+                            contactedBy: contactedBy
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        displayHelpers(allHelpers);
+                        updateHelpersStats();
+                    } else {
+                        throw new Error('Failed to update helper');
+                    }
+                } catch (error) {
+                    console.error('Error updating helper:', error);
+                    // Revert the changes
+                    helper.contactedBy = previousContactedBy;
+                    helper.contacted = previousContacted;
+                    displayHelpers(allHelpers);
+                }
+            }
+        }
+        
+        function updateHelpersStats() {
+            const totalHelpers = allHelpers.length;
+            const pendingHelpers = allHelpers.filter(h => !h.contacted).length;
+            const contactedHelpers = allHelpers.filter(h => h.contacted).length;
+            
+            document.getElementById('total-helpers').textContent = totalHelpers;
+            document.getElementById('pending-helpers').textContent = pendingHelpers;
+            document.getElementById('contacted-helpers').textContent = contactedHelpers;
+        }
+        
+        function filterHelpers() {
+            const searchTerm = document.getElementById('helpers-search').value.toLowerCase();
             
             if (!searchTerm) {
-                displayReachOuts(allReachOuts);
+                displayHelpers(allHelpers);
                 return;
             }
             
-            const filtered = allReachOuts.filter(reachout => {
-                return (reachout.name && reachout.name.toLowerCase().includes(searchTerm)) ||
-                       (reachout.email && reachout.email.toLowerCase().includes(searchTerm)) ||
-                       (reachout.scoutName && reachout.scoutName.toLowerCase().includes(searchTerm));
+            const filtered = allHelpers.filter(helper => {
+                return (helper.name && helper.name.toLowerCase().includes(searchTerm)) ||
+                       (helper.email && helper.email.toLowerCase().includes(searchTerm)) ||
+                       (helper.scoutName && helper.scoutName.toLowerCase().includes(searchTerm)) ||
+                       (helper.contactedBy && helper.contactedBy.toLowerCase().includes(searchTerm));
             });
             
-            displayReachOuts(filtered);
+            displayHelpers(filtered);
         }
         
         // Settings functionality

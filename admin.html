@@ -1850,7 +1850,7 @@
                 return;
             }
             
-            const headers = ['Order ID', 'Date', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 
+            const headers = ['Order ID', 'Date', 'Scout Name', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 
                            'Products', 'Total', 'Payment Method', 'Payment Status', 'Order Status', 'Comments'];
             
             const csvRows = [headers.join(',')];
@@ -1860,22 +1860,23 @@
                     JSON.parse(order.products) : order.products;
                 
                 const productsList = products.map(p => 
-                    `${p.title || p.name} (${p.color}): ${p.quantity}`
+                    `${p.title || p.name}${p.color ? ` (${p.color})` : ''}: ${p.quantity}`
                 ).join('; ');
                 
                 const row = [
                     order.order_id,
                     new Date(order.timestamp).toLocaleString(),
+                    order.scout_name || '',
                     order.first_name,
                     order.last_name,
                     order.email,
                     order.phone,
-                    `"${order.address.replace(/"/g, '""').replace(/\n/g, ' ')}"`,
+                    `"${(order.address || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`,
                     `"${productsList}"`,
                     order.total_price,
-                    order.payment_method,
-                    order.payment_status,
-                    order.order_status,
+                    order.payment_method || '',
+                    order.payment_status || '',
+                    order.order_status || '',
                     `"${(order.comments || '').replace(/"/g, '""')}"`
                 ];
                 

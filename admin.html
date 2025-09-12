@@ -1850,7 +1850,7 @@
                 return;
             }
             
-            const headers = ['Order ID', 'Date', 'Scout Name', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 
+            const headers = ['Order ID', 'Date', 'Time', 'Scout Name', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 
                            'Products', 'Total', 'Payment Method', 'Payment Status', 'Order Status', 'Comments'];
             
             const csvRows = [headers.join(',')];
@@ -1863,9 +1863,14 @@
                     `${p.title || p.name}${p.color ? ` (${p.color})` : ''}: ${p.quantity}`
                 ).join('; ');
                 
+                const orderDate = new Date(order.timestamp);
+                const dateStr = orderDate.toLocaleDateString();
+                const timeStr = orderDate.toLocaleTimeString();
+                
                 const row = [
                     order.order_id,
-                    new Date(order.timestamp).toLocaleString(),
+                    dateStr,
+                    timeStr,
                     order.scout_name || '',
                     order.first_name,
                     order.last_name,

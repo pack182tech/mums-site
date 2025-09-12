@@ -459,8 +459,13 @@ async function handleOrderSubmit(e) {
     const hasDonation = cart.some(item => item.isDonation);
     const hasDonatedMums = window.donationMode && cart.some(item => !item.isDonation);
     
+    // Get scout name from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const scoutName = urlParams.get('scout') || '';
+    
     // Prepare order data
     const orderData = {
+        scoutName: scoutName ? decodeURIComponent(scoutName) : '',
         firstName: form.firstName.value,
         lastName: form.lastName.value,
         email: form.email.value,

@@ -123,10 +123,11 @@ function submitOrder(orderData) {
   const orderId = generateOrderId();
   const timestamp = new Date();
   
-  // Prepare row data (with new donation fields)
+  // Prepare row data (with scout name and donation fields)
   const rowData = [
     orderId,
     timestamp,
+    orderData.scoutName || '', // Scout Name
     orderData.firstName,
     orderData.lastName,
     orderData.email,

@@ -41,16 +41,16 @@ function setupSpreadsheet() {
     ordersSheet = ss.insertSheet('Orders');
   }
   ordersSheet.clear();
-  ordersSheet.getRange(1, 1, 1, 15).setValues([[
-    'Order ID', 'Timestamp', 'First Name', 'Last Name', 'Email', 'Phone', 
+  ordersSheet.getRange(1, 1, 1, 16).setValues([[
+    'Order ID', 'Timestamp', 'Scout Name', 'First Name', 'Last Name', 'Email', 'Phone', 
     'Address', 'Products', 'Total Price', 'Comments', 'Payment Status', 
     'Payment Method', 'Order Status', 'Order Type', 'Donation Recipient'
   ]]);
   
   // Format Orders sheet
   ordersSheet.setFrozenRows(1);
-  ordersSheet.getRange(1, 1, 1, 15).setFontWeight('bold').setBackground('#2196F3').setFontColor('white');
-  ordersSheet.autoResizeColumns(1, 15);
+  ordersSheet.getRange(1, 1, 1, 16).setFontWeight('bold').setBackground('#2196F3').setFontColor('white');
+  ordersSheet.autoResizeColumns(1, 16);
   
   // Create Settings sheet
   let settingsSheet = ss.getSheetByName('Settings');

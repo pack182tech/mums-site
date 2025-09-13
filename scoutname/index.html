@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pack 182 Mums Sale</title>
-    <link rel="icon" type="image/png" href="../pack182logo.png">
+    <link rel="icon" type="image/png" href="pack182logo.png">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/print.css" media="print">
-    <link rel="stylesheet" href="css/scout-styles.css">
 </head>
 <body>
     <!-- Header with Logo -->
     <header class="site-header">
         <div class="header-content">
             <div class="logo-section">
-                <img src="../pack182logo.png" alt="Pack 182 Logo" class="header-logo">
+                <img src="pack182logo.png" alt="Pack 182 Logo" class="header-logo">
                 <div class="scout-name-display" id="header-scout-name"></div>
             </div>
         </div>
@@ -22,8 +21,8 @@
     
     <!-- Scout Law Background -->
     <div id="scout-law-background" class="scout-law-background"></div>
-    <!-- Welcome Screen -->
-    <section id="welcome-screen" class="welcome-container">
+    <!-- Welcome Screen (Hidden in monopage) -->
+    <section id="welcome-screen" class="welcome-container" style="display: none;">
         <div class="container">
             <div class="logo-container">
                 <img src="../pack182logo.png" alt="Pack 182 Logo" class="logo">
@@ -48,11 +47,46 @@
     </div>
 
     <!-- Product Catalog -->
-    <section id="catalog-screen" class="catalog-container" style="display: none;">
+    <section id="catalog-screen" class="catalog-container" style="display: block;">
         <div class="container">
+            <!-- New integrated hero header -->
+            <div class="catalog-hero">
+                <div class="hero-content">
+                    <img src="pack182logo.png" alt="Pack 182 Logo" class="hero-logo-img">
+                    <h1 class="hero-title">🎃 Fall Mums Fundraiser 🎃</h1>
+                    <p class="hero-tagline">Support Pack 182's Amazing Adventures!</p>
+                    <p class="hero-message">Beautiful mums in 5 vibrant colors • Every purchase helps our scouts!</p>
+                </div>
+                <div class="hero-steps">
+                    <div class="step-item">
+                        <span class="step-icon">🌻</span>
+                        <span class="step-text">Select</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">📝</span>
+                        <span class="step-text">Order</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">💳</span>
+                        <span class="step-text">Pay</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item">
+                        <span class="step-icon">🚗</span>
+                        <span class="step-text">Pickup</span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <button onclick="showSupportOptions()" class="btn btn-support">
+                        <span style="margin-right: 5px;">🎁</span> Other Ways to Support Pack 182
+                    </button>
+                </div>
+            </div>
+            
             <div class="header">
-                <h2 id="catalog-title">Select Your Mums</h2>
-                <button onclick="showWelcome()" class="btn btn-secondary">Back</button>
+                <h2 id="catalog-title">Choose Your Beautiful Mums!</h2>
             </div>
             <p id="catalog-subtitle" style="text-align: center; color: #666; margin: 10px 20px 20px; font-style: italic;"></p>
             
@@ -78,23 +112,13 @@
         <div class="container">
             <div class="header" style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <img src="../pack182logo.png" alt="Pack 182 Logo" style="height: 50px; width: auto;">
+                    <img src="pack182logo.png" alt="Pack 182 Logo" style="height: 50px; width: auto;">
                     <h2>Complete Your Order</h2>
                 </div>
                 <button onclick="showCatalog()" class="btn btn-secondary">Back to Catalog</button>
             </div>
             
             <form id="order-form">
-                <div class="form-section scout-section">
-                    <h3>Scout Information</h3>
-                    <div class="form-group">
-                        <label for="scoutName">Scout Name (Optional)</label>
-                        <input type="text" id="scoutName" name="scoutName" 
-                               placeholder="Enter the scout's name (optional)">
-                        <p class="field-help" id="scout-help-text">Help the scout you are supporting earn a badge by entering their name here.</p>
-                    </div>
-                </div>
-                
                 <div class="form-section">
                     <h3>Contact Information</h3>
                     
@@ -184,7 +208,7 @@
             <!-- Receipt Header -->
             <div class="receipt-header">
                 <div class="receipt-logo">
-                    <img src="../pack182logo.png" alt="Pack 182 Logo" style="height: 60px;">
+                    <img src="pack182logo.png" alt="Pack 182 Logo" style="height: 60px;">
                 </div>
                 <div class="receipt-title">
                     <h1>Order Receipt</h1>
@@ -195,37 +219,92 @@
                 </div>
             </div>
             
-            <div class="order-details">
-                <p class="order-id">Order ID: <strong id="confirmation-order-id"></strong></p>
-                <p>Total Amount: <strong id="confirmation-total"></strong></p>
+            <!-- Order Info Bar -->
+            <div class="receipt-info-bar">
+                <div class="info-item">
+                    <span class="info-label">Order ID:</span>
+                    <strong id="confirmation-order-id"></strong>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date:</span>
+                    <strong id="order-date"></strong>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Total:</span>
+                    <strong class="total-amount" id="confirmation-total"></strong>
+                </div>
             </div>
             
-            <div id="payment-instructions" class="payment-section">
-                <h3>Payment Instructions</h3>
-                <div id="zelle-section" class="zelle-section">
-                    <div style="text-align: center; max-width: 500px; margin: 0 auto;">
-                        <h3 style="margin-bottom: 10px; font-size: 1.5rem;">Send Money with Zelle®</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 1.1rem;">Scan in your banking app to pay</p>
-                        <h4 style="margin: 20px 0; font-size: 1.3rem;">Boy Scouts Of America</h4>
-                        <img id="zelle-qr" class="qr-code" src="" alt="Zelle QR Code" style="margin: 20px auto; display: block;">
-                        <div class="payment-details" style="text-align: left; max-width: 450px; margin: 20px auto; padding: 20px; background: #f5f5f5; border-radius: 10px;">
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">First Name:</span> <strong>Boy Scouts</strong></p>
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">Last Name:</span> <strong>of America</strong></p>
-                            <p style="margin: 10px 0;"><span style="display: inline-block; width: 100px;">Email:</span> <strong id="zelle-email">threebridgespack182@gmail.com</strong></p>
-                        </div>
-                        <p class="payment-note" style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
-                            ⚠️ Include your order ID (<span id="payment-order-id" style="font-weight: bold;"></span>) in the memo
-                        </p>
+            <!-- Customer Information -->
+            <div class="receipt-section">
+                <h3 class="section-title">Customer Information</h3>
+                <div class="customer-info-grid">
+                    <div class="info-group">
+                        <label>Name:</label>
+                        <span id="receipt-customer-name"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Email:</label>
+                        <span id="receipt-customer-email"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Phone:</label>
+                        <span id="receipt-customer-phone"></span>
+                    </div>
+                    <div class="info-group">
+                        <label>Address:</label>
+                        <span id="receipt-customer-address"></span>
                     </div>
                 </div>
             </div>
             
-            <div class="pickup-info">
-                <h3>Pickup Information</h3>
-                <p id="pickup-details"></p>
+            <!-- Order Details -->
+            <div class="receipt-section">
+                <h3 class="section-title">Order Details</h3>
+                <table class="receipt-items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-items">
+                        <!-- Items will be populated here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="3">Order Total:</td>
+                            <td class="total-cell" id="receipt-order-total"></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
             
-            <div class="confirmation-actions">
+            <!-- Payment & Pickup Information -->
+            <div class="receipt-footer">
+                <div class="footer-section payment-section-compact">
+                    <h4>Payment Information</h4>
+                    <p><strong>Pay via Zelle to:</strong></p>
+                    <p style="margin: 5px 0;"><strong>Boy Scouts of America</strong></p>
+                    <p style="margin: 5px 0;">threebridgespack182@gmail.com</p>
+                    <p class="important-note">⚠️ Include Order ID in memo: <span id="payment-order-id-footer"></span></p>
+                </div>
+                <div class="footer-section pickup-section-compact">
+                    <h4>Pickup Information</h4>
+                    <p id="pickup-details-compact"></p>
+                </div>
+            </div>
+            
+            <!-- Thank You Message -->
+            <div class="receipt-thank-you">
+                <p>Thank you for supporting Pack 182!</p>
+                <p class="receipt-contact">Questions? Contact us at pack182tech@gmail.com</p>
+            </div>
+            
+            <!-- Action Buttons (hidden in print) -->
+            <div class="confirmation-actions no-print">
                 <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
                 <button onclick="startNewOrder()" class="btn btn-primary">Place Another Order</button>
             </div>
@@ -247,15 +326,79 @@
         </div>
     </div>
 
+    <!-- Pickup Info Modal -->
+    <div id="pickup-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; padding: 50px;">
+            <h3 style="color: #2d3748; margin-bottom: 20px;">📍 Order Pickup Information</h3>
+            <div style="background: #f7fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="font-size: 1.1rem; margin-bottom: 15px;"><strong>You will be able to pick your order up:</strong></p>
+                <div style="margin-left: 10px;">
+                    <p style="margin: 10px 0;"><strong>📅 Date & Time:</strong><br>
+                    <span style="font-size: 1.05rem; color: #2b6cb0;">Saturday, October 28, 2024<br>9:00 AM - 2:00 PM</span></p>
+                    
+                    <p style="margin: 10px 0;"><strong>📍 Location:</strong><br>
+                    <span style="font-size: 1.05rem; color: #2b6cb0;">Three Bridges School Parking Lot<br>Three Bridges, NJ</span></p>
+                </div>
+            </div>
+            <p id="pickup-thank-you" style="color: #2d3748; font-size: 1rem; margin-bottom: 20px; font-weight: 500;">We thank you for your support!</p>
+            <button onclick="closePickupModal()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1.05rem;">I understand</button>
+        </div>
+    </div>
+
+    <!-- Support Options Modal -->
+    <div id="support-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 650px; padding: 40px;">
+            <button onclick="closeSupportModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+            <h2 id="support-modal-title" style="color: #003F87; margin-bottom: 15px; text-align: center;">🎁 Other Ways to Support Pack 182</h2>
+            <p id="support-modal-description" style="text-align: center; color: #666; margin-bottom: 35px; line-height: 1.6;">Choose how you'd like to help our scouts!</p>
+            
+            <div class="support-options">
+                <!-- Donate to Charter Organization -->
+                <div class="support-card" style="background: #E8F5E9; border: 2px solid #4CAF50; border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                    <h3 style="color: #2E7D32; margin-bottom: 15px;">⛪ Donate my order to Pack 182's Charter Organization, Three Bridges Reformed Church</h3>
+                    <p style="margin-bottom: 20px; line-height: 1.6;">Your mums order will be donated to Three Bridges Reformed Church, our charter organization that supports Pack 182 throughout the year.</p>
+                    <button onclick="donateToChurch()" class="btn btn-primary" style="background: #4CAF50; width: 100%; padding: 12px; font-size: 1.1rem;">Donate My Order to the Church</button>
+                </div>
+                
+                <!-- Help in Other Ways -->
+                <button onclick="requestOtherHelp()" class="btn btn-primary" style="background: #FFC107; color: #333; width: 100%; padding: 15px; font-size: 1.1rem; border: 2px solid #FFC107; margin-top: 15px;">
+                    💝 Help Pack 182 in some other way...
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Request Modal -->
+    <div id="contact-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; padding: 40px; position: relative;">
+            <button onclick="closeContactModal()" class="modal-close" style="position: absolute; right: 15px; top: 15px; background: white; border: 1px solid #ddd; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1001;">×</button>
+            <h3 id="contact-modal-title" style="color: #003F87; margin-bottom: 20px; text-align: center;">💝 Help Pack 182</h3>
+            <p id="contact-modal-description" style="text-align: center; color: #666; margin-bottom: 30px; line-height: 1.6;">Thank you for your interest! Someone from Pack 182 will reach out to discuss how you can help.</p>
+            
+            <form id="contact-form" onsubmit="submitContactRequest(event); return false;">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="contact-name" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Your Name *</label>
+                    <input type="text" id="contact-name" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="contact-email" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Email Address *</label>
+                    <input type="email" id="contact-email" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.1rem; background: #FFC107; color: #333; border: none;">Submit</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Version Footer -->
     <footer id="version-footer" style="position: fixed; bottom: 5px; right: 5px; padding: 2px 8px; background: rgba(255,255,255,0.8); font-size: 11px; color: #888; z-index: 1000; border-radius: 3px; font-family: monospace;">
+        <a href="example_receipt.html" target="_blank" style="margin-right: 10px; color: #666;">View Example Receipt</a>
         v1.2.0
     </footer>
 
     <script src="../js/config.js"></script>
     <script src="../js/sheets-api.js"></script>
     <script src="../js/scout-law.js"></script>
-    <script src="./js/app-scout.js"></script>
+    <script src="../js/app.js"></script>
     <script>
         // Initialize Scout elements on page load
         document.addEventListener('DOMContentLoaded', function() {

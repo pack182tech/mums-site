@@ -663,7 +663,10 @@
             
             <div style="text-align: right; margin-bottom: 15px;">
                 <button onclick="exportOrders()" class="btn btn-secondary" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
-                    📊 Export CSV
+                    📊 Export Full CSV
+                </button>
+                <button onclick="exportAnonymizedOrders()" class="btn btn-secondary" style="background: #9333EA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                    📊 Export Anonymized CSV
                 </button>
                 <button onclick="generateOrdersPDF()" class="btn-primary" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
                     📄 Generate PDF Report
@@ -1900,6 +1903,61 @@
             document.body.removeChild(a);
             
             showMessage('Orders exported successfully', 'success');
+        }
+        
+        function exportAnonymizedOrders() {
+            if (filteredOrders.length === 0) {
+                showMessage('No orders to export', 'error');
+                return;
+            }
+            
+            const headers = ['Order ID', 'Date', 'Time', 'Scout Name', 'First Name', 'Last Name', 
+                           'Products', 'Total', 'Payment Method', 'Payment Status', 'Order Status', 'Comments'];
+            
+            const csvRows = [headers.join(',')];
+            
+            filteredOrders.forEach(order => {
+                const products = typeof order.products === 'string' ? 
+                    JSON.parse(order.products) : order.products;
+                
+                const productsList = products.map(p => 
+                    `${p.title || p.name}${p.color ? ` (${p.color})` : ''}: ${p.quantity}`
+                ).join('; ');
+                
+                const orderDate = new Date(order.timestamp);
+                const dateStr = orderDate.toLocaleDateString();
+                const timeStr = orderDate.toLocaleTimeString();
+                
+                const row = [
+                    order.order_id,
+                    dateStr,
+                    timeStr,
+                    order.scout_name || '',
+                    order.first_name,
+                    order.last_name,
+                    `"${productsList}"`,
+                    order.total_price,
+                    order.payment_method || '',
+                    order.payment_status || '',
+                    order.order_status || '',
+                    `"${(order.comments || '').replace(/"/g, '""')}"`
+                ];
+                
+                csvRows.push(row.join(','));
+            });
+            
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `mums_orders_anonymized_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showMessage('Anonymized orders exported successfully', 'success');
         }
         
         // Inventory functionality

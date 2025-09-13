@@ -162,10 +162,26 @@ function createProductCard(product) {
             </div>
         `;
     }).join('');
+    // Fix image URL for subdirectory pages and handle various URL formats
+    let imageUrl = product.image_url || 'https://via.placeholder.com/300';
+    
+    // If the URL is not absolute (doesn't start with http:// or https://)
+    if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        // If we're in a subdirectory, prepend '../'
+        if (window.location.pathname.includes('/scoutname/')) {
+            // Only prepend if it doesn't already have '../'
+            if (!imageUrl.startsWith('../')) {
+                imageUrl = '../' + imageUrl;
+            }
+        }
+    }
+    
+    // Log for debugging
+    debugLog('Product image URL:', product.title, 'Original:', product.image_url, 'Fixed:', imageUrl);
     
     card.innerHTML = `
         <div class="product-image">
-            <img src="${product.image_url || 'https://via.placeholder.com/300'}" 
+            <img src="${imageUrl}" 
                  alt="${product.title}"
                  loading="lazy"
                  crossorigin="anonymous">

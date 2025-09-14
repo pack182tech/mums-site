@@ -703,17 +703,27 @@ function showConfirmation(orderId, total, paymentMethod) {
     const zelleQR = document.getElementById('zelle-qr');
     if (zelleQR) {
         const zelleEmail = settings.zelle_email || 'threebridgespack182@gmail.com';
-        // Create QR data with email and memo
-        const memo = `Order: ${orderId}`;
-        const qrData = `ZELLE:${zelleEmail}?memo=${encodeURIComponent(memo)}`;
+        const firstName = settings.zelle_first_name || 'Boy Scouts';
+        const lastName = settings.zelle_last_name || 'of America';
         
-        // Use custom QR URL from settings or generate with memo
-        const qrUrl = settings.zelle_qr_url && !settings.zelle_qr_url.includes('${orderId}') 
-            ? settings.zelle_qr_url  // Use static QR if configured
-            : `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
+        // Create QR data - Zelle QR codes typically contain just the email
+        // The memo needs to be entered manually as Zelle doesn't support memo in QR
+        const qrData = zelleEmail;
+        
+        // Use custom QR URL from settings or generate
+        const qrUrl = settings.zelle_qr_url || 
+            `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}&bgcolor=FFFFFF`;
         
         zelleQR.src = qrUrl;
         zelleQR.style.display = 'block';
+        zelleQR.onerror = function() {
+            // Hide QR code if it fails to load
+            this.style.display = 'none';
+            const qrContainer = this.parentElement;
+            if (qrContainer) {
+                qrContainer.style.display = 'none';
+            }
+        };
     }
     
     // Update Zelle payment information from settings

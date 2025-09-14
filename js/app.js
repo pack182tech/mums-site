@@ -722,12 +722,14 @@ function showConfirmation(orderId, total, paymentMethod) {
         zellePrefixElement.textContent = settings.zelle_prefix;
     }
     
-    const zelleRecipientName = document.getElementById('zelle-recipient-name');
-    if (zelleRecipientName) {
-        const fullName = (settings.zelle_first_name && settings.zelle_last_name) ? 
-            `${settings.zelle_first_name} ${settings.zelle_last_name}` : 
-            'Boy Scouts of America';
-        zelleRecipientName.textContent = fullName;
+    const zelleFirstNameDisplay = document.getElementById('zelle-first-name-display');
+    if (zelleFirstNameDisplay) {
+        zelleFirstNameDisplay.textContent = settings.zelle_first_name || 'Boy Scouts';
+    }
+    
+    const zelleLastNameDisplay = document.getElementById('zelle-last-name-display');
+    if (zelleLastNameDisplay) {
+        zelleLastNameDisplay.textContent = settings.zelle_last_name || 'of America';
     }
     
     const zelleEmailElement = document.getElementById('zelle-email');

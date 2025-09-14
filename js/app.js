@@ -693,10 +693,28 @@ function showConfirmation(orderId, total, paymentMethod) {
         zelleQR.style.display = 'block';
     }
     
-    // Update Zelle email from settings
+    // Update Zelle payment information from settings
+    const zellePrefixElement = document.getElementById('zelle-prefix');
+    if (zellePrefixElement && settings.zelle_prefix) {
+        zellePrefixElement.textContent = settings.zelle_prefix;
+    }
+    
+    const zelleRecipientName = document.getElementById('zelle-recipient-name');
+    if (zelleRecipientName) {
+        const fullName = (settings.zelle_first_name && settings.zelle_last_name) ? 
+            `${settings.zelle_first_name} ${settings.zelle_last_name}` : 
+            'Boy Scouts of America';
+        zelleRecipientName.textContent = fullName;
+    }
+    
     const zelleEmailElement = document.getElementById('zelle-email');
     if (zelleEmailElement && settings.zelle_email) {
         zelleEmailElement.textContent = settings.zelle_email;
+    }
+    
+    const zelleMemoInstruction = document.getElementById('zelle-memo-instruction');
+    if (zelleMemoInstruction && settings.zelle_memo_instruction) {
+        zelleMemoInstruction.textContent = settings.zelle_memo_instruction;
     }
     
     // Set pickup details

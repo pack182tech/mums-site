@@ -910,6 +910,31 @@
                 </div>
                 
                 <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle Payment Prefix</label>
+                    <input type="text" id="setting-zelle_prefix" style="width: 100%;" onchange="saveSetting('zelle_prefix', this.value)" placeholder="e.g., Pay via Zelle to:">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle First Name</label>
+                    <input type="text" id="setting-zelle_first_name" style="width: 100%;" onchange="saveSetting('zelle_first_name', this.value)" placeholder="e.g., John">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle Last Name</label>
+                    <input type="text" id="setting-zelle_last_name" style="width: 100%;" onchange="saveSetting('zelle_last_name', this.value)" placeholder="e.g., Doe">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle Email</label>
+                    <input type="email" id="setting-zelle_email" style="width: 100%;" onchange="saveSetting('zelle_email', this.value)" placeholder="e.g., john.doe@example.com">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <label>Zelle Memo Instruction</label>
+                    <input type="text" id="setting-zelle_memo_instruction" style="width: 100%;" onchange="saveSetting('zelle_memo_instruction', this.value)" placeholder="e.g., ⚠️ Include Order ID in memo">
+                </div>
+                
+                <div class="filter-group" style="margin-bottom: 20px;">
                     <label>Payment Instructions</label>
                     <textarea id="setting-payment_instructions" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 14px; font-family: inherit;" onchange="saveSetting('payment_instructions', this.value)"></textarea>
                 </div>

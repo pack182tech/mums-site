@@ -802,6 +802,26 @@ function showPickupModal() {
         }
     }
     
+    // Update pickup date/time and location from settings
+    const pickupDateTime = document.getElementById('modal-pickup-datetime');
+    const pickupLocation = document.getElementById('modal-pickup-location');
+    
+    if (pickupDateTime) {
+        // Combine pickup_date and pickup_time if both exist, otherwise use just pickup_date
+        const dateTime = settings.pickup_time ? 
+            `${settings.pickup_date || 'Date TBD'}<br>${settings.pickup_time}` :
+            (settings.pickup_date || 'Date & Time TBD');
+        pickupDateTime.innerHTML = dateTime;
+    }
+    
+    if (pickupLocation) {
+        // Display pickup location and address if available
+        const location = settings.pickup_address ? 
+            `${settings.pickup_location || 'Location TBD'}<br>${settings.pickup_address}` :
+            (settings.pickup_location || 'Location TBD');
+        pickupLocation.innerHTML = location;
+    }
+    
     document.getElementById('pickup-modal').style.display = 'flex';
 }
 

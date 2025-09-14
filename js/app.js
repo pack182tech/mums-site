@@ -431,12 +431,7 @@ async function handleOrderSubmit(e) {
     // Check if this is a test order
     const firstName = form.firstName.value.trim().toLowerCase();
     const lastName = form.lastName.value.trim().toLowerCase();
-    
-    if (firstName === 'test' || lastName === 'test') {
-        // Show test order modal
-        showTestOrderModal();
-        return;
-    }
+    const isTestOrder = (firstName === 'test' || lastName === 'test');
     
     // Check if new address fields exist, handle gracefully
     let address;
@@ -510,34 +505,52 @@ async function handleOrderSubmit(e) {
     // Save customer info for next time
     saveCustomerInfo();
     
-    // Submit order
-    showLoading(true);
-    try {
-        const response = await sheetsAPI.submitOrder(orderData);
+    if (isTestOrder) {
+        // For test orders, show the modal but still proceed to confirmation
+        showTestOrderModal();
         
-        if (response.success) {
-            currentOrderId = response.orderId;
-            showConfirmation(response.orderId, total, paymentMethod);
+        // Generate a test order ID
+        const testOrderId = 'TEST' + Date.now().toString(36).toUpperCase();
+        currentOrderId = testOrderId;
+        
+        // Show confirmation page after a delay to let user see the modal
+        setTimeout(() => {
+            showConfirmation(testOrderId, total, paymentMethod);
             
-            // Clear cart
+            // Clear cart like normal
             cart = [];
             saveCart();
+        }, 2000);
+    } else {
+        // Submit order normally for non-test orders
+        showLoading(true);
+        try {
+            const response = await sheetsAPI.submitOrder(orderData);
             
-            // Save order to history
-            const orderHistory = {
-                orderId: response.orderId,
-                date: new Date().toISOString(),
-                total: total
-            };
-            localStorage.setItem(CONFIG.STORAGE_KEYS.LAST_ORDER, JSON.stringify(orderHistory));
-        } else {
-            throw new Error(response.message || 'Failed to submit order');
+            if (response.success) {
+                currentOrderId = response.orderId;
+                showConfirmation(response.orderId, total, paymentMethod);
+                
+                // Clear cart
+                cart = [];
+                saveCart();
+                
+                // Save order to history
+                const orderHistory = {
+                    orderId: response.orderId,
+                    date: new Date().toISOString(),
+                    total: total
+                };
+                localStorage.setItem(CONFIG.STORAGE_KEYS.LAST_ORDER, JSON.stringify(orderHistory));
+            } else {
+                throw new Error(response.message || 'Failed to submit order');
+            }
+        } catch (error) {
+            console.error('Order submission failed:', error);
+            showError(error.message || 'Failed to submit order. Please try again.');
+        } finally {
+            showLoading(false);
         }
-    } catch (error) {
-        console.error('Order submission failed:', error);
-        showError(error.message || 'Failed to submit order. Please try again.');
-    } finally {
-        showLoading(false);
     }
 }
 
@@ -867,6 +880,11 @@ function showTestOrderModal() {
     
     // Show the modal
     document.getElementById('test-order-modal').style.display = 'flex';
+    
+    // Auto-close after 2 seconds to proceed with flow
+    setTimeout(() => {
+        closeTestOrderModal();
+    }, 2000);
 }
 
 function closeTestOrderModal() {

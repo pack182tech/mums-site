@@ -283,22 +283,39 @@
             </div>
             
             <!-- Payment & Pickup Information -->
-            <div class="receipt-footer">
-                <div class="footer-section payment-section-compact">
-                    <h4>Payment Information</h4>
-                    <p><strong id="zelle-prefix">Pay via Zelle to:</strong></p>
-                    <p style="margin: 5px 0;"><strong>First Name: <span id="zelle-first-name-display">Boy Scouts</span></strong></p>
-                    <p style="margin: 5px 0;"><strong>Last Name: <span id="zelle-last-name-display">of America</span></strong></p>
-                    <p style="margin: 5px 0;" id="zelle-email">threebridgespack182@gmail.com</p>
-                    <p class="important-note"><span id="zelle-memo-instruction">⚠️ Include Order ID in memo</span>: <span id="payment-order-id-footer"></span></p>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <p style="margin-bottom: 10px; font-weight: 600;">Scan with Zelle App:</p>
-                        <img id="zelle-qr" style="width: 150px; height: 150px; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; background: white;" alt="Zelle QR Code" />
+            <div class="receipt-footer" style="display: flex; gap: 30px; margin-top: 30px;">
+                <div class="footer-section payment-section-compact" style="flex: 1; text-align: center; background: #f8f9fa; padding: 25px; border-radius: 10px;">
+                    <h4 style="color: #003F87; margin-bottom: 20px; font-size: 1.3rem;">Payment Information</h4>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;" id="zelle-prefix">Pay via Zelle to:</p>
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="margin: 8px 0; font-size: 1.05rem;">
+                                <strong>First Name:</strong> <span id="zelle-first-name-display" style="color: #2b6cb0;">Boy Scouts</span>
+                            </p>
+                            <p style="margin: 8px 0; font-size: 1.05rem;">
+                                <strong>Last Name:</strong> <span id="zelle-last-name-display" style="color: #2b6cb0;">of America</span>
+                            </p>
+                            <p style="margin: 12px 0 8px 0; font-size: 0.95rem; color: #555;" id="zelle-email">threebridgespack182@gmail.com</p>
+                        </div>
+                        <p class="important-note" style="background: #fff3cd; padding: 10px; border-radius: 6px; border-left: 4px solid #ffc107;">
+                            <span id="zelle-memo-instruction">⚠️ Include Order ID in memo</span>: <strong style="color: #d32f2f;"><span id="payment-order-id-footer"></span></strong>
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <p style="margin-bottom: 12px; font-weight: 600; font-size: 1.05rem;">Scan with Zelle App:</p>
+                        <div style="display: inline-block; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <img id="zelle-qr" style="width: 160px; height: 160px; display: block;" alt="Zelle QR Code" />
+                        </div>
                     </div>
                 </div>
-                <div class="footer-section pickup-section-compact">
-                    <h4>Pickup Information</h4>
-                    <p id="pickup-details-compact"></p>
+                
+                <div class="footer-section pickup-section-compact" style="flex: 1; text-align: center; background: #f8f9fa; padding: 25px; border-radius: 10px;">
+                    <h4 style="color: #003F87; margin-bottom: 20px; font-size: 1.3rem;">Pickup Information</h4>
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 10px;">
+                        <p id="pickup-details-compact" style="font-size: 1.05rem; line-height: 1.8; color: #2b6cb0;"></p>
+                    </div>
                 </div>
             </div>
             

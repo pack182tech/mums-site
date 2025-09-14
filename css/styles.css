@@ -1000,6 +1000,18 @@ h3 { font-size: 1.5rem; }
     color: var(--dark-color);
 }
 
+/* Receipt Footer Responsive */
+@media (max-width: 768px) {
+    .receipt-footer {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    .footer-section {
+        width: 100% !important;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     h1 { font-size: 2rem; }

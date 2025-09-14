@@ -428,6 +428,16 @@ async function handleOrderSubmit(e) {
         return;
     }
     
+    // Check if this is a test order
+    const firstName = form.firstName.value.trim().toLowerCase();
+    const lastName = form.lastName.value.trim().toLowerCase();
+    
+    if (firstName === 'test' || lastName === 'test') {
+        // Show test order modal
+        showTestOrderModal();
+        return;
+    }
+    
     // Check if new address fields exist, handle gracefully
     let address;
     if (form.street && form.city && form.state && form.zip) {
@@ -845,6 +855,22 @@ function showPickupModal() {
 
 function closePickupModal() {
     document.getElementById('pickup-modal').style.display = 'none';
+}
+
+// Test Order Modal Functions
+function showTestOrderModal() {
+    // Update message from settings if available
+    const messageElement = document.getElementById('test-order-message');
+    if (messageElement && settings.test_order_message) {
+        messageElement.textContent = settings.test_order_message;
+    }
+    
+    // Show the modal
+    document.getElementById('test-order-modal').style.display = 'flex';
+}
+
+function closeTestOrderModal() {
+    document.getElementById('test-order-modal').style.display = 'none';
 }
 
 // Donation Support Functions
